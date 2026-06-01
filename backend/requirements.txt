@@ -1,6 +1,4 @@
 requests
-streamlit
-plotly
 fastapi
 uvicorn
 requests
