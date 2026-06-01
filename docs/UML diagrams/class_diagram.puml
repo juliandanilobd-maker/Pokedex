@@ -1,0 +1,121 @@
+@startuml ClassDiagram
+title Pokedex - Diagrama de Clases
+
+skinparam ClassAttributeIconSize 0
+
+class Pokemon {
+    +id : int
+    +name : str
+    +types : list
+    +height : float
+    +weight : float
+    +stats : dict
+    +sprites : dict
+}
+
+class EvolutionNode {
+    +pokemon_name : str
+    +evolves_to : list
+}
+
+class TypeRelations {
+    +double_damage_from : list
+    +double_damage_to : list
+    +half_damage_from : list
+    +half_damage_to : list
+    +no_damage_from : list
+    +no_damage_to : list
+}
+
+class PokeAPIClient {
+    +get_pokemon()
+    +get_species()
+    +get_type()
+    +get_evolution_chain()
+}
+
+class CacheManager {
+    +get()
+    +set()
+    +delete()
+    +is_expired()
+}
+
+class PokemonParser {
+    +parse_pokemon()
+    +parse_evolution()
+    +parse_type()
+}
+
+class TypeParser {
+    +parse_type_relations()
+}
+
+class PokemonService {
+    +get_pokemon()
+    +get_random_pokemon()
+    +get_pokemon_details()
+}
+
+class EvolutionService {
+    +get_evolution_chain()
+}
+
+class TypeService {
+    +get_type_relations()
+}
+
+class FilterService {
+    +filter_pokemons()
+}
+
+class Routes {
+    +pokemon_endpoint()
+    +filter_endpoint()
+    +type_endpoint()
+}
+
+class DatasetGenerator {
+    +generate_index()
+}
+
+class FrontendAPI {
+    +get_pokemon()
+    +filter_pokemon()
+}
+
+class HomePage
+class DetailSearch
+class ComparePage
+class TeamBuilder
+
+Routes --> PokemonService
+Routes --> EvolutionService
+Routes --> TypeService
+Routes --> FilterService
+
+PokemonService --> PokeAPIClient
+PokemonService --> CacheManager
+PokemonService --> PokemonParser
+
+EvolutionService --> PokeAPIClient
+EvolutionService --> CacheManager
+
+TypeService --> PokeAPIClient
+TypeService --> TypeParser
+
+FilterService --> DatasetGenerator
+
+PokemonParser --> Pokemon
+TypeParser --> TypeRelations
+
+EvolutionService --> EvolutionNode
+
+FrontendAPI --> Routes
+
+HomePage --> FrontendAPI
+DetailSearch --> FrontendAPI
+ComparePage --> FrontendAPI
+TeamBuilder --> FrontendAPI
+
+@enduml

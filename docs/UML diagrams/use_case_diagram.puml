@@ -1,0 +1,31 @@
+@startuml UseCaseDiagram
+title Pokedex - Diagrama de Casos de Uso
+
+left to right direction
+
+actor Usuario
+
+rectangle "Sistema Pokedex" {
+
+    usecase "Buscar Pokemon" as UC1
+    usecase "Filtrar Pokemon \npor criterios" as UC2
+    usecase "Ver Detalles \nPokemon" as UC3
+    usecase "Visualizar Stats" as UC4
+    usecase "Consultar \nDebilidades y Resistencias" as UC5
+    usecase "Consultar \nEvoluciones" as UC6
+    usecase "Comparar Pokemon" as UC7
+    usecase "Construir equipo Pokemon" as UC8
+}
+
+Usuario --> UC1
+Usuario --> UC2
+Usuario --> UC3
+Usuario --> UC4
+Usuario --> UC5
+Usuario --> UC6
+Usuario --> UC7
+Usuario --> UC8
+
+UC3 .> UC4 : <<include>>
+UC3 .> UC5 : <<include>>
+UC3 .> UC6 : <<include>>
