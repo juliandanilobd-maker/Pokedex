@@ -10,20 +10,35 @@ La arquitectura y diseño se estructuraron para realizar una separacion logica, 
 
 Flujo del aplicativo web
 
-FRONTEND/BACKEND
-1. A[Usuario] ── Interactua con ──> B[Frontend-Streamlit] 
-2. B[Frontend-Streamlit] ── llama a ──> C[Backend-FastAPI]
-3. C[Backend-FastAPI] ── mira en ──> D[Routes]
-4. D[Routes] ── dirige a ──> E[Services]
-5. E[Services] ── usa ──> F[PokeAPI-Client]
-        ├──E[Services] ── devuelve info .json a ──> G[Parsers]
-        ├──E[Services] ── pasa info ──> H[Cache-Manager]
-        │                                └──> H[Cache-Manager] ── guarda datos ──> I[Cache] 
-        └──E[Services] ── pasa info ──> J[Generador-indice-pokemon]
-    
+Flujo Principal
 
-7. G[Parsers] ── pasa datos estructurados a ──> K[Models]
-6. K[Models] ── devuelve datos ──> B[Frontend-Streamlit]
+1. A[Usuario] ── Interactua con ──> B[Frontend-Streamlit] 
+2. B[Frontend-Streamlit] ── Se conecta a su ──> C[Backend-Client]
+3. C[Backend-Client] ── Hace HTTP request ──> D[Backend-FastAPI]
+4. E[Backend-FastAPI] ── mira en ──> F[Routes]
+5. F[Routes] ── Dirige a ──> G[Services]
+
+Flujo interno Backend
+
+1. G[Services] ── Llama a ──> H[Cache-Manager]
+        │                            └── Consulta a ──> I[Cache]
+        ├── Consulta a ──> J[Dataset]
+        │
+        └── Llama a ──> K[PokeAPI-Client] 
+                                └── Consulta a ──> L[PokeAPI]
+
+Flujo de transformación de datos
+
+1. L[PokeAPI] ── Envía la info a ──> K[PokeAPI-Client]
+2. K[PokeAPI-Client] ── Envía datos JSON a ──> G[Services]
+3. G[Services] ── Pasa datos ──> M[Parsers]
+        └──G[Services] ── Utiliza ──>  N[Models] 
+4. M[Parsers] ── Construye instancias de ──> N[Models]
+
+Flujo de persistencia de datos
+
+1. G[Services] ── Envía info a ──> H[Cache-Manager]
+2. H[Cache-Manager] ── guarda datos ──> I[Cache] 
 
 Estructura principal
     pokedex/

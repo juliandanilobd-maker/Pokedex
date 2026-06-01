@@ -1,0 +1,69 @@
+@startuml ComponentDiagram
+
+title Pokedex - Diagrama de Componentes
+
+skinparam ComponentStyle rectangle
+
+actor Usuario
+
+package "Frontend Streamlit" {
+
+    [Pokedex.py]
+    [Components]
+    [Frontend API Client]
+    [Frontend Utils]
+    [Pages]
+    [Views]
+    
+}
+
+package "Backend FastAPI" {
+
+    [Dependencies]
+    [FastAPI App]
+    [Models]
+    [Parsers]
+    [Routes]
+    [Services]
+
+    [Cache Manager]
+    [PokeAPI Client]
+
+    database "Cache SQLite" as CacheDB
+
+    [Dataset]
+}
+
+cloud "PokeAPI" as PokeAPI
+
+Usuario --> [Pokedex.py]
+
+[Pokedex.py] --> [Pages]
+[Pages] --> [Views]
+[Views] --> [Components]
+
+[Pages] --> [Frontend API Client]
+
+[Frontend API Client] --> [Routes]
+
+[FastAPI App] --> [Routes]
+
+[Routes] --> [Services]
+
+[Services] --> [PokeAPI Client]
+[Services] --> [Cache Manager]
+[Services] --> [Dataset]
+
+[PokeAPI Client] --> PokeAPI
+
+[Cache Manager] --> CacheDB
+
+[Services] --> [Parsers]
+
+[Parsers] --> [Models]
+
+[Dependencies] --> [Services]
+[Dependencies] --> [PokeAPI Client]
+[Dependencies] --> [Cache Manager]
+
+@enduml

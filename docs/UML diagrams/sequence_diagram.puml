@@ -1,0 +1,64 @@
+@startuml SequenceDiagram
+title Pokedex - Diagrama de Secuencia de Busqueda
+
+actor Usuario
+
+participant "Streamlit UI" as UI
+participant "Frontend API Client" as FAPI
+
+participant "FastAPI Routes" as Routes
+participant "Pokemon Service" as Service
+
+participant "Cache Manager" as CacheManager
+
+participant "PokeAPI Client" as Client
+participant "PokeAPI" as ExternalAPI
+
+participant "Parser" as Parser
+participant "Pokemon Model" as Model
+
+Usuario -> UI : Buscar Pikachu
+
+UI -> FAPI : search_pokemon("pikachu")
+
+FAPI -> Routes : GET /pokemon/pikachu
+
+Routes -> Service : get_pokemon()
+
+Service -> CacheManager : consultar()
+
+alt Existe en cache
+
+    CacheManager --> Service : datos
+
+else No Existe
+
+    CacheManager --> Service : cache miss
+    
+    Service -> Client : get_pokemon()
+    
+    Client -> ExternalAPI : HTTP Request
+
+    ExternalAPI --> Client : JSON Pokemon
+
+    Client --> Service : JSON
+
+    Service -> Parser : parse()
+
+    Parser -> Model : instancia Pokemon()
+
+    Service <-- Parser : Pokemon(Model)
+
+    Service -> CacheManager : guardar()
+
+end
+
+Service --> Routes : Pokemon
+
+Routes --> FAPI : JSON
+
+FAPI --> UI : datos
+
+UI --> Usuario : Mostrar Pokemon
+
+@enduml
