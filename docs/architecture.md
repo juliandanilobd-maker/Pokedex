@@ -53,8 +53,6 @@ Estructura principal
         │
         ├──README.md
         │
-        ├──.flake8
-        │
         ├──.toml
         │
         └──.gitignore
