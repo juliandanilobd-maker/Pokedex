@@ -76,3 +76,22 @@ Todas las modificaciones relevantes del proyecto serán registradas aquí.
 ### CI
 - Tests para services.
 - Verificación y linteado con Ruff.
+
+## [0.1.0-epsilon] - Cache System
+
+### Funcionalidades añadidas
+- Sistema de cache en SQLite.
+- Peticiones se buscan primero en cache.
+- Se guardan datos en cache.
+- Cache expira.
+
+### Arreglado
+- Configuraciones globales para cache añadidas.
+- Servicio de dependencias modificado, para incluir cache.
+- pokeapi_client modificado para trabajar con cache.
+- conftest.py creado para instancia una pokeapi_client que llama a la PokeAPI Client, pero que trabaje con un mock cache.
+- pokeapi_client_test modificado para trabajar el pokeapi_client de conftest.py.
+
+### CI
+- Test para cache y expiración de datos.
+- Verificación y linteado con Ruff.

@@ -1,8 +1,6 @@
 import requests
 import pytest
 
-from backend.app.clients.pokeapi_client import PokeAPIClient
-
 
 # Creamos una clase que de una mock response (respuesta simulada) para confirmar el funcionamiento
 # de clients, utilizando la funcion monkeypatch de pytest
@@ -34,25 +32,23 @@ def mock_get_not_found(*args, **kwargs):
     return MockResponse({}, status_code=404)
 
 
-def test_get_pokemon_success(monkeypatch):
-    client = PokeAPIClient()
+def test_get_pokemon_success(monkeypatch, pokeapi_client):
 
     # usamos setattr para evitar llamados a internet, sino a nuestra función mock
     monkeypatch.setattr(requests, "get", mock_get_success)
 
-    result = client.get("pokemon/pikachu")
+    result = pokeapi_client.get("pokemon/pikachu")
 
     assert result["name"] == "pikachu"
 
 
 # funcion para probar el error 404
-def test_get_pokemon_404(monkeypatch):
-    client = PokeAPIClient()
+def test_get_pokemon_404(monkeypatch, pokeapi_client):
 
     monkeypatch.setattr(requests, "get", mock_get_not_found)
 
     with pytest.raises(ValueError) as exc:
-        client.get("{endpoint}")
+        pokeapi_client.get("{endpoint}")
 
     assert (
         "No se encontro el recurso: {endpoint}."

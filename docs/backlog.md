@@ -77,7 +77,7 @@ Como desarrollador, necesito un sistema de dependencias para desacoplar servicio
 - [] Uso de dependency injection en FastAPI.
 - [] Servicios inyectables (no instanciados globalmente).
 - [x] Separacion clara entre clientes, servicios y endpoints.
-- [] Preparado para mocking test.
+- [x] Preparado para mocking test.
 
 ## Epic 2 - Integración PokeAPI
 
@@ -124,7 +124,7 @@ Como sistema, necesito manejar errores de red o API externa para evitar fallos e
 
 ### Criterios de aceptación
 - [x] Manejo de Timeouts, 404 y errores 5xx.
-- [] Respuestas controladas al backend.
+- [x] Respuestas controladas al backend.
 - [] No se rompe el backend por fallos de PokeAPI
 
 ---
@@ -138,32 +138,32 @@ Reducir las llamadas a PokeAPI mediante almacenamiento local eficiente.
 ### Historia 3.1 - Implementar SQLite
 
 ### Prioridad: ALTA.
-### Estado: PENDIENTE
+### Estado: COMPLETADO.
 
 #### Descripción
 
 Como sistema, necesito implementar un cache persistente, para reducir las llamadas repetidas a la PokeAPI.
 
 ### Criterios de aceptación
-- [] SQLite configurado como almacenamiento.
-- [] Guardado de respuestas de API.
-- [] Recuperación de datos cacheados.
-- [] Persistencia de ejecuciones.
+- [x] SQLite configurado como almacenamiento.
+- [x] Guardado de respuestas de API.
+- [x] Recuperación de datos cacheados.
+- [x] Persistencia de ejecuciones.
 
 ### Historia 3.2 - Integrar cache-first
 
 ### Prioridad: ALTA.
-### Estado: PENDIENTE.
+### Estado: COMPLETADO.
 
 #### Descripción
 
 Como sistema necesito priorizar datos en cache antes de consultar la API externa.
 
 ### Criterios de aceptación
-- [] Primero se consulta a cache.
-- [] Si no existe cache se consulta a PokeAPI.
-- [] Se guarda info consultada a PokeAPI en cache.
-- [] Lógica centralizada en capa de cache service.
+- [x] Primero se consulta a cache.
+- [x] Si no existe cache se consulta a PokeAPI.
+- [x] Se guarda info consultada a PokeAPI en cache.
+- [x] Lógica centralizada en capa de cache service.
 
 ---
 
@@ -186,7 +186,7 @@ Como desarrollador, necesito tests unitarios para asegurar el correcto funcionam
 
 - [x] Tests para servicios.
 - [x] Tests para cliente. 
-- [] Tests para cache.
+- [x] Tests para cache.
 - [x] Tests para parsers.
 - [x] Uso de pytest.
 - [] Tests independientes del entorno real.

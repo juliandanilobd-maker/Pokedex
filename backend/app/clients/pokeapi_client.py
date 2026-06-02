@@ -1,6 +1,7 @@
 """
-Este modulo proporciona una clase que encapsula las peticiones HTTP a la API y
-maneja errores.
+Este modulo proporciona una clase que encapsula las peticiones HTTP a la API,
+maneja errores, implementa rate limiting basico y utiliza cache para evitar
+peticiones repetidas.
 """
 
 import requests
@@ -14,14 +15,17 @@ class PokeAPIClient:
     Cliente para interactuar con la PokeAPI.
 
     Caracteristicas:
+    - Cache automático de respuestas (SQLite).
+    - Rate Limiting.
     - HTTP Client.
     - Manejo de errores.
     - Constructor de URL.
     """
 
-    def __init__(self):
+    def __init__(self, cache):
 
         self.base_url = settings.POKEPI_BASE_URL
+        self.cache = cache
         self._last_request_time = 0.0
 
     # A continuacion viene la base de las peticiones http
@@ -45,11 +49,19 @@ class PokeAPIClient:
 
         url = self._build_url(endpoint)
 
+        # Incluimos: primero busqueda en cache
+        cached = self.cache.get(url)
+        if cached is not None:
+            return cached
+
+        # usamos rate limit
+        self._rate_limit()
+
         # Se realiza la peticion
         try:
             response = requests.get(url, timeout=settings.REQUEST_TIMEOUT)
             response.raise_for_status()
-            return response.json()
+            data = response.json()
 
         except requests.exceptions.HTTPError as e:
             if e.response is not None and e.response.status_code == 404:
@@ -67,6 +79,14 @@ class PokeAPIClient:
                 "La peticion a la PokeAPI tardo demasiado. "
                 "Intenta de nuevo en unos momentos."
             ) from e
+
+        # Establecemos un update state
+        self._last_request_time = time.time()
+
+        # Guardamos en la cache para futuras consultas
+        self.cache.set(url, data, ttl=settings.CACHE_TTL)
+
+        return data
 
     # Creamos una funcion que nos permita construir la URL
     def _build_url(self, endpoint: str) -> str:
@@ -92,7 +112,15 @@ class PokeAPIClient:
         if elapsed < settings.MIN_REQUEST_DELAY:
             time.sleep(settings.MIN_REQUEST_DELAY - elapsed)
 
+    # A continuacion definimos funciones que nos entreguen los pokemones,
+    # listas, especies, etc que ya solicitamos de manera limpia
+
+    # Usamos identifier en lugar de name or id, con la finalidad de permitir cualquiera de estos para la busqueda
+    # Volvemos a identifier a minusculas y elimina los espacios en blanco
+    def normaliza_identifier(self, value: str) -> str:
+        return str(value).lower().strip()
+
     # Toma el identifier corregido y lo añade al endpoint para buscar un
     # pokemon en especifico.
     def get_pokemon(self, identifier: str) -> dict:
-        return self.get(f"pokemon/{identifier.lower().strip()}")
+        return self.get(f"pokemon/{identifier}")
