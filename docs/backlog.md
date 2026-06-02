@@ -54,16 +54,16 @@ Como estudiante de primer año, busco una arquitectura modular por capas para qu
 ## Historia 1.2 - Configurar FastAPI
 
 ### Prioridad: ALTA.
-### Estado: COMPLETADO.
+### Estado: EN CURSO.
 
 #### Descripción
 Como desarrollador necesito un backend FastAPI funcional para nuestros endpoints REST.
 
 ### Criterios de aceptación
-- [] main.py inicializa FastAPI.
-- [] Se ha creado el endpoint /health.
-- [] Routers registrados correctamente.
-- [] Uvicorn levanta el servidor.
+- [x] main.py inicializa FastAPI.
+- [x] Se ha creado el endpoint /health.
+- [x] Routers registrados correctamente.
+- [x] Uvicorn levanta el servidor.
 
 ### Historia 1.3 - Configurar sistema de dependencias
 
@@ -176,7 +176,7 @@ Garantizar la estabilidad del backend mediante tests y CI.
 ### Historia 4.1 - Crear tests unitarios
 
 ### Prioridad: ALTA.
-### Estado: PENDIENTE.
+### Estado: EN CURSO.
 
 #### Descripción
 
@@ -185,20 +185,20 @@ Como desarrollador, necesito tests unitarios para asegurar el correcto funcionam
 ### Criterios de aceptación
 
 - [] Tests para servicios, cliente y cache.
-- [] Uso de pytest.
+- [x] Uso de pytest.
 - [] Tests independientes del entorno real.
 
 ### Historia 4.2 - Configurar CI con Github Actions
 
 ### Prioridad: ALTA.
-### Estado: PENDIENTE.
+### Estado: EN CURSO.
 
 #### Descripción
 
 Como desarrollador, necesito automatizar la ejecución de tests en cada push
 
 ### Criterios de aceptación
-- [] Worflow en Github actions.
+- [x] Worflow en Github actions.
 - [] Ejecución automática de tests.
 - [] Fail si tests no pasan.
 - [] Integración con rama develop y main.

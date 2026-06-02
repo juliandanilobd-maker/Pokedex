@@ -11,3 +11,22 @@ Todas las modificaciones relevantes del proyecto serán registradas aquí.
 - Parsers
 - Models
 - Tests Unitarios
+
+## [0.1.0-alpha] - FastAPI Core
+
+### Funcionalidades añadidas
+- Inicialización de FastAPI
+- Configuración de base de CORS.
+- Registro centralizado de routers.
+- Endpoint GET /health.
+- Archivo core/config.py.
+- Primer test automatizado para health endpoint.
+
+### Arreglado
+- Uso de httpx2.
+- Uso de ConfigDict en Pydantic.
+- Uso de lifespan en lugar de on_event.
+
+### CI
+- Integración inicial con Github Actions.
+- Verificación automática con Ruff
