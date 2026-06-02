@@ -85,7 +85,6 @@ Request del cliente --> FastAPI router --> Capa de Servicios --> Capa de cache -
 - Pytest
 - Requests
 - PokeAPI
-- Ruff
 
 ## Limitaciones de esta versón
 Esta versión no incluye el frontend, ya que el enfoque es exclusivamente backend core.
