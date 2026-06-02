@@ -50,7 +50,7 @@ Todas las modificaciones relevantes del proyecto serán registradas aquí.
 - Integración con Github Actions, test unitario para pokeapi_client.
 - Verificacion con Ruffs.
 
-## [0.1.0-gamma] - Parsers & Models
+## [0.1.0-gamma] - Models & Parsers
 
 ### Funcionalidades añadidas
 - Models estándar unificados para la app.
