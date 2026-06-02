@@ -60,15 +60,15 @@ Como estudiante de primer año, busco una arquitectura modular por capas para qu
 Como desarrollador necesito un backend FastAPI funcional para nuestros endpoints REST.
 
 ### Criterios de aceptación
-- [] main.py inicializa FastAPI.
-- [] Se ha creado el endpoint /health.
-- [] Routers registrados correctamente.
-- [] Uvicorn levanta el servidor.
+- [x] main.py inicializa FastAPI.
+- [x] Se ha creado el endpoint /health.
+- [x] Routers registrados correctamente.
+- [x] Uvicorn levanta el servidor.
 
 ### Historia 1.3 - Configurar sistema de dependencias
 
 ### Prioridad: ALTA.
-### Estado: PENDIENTE.
+### Estado: EN CURSO.
 
 #### Descripción
 Como desarrollador, necesito un sistema de dependencias para desacoplar servicios y facilitar testing
@@ -76,8 +76,8 @@ Como desarrollador, necesito un sistema de dependencias para desacoplar servicio
 ### Criterios de aceptación
 - [] Uso de dependency injection en FastAPI.
 - [] Servicios inyectables (no instanciados globalmente).
-- [] Separacion clara entre clientes, servicios y endpoints.
-- [] Preparado para mocking test.
+- [x] Separacion clara entre clientes, servicios y endpoints.
+- [x] Preparado para mocking test.
 
 ## Epic 2 - Integración PokeAPI
 
@@ -87,44 +87,44 @@ Permitir comunicación estable y estructurada con la API externa de Pokemon.
 ### Historia 2.1 - Crear cliente HTTP
 
 ### Prioridad: ALTA.
-### Estado: PENDIENTE.
+### Estado: COMPLETADO.
 
 #### Descripción
 Como sistema, necesito un cliente HTTP que permita consumir PokeAPI de forma centralizada.
 
 ### Criterios de aceptación
-- [] Cliente HTTP único para PokeAPI.
-- [] Manejo de requests GET.
-- [] Timeout y control básico de errores.
-- [] No existe acceso directo a requests fuera del cliente.
+- [x] Cliente HTTP único para PokeAPI.
+- [x] Manejo de requests GET.
+- [x] Timeout y control básico de errores.
+- [x] No existe acceso directo a requests fuera del cliente.
 
 ### Historia 2.2 - Normalizar identificadores
 
 ### Prioridad: ALTA.
-### Estado: PENDIENTE.
+### Estado: COMPLETADO.
 
 #### Descripción
 
 Como sistema, necesito transformar datos crudos de PokeAPI en modelos internos consistentes.
 
 ### Criterios de aceptación
-- [] Parsers implementados para cada Pokemon.
-- [] Datos externos convertidos a modelos internos.
-- [] Campos relevantes normalizados.
-- [] Evitar exposicón directa del JSON externo.
+- [x] Parsers implementados para cada Pokemon.
+- [x] Datos externos convertidos a modelos internos.
+- [x] Campos relevantes normalizados.
+- [x] Evitar exposicón directa del JSON externo.
 
 ### Historia 2.3 - Manejo de errores
 
 ### Prioridad: ALTA.
-### Estado: PENDIENTE.
+### Estado: EN CURSO.
 
 #### Descripción
 
 Como sistema, necesito manejar errores de red o API externa para evitar fallos en cascada.
 
 ### Criterios de aceptación
-- [] Manejo de Timeouts, 404 y errores 5xx.
-- [] Respuestas controladas al backend.
+- [x] Manejo de Timeouts, 404 y errores 5xx.
+- [x] Respuestas controladas al backend.
 - [] No se rompe el backend por fallos de PokeAPI
 
 ---
@@ -138,32 +138,32 @@ Reducir las llamadas a PokeAPI mediante almacenamiento local eficiente.
 ### Historia 3.1 - Implementar SQLite
 
 ### Prioridad: ALTA.
-### Estado: PENDIENTE
+### Estado: COMPLETADO.
 
 #### Descripción
 
 Como sistema, necesito implementar un cache persistente, para reducir las llamadas repetidas a la PokeAPI.
 
 ### Criterios de aceptación
-- [] SQLite configurado como almacenamiento.
-- [] Guardado de respuestas de API.
-- [] Recuperación de datos cacheados.
-- [] Persistencia de ejecuciones.
+- [x] SQLite configurado como almacenamiento.
+- [x] Guardado de respuestas de API.
+- [x] Recuperación de datos cacheados.
+- [x] Persistencia de ejecuciones.
 
 ### Historia 3.2 - Integrar cache-first
 
 ### Prioridad: ALTA.
-### Estado: PENDIENTE.
+### Estado: COMPLETADO.
 
 #### Descripción
 
 Como sistema necesito priorizar datos en cache antes de consultar la API externa.
 
 ### Criterios de aceptación
-- [] Primero se consulta a cache.
-- [] Si no existe cache se consulta a PokeAPI.
-- [] Se guarda info consultada a PokeAPI en cache.
-- [] Lógica centralizada en capa de cache service.
+- [x] Primero se consulta a cache.
+- [x] Si no existe cache se consulta a PokeAPI.
+- [x] Se guarda info consultada a PokeAPI en cache.
+- [x] Lógica centralizada en capa de cache service.
 
 ---
 
@@ -176,7 +176,7 @@ Garantizar la estabilidad del backend mediante tests y CI.
 ### Historia 4.1 - Crear tests unitarios
 
 ### Prioridad: ALTA.
-### Estado: PENDIENTE.
+### Estado: EN CURSO.
 
 #### Descripción
 
@@ -184,21 +184,24 @@ Como desarrollador, necesito tests unitarios para asegurar el correcto funcionam
 
 ### Criterios de aceptación
 
-- [] Tests para servicios, cliente y cache.
-- [] Uso de pytest.
+- [x] Tests para servicios.
+- [x] Tests para cliente. 
+- [x] Tests para cache.
+- [x] Tests para parsers.
+- [x] Uso de pytest.
 - [] Tests independientes del entorno real.
 
 ### Historia 4.2 - Configurar CI con Github Actions
 
 ### Prioridad: ALTA.
-### Estado: PENDIENTE.
+### Estado: EN CURSO.
 
 #### Descripción
 
 Como desarrollador, necesito automatizar la ejecución de tests en cada push
 
 ### Criterios de aceptación
-- [] Worflow en Github actions.
-- [] Ejecución automática de tests.
-- [] Fail si tests no pasan.
+- [x] Worflow en Github actions.
+- [x] Ejecución automática de tests.
+- [x] Fail si tests no pasan.
 - [] Integración con rama develop y main.
