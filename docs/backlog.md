@@ -101,17 +101,17 @@ Como sistema, necesito un cliente HTTP que permita consumir PokeAPI de forma cen
 ### Historia 2.2 - Normalizar identificadores
 
 ### Prioridad: ALTA.
-### Estado: PENDIENTE.
+### Estado: COMPLETADO.
 
 #### Descripción
 
 Como sistema, necesito transformar datos crudos de PokeAPI en modelos internos consistentes.
 
 ### Criterios de aceptación
-- [] Parsers implementados para cada Pokemon.
-- [] Datos externos convertidos a modelos internos.
-- [] Campos relevantes normalizados.
-- [] Evitar exposicón directa del JSON externo.
+- [x] Parsers implementados para cada Pokemon.
+- [x] Datos externos convertidos a modelos internos.
+- [x] Campos relevantes normalizados.
+- [x] Evitar exposicón directa del JSON externo.
 
 ### Historia 2.3 - Manejo de errores
 
@@ -184,7 +184,10 @@ Como desarrollador, necesito tests unitarios para asegurar el correcto funcionam
 
 ### Criterios de aceptación
 
-- [] Tests para servicios, cliente y cache.
+- [] Tests para servicios.
+- [x] Tests para cliente. 
+- [] Tests para cache.
+- [x] Tests para parsers.
 - [x] Uso de pytest.
 - [] Tests independientes del entorno real.
 
