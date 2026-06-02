@@ -62,3 +62,17 @@ Todas las modificaciones relevantes del proyecto serán registradas aquí.
 ### CI
 - Tests para parsers.
 - Verificación y linteado con Ruff.
+
+## [0.1.0-delta] - Services Layer
+
+### Funcionalidades añadidas
+- Pokemon Service obtiene los datos básicos de un Pokemon.
+- Evolution Service obtiene los datos de las diferentes evoluciones de un Pokemon.
+- Rutas añadidas.
+
+### Arreglado
+- Endpoint Health arreglado y añadido a routes.py.
+
+### CI
+- Tests para services.
+- Verificación y linteado con Ruff.
