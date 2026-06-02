@@ -38,7 +38,7 @@ Todas las modificaciones relevantes del proyecto serán registradas aquí.
 - Constructor de URL's.
 - Manejo de requests GET.
 - Manejo de Timeout y errores básico.
-- Manejo de 404, 5xx
+- Manejo de 404, 5xx.
 
 ### Arreglado
 - .yml modificado para ejecutar job en push a develop y main.
@@ -49,3 +49,16 @@ Todas las modificaciones relevantes del proyecto serán registradas aquí.
 ### CI
 - Integración con Github Actions, test unitario para pokeapi_client.
 - Verificacion con Ruffs.
+
+## [0.1.0-gamma] - Models & Parsers
+
+### Funcionalidades añadidas
+- Models estándar unificados para la app.
+- Parsers para pokemon, tipos y evoluciones.
+
+### Arreglado
+- Parsers obtiene children y datos de los diferentes nodos de evolución.
+
+### CI
+- Tests para parsers.
+- Verificación y linteado con Ruff.
