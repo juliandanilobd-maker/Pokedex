@@ -68,7 +68,7 @@ Como desarrollador necesito un backend FastAPI funcional para nuestros endpoints
 ### Historia 1.3 - Configurar sistema de dependencias
 
 ### Prioridad: ALTA.
-### Estado: PENDIENTE.
+### Estado: EN CURSO.
 
 #### Descripción
 Como desarrollador, necesito un sistema de dependencias para desacoplar servicios y facilitar testing
@@ -76,7 +76,7 @@ Como desarrollador, necesito un sistema de dependencias para desacoplar servicio
 ### Criterios de aceptación
 - [] Uso de dependency injection en FastAPI.
 - [] Servicios inyectables (no instanciados globalmente).
-- [] Separacion clara entre clientes, servicios y endpoints.
+- [x] Separacion clara entre clientes, servicios y endpoints.
 - [] Preparado para mocking test.
 
 ## Epic 2 - Integración PokeAPI
@@ -184,7 +184,7 @@ Como desarrollador, necesito tests unitarios para asegurar el correcto funcionam
 
 ### Criterios de aceptación
 
-- [] Tests para servicios.
+- [x] Tests para servicios.
 - [x] Tests para cliente. 
 - [] Tests para cache.
 - [x] Tests para parsers.
@@ -202,6 +202,6 @@ Como desarrollador, necesito automatizar la ejecución de tests en cada push
 
 ### Criterios de aceptación
 - [x] Worflow en Github actions.
-- [] Ejecución automática de tests.
-- [] Fail si tests no pasan.
+- [x] Ejecución automática de tests.
+- [x] Fail si tests no pasan.
 - [] Integración con rama develop y main.
