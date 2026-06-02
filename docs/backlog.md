@@ -54,7 +54,7 @@ Como estudiante de primer año, busco una arquitectura modular por capas para qu
 ## Historia 1.2 - Configurar FastAPI
 
 ### Prioridad: ALTA.
-### Estado: EN CURSO.
+### Estado: COMPLETADO.
 
 #### Descripción
 Como desarrollador necesito un backend FastAPI funcional para nuestros endpoints REST.
@@ -87,16 +87,16 @@ Permitir comunicación estable y estructurada con la API externa de Pokemon.
 ### Historia 2.1 - Crear cliente HTTP
 
 ### Prioridad: ALTA.
-### Estado: PENDIENTE.
+### Estado: COMPLETADO.
 
 #### Descripción
 Como sistema, necesito un cliente HTTP que permita consumir PokeAPI de forma centralizada.
 
 ### Criterios de aceptación
-- [] Cliente HTTP único para PokeAPI.
-- [] Manejo de requests GET.
-- [] Timeout y control básico de errores.
-- [] No existe acceso directo a requests fuera del cliente.
+- [x] Cliente HTTP único para PokeAPI.
+- [x] Manejo de requests GET.
+- [x] Timeout y control básico de errores.
+- [x] No existe acceso directo a requests fuera del cliente.
 
 ### Historia 2.2 - Normalizar identificadores
 
@@ -116,14 +116,14 @@ Como sistema, necesito transformar datos crudos de PokeAPI en modelos internos c
 ### Historia 2.3 - Manejo de errores
 
 ### Prioridad: ALTA.
-### Estado: PENDIENTE.
+### Estado: EN CURSO.
 
 #### Descripción
 
 Como sistema, necesito manejar errores de red o API externa para evitar fallos en cascada.
 
 ### Criterios de aceptación
-- [] Manejo de Timeouts, 404 y errores 5xx.
+- [x] Manejo de Timeouts, 404 y errores 5xx.
 - [] Respuestas controladas al backend.
 - [] No se rompe el backend por fallos de PokeAPI
 
