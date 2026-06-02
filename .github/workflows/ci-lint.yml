@@ -4,10 +4,13 @@ on:
     push:
       branches:
         - "feature/**"
+        - main
+        - develop
 
     pull_request:
         branches:
             - develop
+            - main
 
 jobs:
   backend-quality:
