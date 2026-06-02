@@ -4,11 +4,13 @@ on:
     push:
       branches:
         - "feature/**"
+        - develop
+        - main
 
     pull_request:
         branches:
             - develop
-
+            - main
 jobs:
   backend-quality:
     name: Backend Lint + Tests
