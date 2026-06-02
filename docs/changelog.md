@@ -30,3 +30,22 @@ Todas las modificaciones relevantes del proyecto serán registradas aquí.
 ### CI
 - Integración inicial con Github Actions.
 - Verificación automática con Ruff
+
+## [0.1.0-beta] - PokeAPI Client
+
+### Funcionalidades añadidas
+- Cliente HTTP único.
+- Constructor de URL's.
+- Manejo de requests GET.
+- Manejo de Timeout y errores básico.
+- Manejo de 404, 5xx
+
+### Arreglado
+- .yml modificado para ejecutar job en push a develop y main.
+- config.py modificado agregando Base url y constante timeout.
+- BASE_URL modificado declarandose como constante de clase, utilizando, ClassVar de typing.
+- MockResponse construido con mismos atributos de la clase PokeAPI Client.
+
+### CI
+- Integración con Github Actions, test unitario para pokeapi_client.
+- Verificacion con Ruffs.
