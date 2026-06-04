@@ -1,5 +1,10 @@
-import sqlite3
+"""
+Este módulo inserta un Manager cache para persistencia de cache basado en SQ Lite.
+Serializa las respuestas en formato JSON y maneja TTL.
+"""
+
 import json
+import sqlite3
 import time
 
 from backend.app.core.config import settings
@@ -22,6 +27,11 @@ class CacheManager:
                 expires_at REAL)
             """)
 
+            # Limpieza de registros expirados al iniciar el manager,
+            # para evitar llenar la base de datos
+            conn.execute("DELETE FROM cache WHERE expires_at < ?", (time.time(),))
+            conn.commit()
+
     def get(self, key: str):
 
         with sqlite3.connect(self.db_path) as conn:
@@ -43,6 +53,7 @@ class CacheManager:
             try:
                 return json.loads(value)
             except json.JSONDecodeError:
+                # Si el JSON está corrupto, lo eliminamos para hacer una nueva petición
                 conn.execute("DELETE FROM cache WHERE key=?", (key,))
 
                 conn.commit()

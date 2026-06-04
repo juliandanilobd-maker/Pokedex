@@ -1,7 +1,8 @@
 from __future__ import annotations
 
-from fastapi import FastAPI
 from contextlib import asynccontextmanager
+
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from backend.app.api.routes import router
@@ -31,7 +32,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.ALLOWED_ORIGINS,
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     allow_headers=["*"],
 )
 
@@ -39,7 +40,16 @@ app.add_middleware(
 app.include_router(router)
 
 
-# Verifica el estado del backend
+# Los 3 endpoints al ser Core, no necesitan inyección porque son estáticos
+
+
+# Raiz de la API
+@app.get("/", tags=["Infraestructure"])
+async def root() -> dict[str, str]:
+    return {"message": "Pokedex API -FastAPI core running"}
+
+
+# Endpoint health, verifica el estado del backend
 @app.get("/health", tags=["Health"])
 async def healthcheck() -> dict[str, str]:
     return {

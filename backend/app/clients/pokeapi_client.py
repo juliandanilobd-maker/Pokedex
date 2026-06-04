@@ -4,8 +4,9 @@ maneja errores, implementa rate limiting basico y utiliza cache para evitar
 peticiones repetidas.
 """
 
-import requests
 import time
+
+import requests
 
 from backend.app.core.config import settings
 
@@ -24,7 +25,7 @@ class PokeAPIClient:
 
     def __init__(self, cache):
 
-        self.base_url = settings.POKEPI_BASE_URL
+        self.base_url = settings.POKEAPI_BASE_URL
         self.cache = cache
         self._last_request_time = 0.0
 
@@ -49,15 +50,12 @@ class PokeAPIClient:
 
         url = self._build_url(endpoint)
 
-        # Incluimos: primero busqueda en cache
         cached = self.cache.get(url)
         if cached is not None:
             return cached
 
-        # usamos rate limit
         self._rate_limit()
 
-        # Se realiza la peticion
         try:
             response = requests.get(url, timeout=settings.REQUEST_TIMEOUT)
             response.raise_for_status()
@@ -88,39 +86,37 @@ class PokeAPIClient:
 
         return data
 
-    # Creamos una funcion que nos permita construir la URL
     def _build_url(self, endpoint: str) -> str:
 
         if endpoint.startswith("http"):
-            # Añadimos raise ValueError para evitar URLs externas
+            # Establecemos control SSRF (Server-Side Request Forgery), bloqueando
+            # peticiones a dominios arbitrarios si un endpoint intenta desviar al client
             if not endpoint.startswith(self.base_url):
                 raise ValueError("URL externa no permitida")
 
             return endpoint
 
-        # Construir URL completa
-        url = f"{self.base_url.rstrip('/')}/{endpoint.strip('/')}"
-        return url
+        return f"{self.base_url.rstrip('/')}/{endpoint.strip('/')}"
 
-    # Implementamos rate limiting básico
     def _rate_limit(self):
 
-        # Calculamos el tiempo transcurrido entre el momento actual y la última request
         elapsed = time.time() - self._last_request_time
 
-        # Si el tiempo calculado es menor al establecido en config, se frena el tiempo que resta de rate limit que establecimos en config
+        # Forzamos un bloqueo (sleep), si el tiempo de la petición actual es menor a
+        # al umbral de peticiones configurado en settings, esto protege nuestra IP
+        # de bloqueos por ráfagas
         if elapsed < settings.MIN_REQUEST_DELAY:
             time.sleep(settings.MIN_REQUEST_DELAY - elapsed)
 
-    # A continuacion definimos funciones que nos entreguen los pokemones,
-    # listas, especies, etc que ya solicitamos de manera limpia
-
-    # Usamos identifier en lugar de name or id, con la finalidad de permitir cualquiera de estos para la busqueda
-    # Volvemos a identifier a minusculas y elimina los espacios en blanco
-    def normaliza_identifier(self, value: str) -> str:
+    # Usamos identifier en lugar de name or id, con la finalidad de permitir
+    # cualquiera de estos para la busqueda
+    def _normalize_identifier(self, value: str) -> str:
         return str(value).lower().strip()
 
-    # Toma el identifier corregido y lo añade al endpoint para buscar un
-    # pokemon en especifico.
     def get_pokemon(self, identifier: str) -> dict:
-        return self.get(f"pokemon/{identifier}")
+        clean_id = self._normalize_identifier(identifier)
+        return self.get(f"pokemon/{clean_id}")
+
+    def get_species(self, identifier: str | int) -> dict:
+        clean_id = self._normalize_identifier(str(identifier))
+        return self.get(f"pokemon-species/{clean_id}")

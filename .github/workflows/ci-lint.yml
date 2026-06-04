@@ -4,6 +4,7 @@ on:
     push:
       branches:
         - "feature/**"
+        - "refactor/**"
         - develop
         - main
 
@@ -29,11 +30,19 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+          cache: "pip"
 
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
+          pip install -r requirements.txt
           pip install -r requirements-dev.txt
+
+      - name: Create env file for testing
+        run: |
+          echo "APP_NAME=PokedexTesting" > .env
+          echo "ALLOWED_ORIGINS=http://localhost:8501,http://localhost:3000" >> .env
+          echo "CACHE_DB_PATH=pokemon_cache_test.db" >> .env
 
       - name: Check formatting
         run: |
@@ -42,3 +51,18 @@ jobs:
       - name: Run Lint
         run: |
           ruff check .
+
+      - name: CI Testing & Coverage
+        env:
+          POKEAPI_BASE_URL: "https://pokeapi.co/api/v2"
+          ALLOWED_ORIGINS: "http://localhost:8501,http://localhost:3000"
+          CACHE_DB_PATH: "pokemon_cache.db"
+          APP_NAME: "Pokedex"
+          APP_VERSION: "0.1.0"
+          API_PREFIX: "/api/v1"
+          REQUEST_TIMEOUT: "10"
+          MIN_REQUEST_DELAY: "0.1"
+          CACHE_TTL: "3600"
+        run: |
+          mkdir -p data
+          pytest --cov=app --cov-report=term-missing

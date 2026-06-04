@@ -68,14 +68,14 @@ Como desarrollador necesito un backend FastAPI funcional para nuestros endpoints
 ### Historia 1.3 - Configurar sistema de dependencias
 
 ### Prioridad: ALTA.
-### Estado: EN CURSO.
+### Estado: COMPLETADO.
 
 #### Descripción
 Como desarrollador, necesito un sistema de dependencias para desacoplar servicios y facilitar testing
 
 ### Criterios de aceptación
-- [] Uso de dependency injection en FastAPI.
-- [] Servicios inyectables (no instanciados globalmente).
+- [x] Uso de dependency injection en FastAPI.
+- [x] Servicios inyectables (no instanciados globalmente).
 - [x] Separacion clara entre clientes, servicios y endpoints.
 - [x] Preparado para mocking test.
 
@@ -116,7 +116,7 @@ Como sistema, necesito transformar datos crudos de PokeAPI en modelos internos c
 ### Historia 2.3 - Manejo de errores
 
 ### Prioridad: ALTA.
-### Estado: EN CURSO.
+### Estado: COMPLETADO.
 
 #### Descripción
 
@@ -125,7 +125,7 @@ Como sistema, necesito manejar errores de red o API externa para evitar fallos e
 ### Criterios de aceptación
 - [x] Manejo de Timeouts, 404 y errores 5xx.
 - [x] Respuestas controladas al backend.
-- [] No se rompe el backend por fallos de PokeAPI
+- [x] No se rompe el backend por fallos de PokeAPI
 
 ---
 
@@ -176,7 +176,7 @@ Garantizar la estabilidad del backend mediante tests y CI.
 ### Historia 4.1 - Crear tests unitarios
 
 ### Prioridad: ALTA.
-### Estado: EN CURSO.
+### Estado: COMPLETADO.
 
 #### Descripción
 
@@ -189,12 +189,12 @@ Como desarrollador, necesito tests unitarios para asegurar el correcto funcionam
 - [x] Tests para cache.
 - [x] Tests para parsers.
 - [x] Uso de pytest.
-- [] Tests independientes del entorno real.
+- [x] Tests independientes del entorno real.
 
 ### Historia 4.2 - Configurar CI con Github Actions
 
 ### Prioridad: ALTA.
-### Estado: EN CURSO.
+### Estado: COMPLETADO.
 
 #### Descripción
 
@@ -204,4 +204,4 @@ Como desarrollador, necesito automatizar la ejecución de tests en cada push
 - [x] Worflow en Github actions.
 - [x] Ejecución automática de tests.
 - [x] Fail si tests no pasan.
-- [] Integración con rama develop y main.
+- [x] Integración con rama develop y main.
