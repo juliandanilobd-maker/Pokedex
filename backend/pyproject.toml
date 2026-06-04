@@ -1,0 +1,77 @@
+[tool.ruff]
+line-length = 88
+exclude = [
+    ".venv",
+    "venv",
+    "env",
+    ".git",
+    "__pycache__",
+    ".pytest_cache",
+    ".mypy_cache",
+    ".vscode",
+]
+
+[tool.ruff.lint]
+select = [
+    # Pycodestyle
+    "E",
+    "W",
+    # Pyflakes
+    "F",
+    # isort
+    "I",
+    # flake8-bugbear
+    "B",
+    # pyupgrade
+    "UP",
+    # comprehensions
+    "C4",
+    # simplificaciones
+    "SIM",
+    # buenas prácticas en excepciones
+    "TRY",
+    # buenas prácticas generales
+    "RET",
+    # argumentos booleanos mal usados
+    "FBT",
+    # imports innecesarios
+    "TID",
+    # reglas de Ruff
+    "RUF",
+]
+
+ignore = [
+    # demasiado para proyectos de esta magnitud
+    "TRY003",
+    # fastapi usa bools en firmas
+    "FBT001",
+    "FBT002",
+    "B008"
+]
+
+fixable = ["ALL"]
+
+per-file-ignores = {"tests/*.py" = ["S101"]}
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "auto"
+docstring-code-format = true
+docstring-code-line-length = 88
+
+[tool.ruff.lint.isort]
+combine-as-imports = true
+force-single-line = false
+split-on-trailing-comma = true
+
+[tool.pytest.ini_options]
+addopts = "--cov=app --cov-report=term-missing"
+
+testpaths = ["tests"]
+
+markers = [
+    "unitary: Pruebas unitarias de diferentes funciones, clases y metodos del backend",
+    "integration: Pruebas de integración rápidas usando dependency injection y fake/mocks.",
+    "functional: Pruebas funcionales de extermo a extermo (E2E) con base de datos real y red (Internet)."
+]
