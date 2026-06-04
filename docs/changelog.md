@@ -11,3 +11,117 @@ Todas las modificaciones relevantes del proyecto serán registradas aquí.
 - Parsers
 - Models
 - Tests Unitarios
+
+## [0.1.0-alpha] - FastAPI Core
+
+### Funcionalidades añadidas
+- Inicialización de FastAPI
+- Configuración de base de CORS.
+- Registro centralizado de routers.
+- Endpoint GET /health.
+- Archivo core/config.py.
+- Primer test automatizado para health endpoint.
+
+### Arreglado
+- Uso de httpx2.
+- Uso de ConfigDict en Pydantic.
+- Uso de lifespan en lugar de on_event.
+
+### CI
+- Integración inicial con Github Actions.
+- Verificación automática con Ruff
+
+## [0.1.0-beta] - PokeAPI Client
+
+### Funcionalidades añadidas
+- Cliente HTTP único.
+- Constructor de URL's.
+- Manejo de requests GET.
+- Manejo de Timeout y errores básico.
+- Manejo de 404, 5xx.
+
+### Arreglado
+- .yml modificado para ejecutar job en push a develop y main.
+- config.py modificado agregando Base url y constante timeout.
+- BASE_URL modificado declarandose como constante de clase, utilizando, ClassVar de typing.
+- MockResponse construido con mismos atributos de la clase PokeAPI Client.
+
+### CI
+- Integración con Github Actions, test unitario para pokeapi_client.
+- Verificacion con Ruffs.
+
+## [0.1.0-gamma] - Models & Parsers
+
+### Funcionalidades añadidas
+- Models estándar unificados para la app.
+- Parsers para pokemon, tipos y evoluciones.
+
+### Arreglado
+- Parsers obtiene children y datos de los diferentes nodos de evolución.
+
+### CI
+- Tests para parsers.
+- Verificación y linteado con Ruff.
+
+## [0.1.0-delta] - Services Layer
+
+### Funcionalidades añadidas
+- Pokemon Service obtiene los datos básicos de un Pokemon.
+- Evolution Service obtiene los datos de las diferentes evoluciones de un Pokemon.
+- Rutas añadidas.
+
+### Arreglado
+- Endpoint Health arreglado y añadido a routes.py.
+
+### CI
+- Tests para services.
+- Verificación y linteado con Ruff.
+
+## [0.1.0-epsilon] - Cache System
+
+### Funcionalidades añadidas
+- Sistema de cache en SQLite.
+- Peticiones se buscan primero en cache.
+- Se guardan datos en cache.
+- Cache expira.
+
+### Arreglado
+- Configuraciones globales para cache añadidas.
+- Servicio de dependencias modificado, para incluir cache.
+- pokeapi_client modificado para trabajar con cache.
+- conftest.py creado para instancia una pokeapi_client que llama a la PokeAPI Client, pero que trabaje con un mock cache.
+- pokeapi_client_test modificado para trabajar el pokeapi_client de conftest.py.
+
+### CI
+- Test para cache y expiración de datos.
+- Verificación y linteado con Ruff.
+
+## [0.1.0-dseta] - Backend Testing & Refactored
+
+### Funcionalidades añadidas
+- Dependency Injection real.
+- Tests de integración y funcional.
+- Descripción del codigo con almohadillas.
+
+### Arreglado
+#### Inyección de dependencias: 
+- Refactorizamos el archivo dependencias y rutas para implementar Dependency Injection.
+#### Seguridad CORS: 
+- Implementamos configuración CORS para restringir los metodos HTTP, y permitir solo los necesarios.
+#### Ampliación de cobertura de tests: 
+- Modificamos el test health, a un test server, para validar el enrutamiento, CORS y el levantamiento correcto del servidor.
+- Aislamiento de Test Cache, modificamos el test cache para reemplazar el uso del archivo SQLite por una base de datos temporal en memoria local.
+- Mejoramos los tests de Pokemon Service usando un Mock Client para simular diferentes respuestas en segundos, y para comprobar su comportamiento frente a errores o datos corruptos.
+- Mejoramos el Evolution Service, para comprobar manejo de errores o respuestas corruptas, y permitir escalar los tests. 
+- Se amplió la cobertura del test evolution para determinar el comportamiento ante distintas ramas. 
+- Se amplian los tests de Pokemon Parser para testear los diferentes lenguajes permitidos.
+#### Modificación de archivos base: 
+- Modificamos el Evolution Node en models para incluir visibilidad para mejorar la interacción en la interfaz.
+- Se mejoro tanto el models como el Evolution Service, para convertir los details en listas, con la finalidad de obtener los diferentes requisitos de evolución, y aumentando la obtención de location y min_affection. 
+- Se ajustó el Pokemon Parser para prevenir fallos cuando llegan datos vacíos.
+#### Cambios extra
+- Completar explicación de codigo mediante almohadillas.
+
+### CI
+- Pruebas funcionales E2E end to end.
+- Pruebas de integracion con DI/Overrides.

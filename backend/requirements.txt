@@ -1,0 +1,6 @@
+requests
+fastapi
+uvicorn
+requests
+Pydantic
+Pydantic-settings
