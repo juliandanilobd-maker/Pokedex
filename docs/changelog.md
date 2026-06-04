@@ -95,3 +95,33 @@ Todas las modificaciones relevantes del proyecto serán registradas aquí.
 ### CI
 - Test para cache y expiración de datos.
 - Verificación y linteado con Ruff.
+
+## [0.1.0-dseta] - Backend Testing & Refactored
+
+### Funcionalidades añadidas
+- Dependency Injection real.
+- Tests de integración y funcional.
+- Descripción del codigo con almohadillas.
+
+### Arreglado
+#### Inyección de dependencias: 
+- Refactorizamos el archivo dependencias y rutas para implementar Dependency Injection.
+#### Seguridad CORS: 
+- Implementamos configuración CORS para restringir los metodos HTTP, y permitir solo los necesarios.
+#### Ampliación de cobertura de tests: 
+- Modificamos el test health, a un test server, para validar el enrutamiento, CORS y el levantamiento correcto del servidor.
+- Aislamiento de Test Cache, modificamos el test cache para reemplazar el uso del archivo SQLite por una base de datos temporal en memoria local.
+- Mejoramos los tests de Pokemon Service usando un Mock Client para simular diferentes respuestas en segundos, y para comprobar su comportamiento frente a errores o datos corruptos.
+- Mejoramos el Evolution Service, para comprobar manejo de errores o respuestas corruptas, y permitir escalar los tests. 
+- Se amplió la cobertura del test evolution para determinar el comportamiento ante distintas ramas. 
+- Se amplian los tests de Pokemon Parser para testear los diferentes lenguajes permitidos.
+#### Modificación de archivos base: 
+- Modificamos el Evolution Node en models para incluir visibilidad para mejorar la interacción en la interfaz.
+- Se mejoro tanto el models como el Evolution Service, para convertir los details en listas, con la finalidad de obtener los diferentes requisitos de evolución, y aumentando la obtención de location y min_affection. 
+- Se ajustó el Pokemon Parser para prevenir fallos cuando llegan datos vacíos.
+#### Cambios extra
+- Completar explicación de codigo mediante almohadillas.
+
+### CI
+- Pruebas funcionales E2E end to end.
+- Pruebas de integracion con DI/Overrides.

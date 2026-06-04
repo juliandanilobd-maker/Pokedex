@@ -1,3 +1,8 @@
+"""
+Este módulo contiene el servicio de dominio encargado de manejar la información
+de un Pokemon
+"""
+
 from __future__ import annotations
 
 from backend.app.models.pokemon_models import PokemonDetail
@@ -25,5 +30,5 @@ class PokemonService:
             Usa models.parse_pokemon() para convertirlo a PokemonDetail.
         """
         data = self.client.get_pokemon(identifier)
-        # identifier= para poder nombrar en nuestra pokedex ya sea name or id
+
         return parse_pokemon(data)
