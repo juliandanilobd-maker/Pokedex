@@ -125,3 +125,12 @@ Todas las modificaciones relevantes del proyecto serán registradas aquí.
 ### CI
 - Pruebas funcionales E2E end to end.
 - Pruebas de integracion con DI/Overrides.
+
+## [0.2.0] - Search Filters
+### Funcionalidades añadidas
+- Script ETL generador de un dataset local.
+- Dataset local.
+- Sistema de filtros.
+- Tests unitarios, funcionales y de integración
+
+## [0.2.0-alpha] - Dataset generator
