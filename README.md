@@ -8,9 +8,9 @@ Esta versión v0.1.0 se centra exclusivamente en la fundación para el backend, 
 
 ## Estado del proyecto
 
-- Versión: 0.1.0 - Backend Core.
-- Estado: Funcional.
-- Enfoque: Arquitectura, API, integracón y cache.
+- Versión: 0.2.0 - Search Filters.
+- Estado: Funcional con motor de búsqueda local por filtros.
+- Enfoque: Extracción de datos (ETL), servicios de filtrado dinámicos.
 
 
 ## Estructura del proyecto
@@ -23,17 +23,28 @@ Pokedex/
 │   └── app/
 │       ├── api/
 │       ├── services/
+│       │       ├──PokemonService
+│       │       ├──EvolutionService 
+│       │       └──FilterService # Nueva capa lógica para v0.2.0
+│       ├── data/
+│       │       ├──scripts/ dataset_generator # Script ETL
+│       │       └──pokemon_dataset # Dataset local  
 │       ├── clients/
+│       │       └──PokeAPIClient
 │       ├── cache/
+│       │       └──CacheManager
 │       ├── models/
+│       │       └──PokemonModels
 │       ├── parsers/
+│       │       └──Pokemon/Evolution/TypeParser
 │       ├── core/
+│       │       └──config
 │       ├── dependencies/
+│       │       └──dependencias
 │       └── utils/
 │
 ├── tests/
 └── docs/
-
 
 ## Responsabilidad de capas
 - api/: Endpoints REST.
@@ -50,7 +61,7 @@ Pokedex/
 
 Request del cliente --> FastAPI router --> Capa de Servicios --> Capa de cache --> PokeAPI Client (si no hay cache) --> Parser pasa a Modelos internos --> Respuesta
 
-## Funciones implementadas (v0.1.0)
+## Funciones implementadas (v0.2.0)
 
 ### Arquitectura
 - Modular por capas.
@@ -58,19 +69,17 @@ Request del cliente --> FastAPI router --> Capa de Servicios --> Capa de cache -
 - Sistema preparado para escalar.
 
 ### Backend
-- FastAPI funcional.
-- Endpoint health/.
-- Estructura de routers lista para expansión.
+- Servicio de filtros funcional.
+- Endpoint /filter.
+- Estructura de routers actualizada.
 
 ### Integración externa
-- Cliente HTTP para PokeAPI.
-- Manejo de errores de API externa.
-- Normalización de datos.
+- Manejo de errores en busqueda de filtros.
+- Normalización de datos extraídos.
 
 ### Cache
-- Cache persistente con SQLite.
-- Estrategia Cache First.
-- Reducción de llamadas a API externa.
+- No se usa cache para el filtro.
+- Para el sistema tipo cache se configura el dataset local.
 
 ### Calidad
 - Tests unitarios con pytest.
