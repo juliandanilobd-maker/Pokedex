@@ -257,14 +257,14 @@ Como sistema, necesito una capa de servicio lógica que procese el dataset JSON 
 
 ### Historia 5.3 - Exponer Endpoint de filtrado
 ### Prioridad: ALTA.
-### Estado: PENDIENTE.
+### Estado: COMPLETADO.
 
 #### Descripción
 Como sistema, necesito un endpoint accesible mediante parámetros de consulta para brindar el servicio de filtro de busqueda por filtros.
 
 ### Criterios de aceptación
-- [] Crear el endpoint '/filter'.
-- [] Mapear los parametros de consulta hacia los argumentos de Filter Service.
+- [x] Crear el endpoint '/filter'.
+- [x] Mapear los parametros de consulta hacia los argumentos de Filter Service.
 
 ---
 ## Epica 6 - Calidad del Software
@@ -285,7 +285,7 @@ Como desarrollador, necesito tests unitarios para asegurar el correcto funcionam
 ### Criterios de aceptación
 
 - [x] Tests unitarios para el script ETL y el dataset local.
-- [] Tests unitarios para los diferentes filtros. 
+- [x] Tests unitarios para los diferentes filtros. 
 - [] Tests unitarios para asegurar el endpoint filter.
 - [] Tests de integración y funcionales E2E, que verifiquen llamadas reales.
 - [] 100% de cobertura.
