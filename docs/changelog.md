@@ -134,3 +134,23 @@ Todas las modificaciones relevantes del proyecto serán registradas aquí.
 - Tests unitarios, funcionales y de integración
 
 ## [0.2.0-alpha] - Dataset generator
+### Funcionalidades añadidas
+- Script que genera un dataset Pokemon con info resumida.
+- Dataset local.
+
+### CI
+- Tests unitarios automatizados.
+
+## [0.2.0-beta] - Filter Service
+### Funcionalidades añadidas
+- Servicio de busqueda por filtros.
+- Filtrado por varias estadisticas, tipos y generaciones.
+- Combinacion de filtros
+
+### Arreglado
+- Subido de caches locales .db a repositorio remoto.
+- Actualizacion de gitignore.
+
+### CI
+- Tests unitarios de filter service.
+- Verificación y linteado con Ruff.

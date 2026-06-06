@@ -245,15 +245,15 @@ Como sistema, es más sencillo extraer una gran cantidad de datos de manera loca
 
 ### Historia 5.2 - Servicio de filtros
 ### Prioridad: ALTA.
-### Estado: PENDIENTE.
+### Estado: COMPLETADO.
 
 #### Descripción
 Como sistema, necesito una capa de servicio lógica que procese el dataset JSON local.
 
 ### Criterios de aceptación
-- [] Crear el Filter Service.
-- [] Implementar filtrado por tipo, generación, base_exp, hp, attack, defense, speed. 
-- [] Combinar varios filtros en una misma busqueda.
+- [x] Crear el Filter Service.
+- [x] Implementar filtrado por tipo, generación, base_exp, hp, attack, defense, speed. 
+- [x] Combinar varios filtros en una misma busqueda.
 
 ### Historia 5.3 - Exponer Endpoint de filtrado
 ### Prioridad: ALTA.
