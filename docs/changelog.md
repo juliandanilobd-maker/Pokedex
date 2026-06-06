@@ -149,8 +149,17 @@ Todas las modificaciones relevantes del proyecto serán registradas aquí.
 
 ### Arreglado
 - Subido de caches locales .db a repositorio remoto.
-- Actualizacion de gitignore.
+- Actualizacion de gitignore para ignorar .db.
 
 ### CI
 - Tests unitarios de filter service.
 - Verificación y linteado con Ruff.
+
+## [0.2.0-gamma] - Filter Endpoint
+### Funcionalidades añadidas
+- Filter Service añadido a rutas.
+
+### Arreglado
+- Actualización de gitignore para ignorar .json.
+- Eliminación de dataset.json subido a repositorios.
+

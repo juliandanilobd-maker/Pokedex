@@ -19,6 +19,10 @@ Thumbs.db
 *.sqlite
 backend/app/pokemon_cache.db
 backend/pokemon_cache.db
+backend/app/data/data/pokemon_dataset.json
+**/data/**.json
+**/data/**.csv
+*.json.bak
 **/cache.db
 *.sqlite3
 *.log
