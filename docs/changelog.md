@@ -125,6 +125,7 @@ Todas las modificaciones relevantes del proyecto serán registradas aquí.
 ### CI
 - Pruebas funcionales E2E end to end.
 - Pruebas de integracion con DI/Overrides.
+- Reporte de cobertura automatizado integrado.
 
 ## [0.2.0] - Search Filters
 ### Funcionalidades añadidas
@@ -134,3 +135,47 @@ Todas las modificaciones relevantes del proyecto serán registradas aquí.
 - Tests unitarios, funcionales y de integración
 
 ## [0.2.0-alpha] - Dataset generator
+### Funcionalidades añadidas
+- Script que genera un dataset Pokemon con info resumida.
+- Dataset local.
+
+### CI
+- Tests unitarios automatizados.
+
+## [0.2.0-beta] - Filter Service
+### Funcionalidades añadidas
+- Servicio de busqueda por filtros.
+- Filtrado por varias estadisticas, tipos y generaciones.
+- Combinacion de filtros
+
+### Arreglado
+- Subido de caches locales .db a repositorio remoto.
+- Actualizacion de gitignore para ignorar .db.
+
+### CI
+- Tests unitarios de filter service.
+- Verificación y linteado con Ruff.
+
+## [0.2.0-gamma] - Filter Endpoint
+### Funcionalidades añadidas
+- Filter Service añadido a rutas.
+
+### Arreglado
+- Actualización de gitignore para ignorar .json.
+- Eliminación de dataset.json subido a repositorios.
+
+## [0.2.0-delta] - CI Testing
+### Funcionalidades añadidas
+- Automatización del reporte de cobertura de código en el pipeline.
+- Umbral de cobertura mínima para bloquear pull requests si disminuye la cobertura de los tests.
+
+### Arreglado
+- Aislamiento del Entorno en Windows: corrección del fallo de borrado de bases de datos SQLite, y archivos .pyc temporales en scripts.
+- Mocks de sistemas de archivos: refactorizamos pruebas unitarias usando parches pathlib para evitar atributos read-only durante la carga del Dataset.
+- Eliminación del código muerto: Corrección del flujo en fetch_with_retry.
+- Ajustes de Fixtures Numericos: sincronizamos los assertes de filtrado por estadisticas con valores inyectados con mocks.
+
+### CI
+- Pipeline optimizado para ejecutar borrado y purga de los caches previo a tests.
+- Bloqueo automatizado del pipeline de GitHub Actions si la cobertura desciende de 90%
+- Verificación y linteado con Ruff.

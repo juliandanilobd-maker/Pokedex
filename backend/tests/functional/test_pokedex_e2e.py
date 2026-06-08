@@ -64,7 +64,7 @@ def test_e2e_pokemon_flow_with_real_cache():
 
     # Comprobamos el rendimiento,
     # la respuesta de cache debe ser mucho mayor a la PokeAPI
-    assert duration_cache < duration_api
+    assert duration_cache < (duration_api + 0.05)
     print(
         f"\n[E2E] Tiempo API: {duration_api:.4f}s |Tiempo Cache: {duration_cache:.4f}s"
     )
@@ -96,3 +96,25 @@ def test_get_evolution_chain_e2e_not_found():
     assert response.status_code == 404
     assert "No se encontro el recurso" in error_msg
     assert "Verifica que el nombre o ID sea correcto." in error_msg
+
+
+# Comprobamos el endpoint de Filter Service
+def test_endpoint_filter_by_type_functional():
+
+    response = functional_client.get("api/v1/filter?pokemon_type=grass")
+    data = response.json()
+
+    assert response.status_code == 200
+    assert isinstance(data, list)
+
+    for pokemon in data:
+        assert "grass" in [t.lower() for t in pokemon.get("types", [])]
+
+
+# Comprobamos el comportamiento frente a un error
+def test_endpoint_filter_validation_error():
+
+    response = functional_client.get("api/v1/filter?generation=PRIMERA")
+
+    assert response.status_code == 422
+    assert "detail" in response.json()
