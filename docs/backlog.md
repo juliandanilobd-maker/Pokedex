@@ -245,26 +245,26 @@ Como sistema, es más sencillo extraer una gran cantidad de datos de manera loca
 
 ### Historia 5.2 - Servicio de filtros
 ### Prioridad: ALTA.
-### Estado: PENDIENTE.
+### Estado: COMPLETADO.
 
 #### Descripción
 Como sistema, necesito una capa de servicio lógica que procese el dataset JSON local.
 
 ### Criterios de aceptación
-- [] Crear el Filter Service.
-- [] Implementar filtrado por tipo, generación, base_exp, hp, attack, defense, speed. 
-- [] Combinar varios filtros en una misma busqueda.
+- [x] Crear el Filter Service.
+- [x] Implementar filtrado por tipo, generación, base_exp, hp, attack, defense, speed. 
+- [x] Combinar varios filtros en una misma busqueda.
 
 ### Historia 5.3 - Exponer Endpoint de filtrado
 ### Prioridad: ALTA.
-### Estado: PENDIENTE.
+### Estado: COMPLETADO.
 
 #### Descripción
 Como sistema, necesito un endpoint accesible mediante parámetros de consulta para brindar el servicio de filtro de busqueda por filtros.
 
 ### Criterios de aceptación
-- [] Crear el endpoint '/filter'.
-- [] Mapear los parametros de consulta hacia los argumentos de Filter Service.
+- [x] Crear el endpoint '/filter'.
+- [x] Mapear los parametros de consulta hacia los argumentos de Filter Service.
 
 ---
 ## Epica 6 - Calidad del Software
@@ -276,7 +276,7 @@ Garantizar la estabilidad del servicio de filtros mediante tests y CI.
 ### Historia 6.1 - Crear tests
 
 ### Prioridad: ALTA.
-### Estado: EN CURSO.
+### Estado: COMPLETADO.
 
 #### Descripción
 
@@ -285,17 +285,17 @@ Como desarrollador, necesito tests unitarios para asegurar el correcto funcionam
 ### Criterios de aceptación
 
 - [x] Tests unitarios para el script ETL y el dataset local.
-- [] Tests unitarios para los diferentes filtros. 
-- [] Tests unitarios para asegurar el endpoint filter.
-- [] Tests de integración y funcionales E2E, que verifiquen llamadas reales.
-- [] 100% de cobertura.
-- [] Uso de pytest.
-- [] Tests independientes del entorno real.
+- [x] Tests unitarios para los diferentes filtros. 
+- [x] Tests unitarios para asegurar el endpoint filter.
+- [x] Tests de integración y funcionales E2E, que verifiquen llamadas reales.
+- [x] 100% de cobertura.
+- [x] Uso de pytest.
+- [x] Tests independientes del entorno real.
 
 ### Historia 6.2 - Configurar CI con Github Actions
 
 ### Prioridad: ALTA.
-### Estado: EN CURSO.
+### Estado: COMPLETADO.
 
 #### Descripción
 
@@ -305,4 +305,4 @@ Como desarrollador, necesito automatizar la ejecución de tests en cada push
 - [x] Worflow en Github actions.
 - [x] Ejecución automática de tests.
 - [x] Fail si tests no pasan.
-- [] Integración con rama develop y main.
+- [x] Integración con rama develop y main.
