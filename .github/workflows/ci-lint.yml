@@ -51,7 +51,15 @@ jobs:
       - name: Run Lint
         run: |
           ruff check .
-
+      
+      - name: Clean Cache and Residual Files
+        run: |
+          rm -f coverage
+          rm -f *.db
+          find . -type d -name "__pycache__" -exec rm -r {} +
+          find . -type d -name ".pytest_cache" -exec rm -r {} +
+          find . -type d -name ".coverage" -exec rm -r {} +
+          
       - name: CI Testing & Coverage
         env:
           POKEAPI_BASE_URL: "https://pokeapi.co/api/v2"
@@ -65,4 +73,6 @@ jobs:
           CACHE_TTL: "3600"
         run: |
           mkdir -p data
-          pytest --cov=app --cov-report=term-missing
+          python app/data/scripts/dataset_generator.py
+          pytest --cov=app --cov-report=term-missing --cov-fail-under=90
+          

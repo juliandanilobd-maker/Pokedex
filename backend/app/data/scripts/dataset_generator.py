@@ -7,6 +7,7 @@ eficiente cuando el usuario quiera usar filtros.
 """
 
 import json
+import time
 from pathlib import Path
 
 import requests
@@ -54,7 +55,6 @@ def fetch_with_retry(session, url, name, max_retries=3):
         except Exception as e:
             if attempt == max_retries - 1:
                 print(f"[ERROR FINAL] {name}: {e}")
-                return None
     return None
 
 
@@ -77,6 +77,7 @@ def dataset_pokemon():
 
     for i, entry in enumerate(data["results"], 1):
         pokemon_data = fetch_with_retry(session, entry["url"], entry["name"])
+        time.sleep(0.4)
 
         if not pokemon_data:
             continue
@@ -116,7 +117,7 @@ def dataset_pokemon():
         with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
             json.dump(minibiblioteca, f, indent=4, ensure_ascii=False)
 
-        print("\n¡Archivo generado correctamente en: {OUTPUT_FILE}!")
+        print(f"\n¡Archivo generado correctamente en: {OUTPUT_FILE}!")
 
     except Exception as e:
         print(f"Error al escribir el archivo: {e}")
@@ -134,5 +135,5 @@ def load_dataset():
         return []
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     dataset_pokemon()
