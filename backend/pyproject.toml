@@ -66,7 +66,7 @@ force-single-line = false
 split-on-trailing-comma = true
 
 [tool.pytest.ini_options]
-addopts = "--cov=app --cov-report=term-missing"
+addopts = "--cov=app --cov-report=term-missing --cov-fail-under=90"
 
 testpaths = ["tests"]
 

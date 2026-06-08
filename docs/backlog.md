@@ -276,7 +276,7 @@ Garantizar la estabilidad del servicio de filtros mediante tests y CI.
 ### Historia 6.1 - Crear tests
 
 ### Prioridad: ALTA.
-### Estado: EN CURSO.
+### Estado: COMPLETADO.
 
 #### Descripción
 
@@ -286,16 +286,16 @@ Como desarrollador, necesito tests unitarios para asegurar el correcto funcionam
 
 - [x] Tests unitarios para el script ETL y el dataset local.
 - [x] Tests unitarios para los diferentes filtros. 
-- [] Tests unitarios para asegurar el endpoint filter.
-- [] Tests de integración y funcionales E2E, que verifiquen llamadas reales.
-- [] 100% de cobertura.
-- [] Uso de pytest.
-- [] Tests independientes del entorno real.
+- [x] Tests unitarios para asegurar el endpoint filter.
+- [x] Tests de integración y funcionales E2E, que verifiquen llamadas reales.
+- [x] 100% de cobertura.
+- [x] Uso de pytest.
+- [x] Tests independientes del entorno real.
 
 ### Historia 6.2 - Configurar CI con Github Actions
 
 ### Prioridad: ALTA.
-### Estado: EN CURSO.
+### Estado: COMPLETADO.
 
 #### Descripción
 
@@ -305,4 +305,4 @@ Como desarrollador, necesito automatizar la ejecución de tests en cada push
 - [x] Worflow en Github actions.
 - [x] Ejecución automática de tests.
 - [x] Fail si tests no pasan.
-- [] Integración con rama develop y main.
+- [x] Integración con rama develop y main.

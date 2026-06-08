@@ -55,7 +55,6 @@ def fetch_with_retry(session, url, name, max_retries=3):
         except Exception as e:
             if attempt == max_retries - 1:
                 print(f"[ERROR FINAL] {name}: {e}")
-                return None
     return None
 
 
@@ -78,7 +77,7 @@ def dataset_pokemon():
 
     for i, entry in enumerate(data["results"], 1):
         pokemon_data = fetch_with_retry(session, entry["url"], entry["name"])
-        time.sleep(0.1)
+        time.sleep(0.4)
 
         if not pokemon_data:
             continue
@@ -136,5 +135,5 @@ def load_dataset():
         return []
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     dataset_pokemon()
