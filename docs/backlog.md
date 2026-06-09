@@ -306,3 +306,84 @@ Como desarrollador, necesito automatizar la ejecución de tests en cada push
 - [x] Ejecución automática de tests.
 - [x] Fail si tests no pasan.
 - [x] Integración con rama develop y main.
+
+# Release v0.3.0
+
+## Epica 7 - Motor de Inteligencia de Batalla
+## Objetivo
+Agregar análisis estrategico de combate al backend, permitiendo interpretar las debilidades, resistencias e inmunidades elementales de los Pokemon de manera dinámica.
+
+### Historia 7.1 - Ampliar Type Service con matrices de daño
+### Prioridad: ALTA.
+### Estado: COMPLETADO.
+#### Descripción
+Como sistema, necesito extraer y procesar las relaciones de daño directo de cada tipo elemental desde la PokeAPI, para servir de base al motor de combate.
+### Criterios de aceptación
+- [x] Implementar la función "get_damage_relations".
+- [x] Consumir los nodos de daño de la PokeAPI.
+- [x] Mapear y normalizar las respuestas a modelos internos.
+- [x] Manejo de errores.
+
+### Historia 7.2 - Desarrollar el algoritmo de efectividad combinada
+### Prioridad: ALTA.
+### Estado: PENDIENTE.
+#### Descripción
+Como usuario, necesito que la Pokedex calcule y combina matematicamente las eficacias de daño para los diferentes tipos de Pokemon.
+### Criterios de aceptación
+- [] Crear el servicio "BattleService".
+- [] Implementar el algoritmo multiplicador para combinar matrices de daño en Pokemons duales.
+- [] Resolver conflictos de efectividad.
+- [] Garantizar que las inmunidades absolutas anulen cualquier debilidad secundaria.
+- [] Estructurar las salidas en un formato unificado.
+
+### Historia 7.3 - Exponer Endpoints del sistema de combate
+### Prioridad: ALTA.
+### Estado: PENDIENTE.
+#### Descripción
+Como desarrollador, para exponer al frontend los servicios, necesito un endpoint especializadoy aislado para consumir.
+
+### Criterios de aceptación
+- [] Crear el endpoint GET "pokemon/{identifier}/effectiveness"
+- [] Implementar inyección de dependencias.
+- [] Validar los parametros de consultas.
+
+---
+## Epica 8 - Calidad del Software
+
+## Objetivo
+
+Garantizar la estabilidad del servicio de filtros mediante tests y CI.
+
+### Historia 8.1 - Crear tests
+
+### Prioridad: ALTA.
+### Estado: EN CURSO.
+
+#### Descripción
+
+Como desarrollador, necesito tests unitarios para asegurar el correcto funcionamiento del servicio.
+
+### Criterios de aceptación
+
+- [x] Tests unitarios para extracción de matrices.
+- [] Tests unitarios para el motor analítico.
+- [] Tests de integración funcionales E2E para el endpoint.
+- [] 100% de cobertura.
+- [x] Uso de pytest.
+- [] Tests independientes del entorno real.
+
+### Historia 8.2 - Configurar CI con Github Actions
+
+### Prioridad: ALTA.
+### Estado: EN CURSO.
+
+#### Descripción
+
+Como desarrollador, necesito automatizar la ejecución de tests en cada push
+
+### Criterios de aceptación
+- [] Worflow en Github actions.
+- [x] Ejecución automática de tests.
+- [x] Fail si tests no pasan.
+- [x] Integración con rama develop y main.
+
