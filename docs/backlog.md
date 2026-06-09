@@ -330,11 +330,11 @@ Como sistema, necesito extraer y procesar las relaciones de daño directo de cad
 #### Descripción
 Como usuario, necesito que la Pokedex calcule y combina matematicamente las eficacias de daño para los diferentes tipos de Pokemon.
 ### Criterios de aceptación
-- [] Crear el servicio "BattleService".
-- [] Implementar el algoritmo multiplicador para combinar matrices de daño en Pokemons duales.
-- [] Resolver conflictos de efectividad.
-- [] Garantizar que las inmunidades absolutas anulen cualquier debilidad secundaria.
-- [] Estructurar las salidas en un formato unificado.
+- [x] Crear el servicio "BattleService".
+- [x] Implementar el algoritmo multiplicador para combinar matrices de daño en Pokemons duales.
+- [x] Resolver conflictos de efectividad.
+- [x] Garantizar que las inmunidades absolutas anulen cualquier debilidad secundaria.
+- [x] Estructurar las salidas en un formato unificado.
 
 ### Historia 7.3 - Exponer Endpoints del sistema de combate
 ### Prioridad: ALTA.
