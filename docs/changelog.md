@@ -196,3 +196,13 @@ Todas las modificaciones relevantes del proyecto serán registradas aquí.
 - Casos de prueba específicos.
 - Verificación y linteado con Ruff.
 
+## [0.3.0-beta] - Battle Intelligence Engine
+### Funcionalidades añadidas
+- Battle Service como núcleo de inteligencia táctica del backend.
+- Lógica aritmetica para calcular debilidades, resistencias e inmunidades combinadas, tomando en cuenta los tipos únicos y duales.
+- Esquema unificado de salida "debilidades", "resistencias", "inmunidades".
+
+### CI
+- Pruebas unitarias para los cálculos aritmeticos y el motor de inteligencia.
+- Verificación y linteado con Ruff.
+
