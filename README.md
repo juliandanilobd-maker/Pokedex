@@ -4,13 +4,13 @@
 
 Pokedex App es un sistema modular backend construido con FastAPI, diseñado para consumir la PokeAPI, procesar datos de Pokemon y exponerlos mediante una API REST escalable.
 
-Esta versión v0.1.0 se centra exclusivamente en la fundación para el backend, incluyendo arquitectura por capas, integración con API externa, sistema de cache y base de calidad mediante tests.
+Esta versión v0.3.0 se centra exclusivamente en implementar un sistema inteligente de calculo de daños de acuerdo a los tipos Pokemon.
 
 ## Estado del proyecto
 
-- Versión: 0.2.0 - Search Filters.
-- Estado: Funcional con motor de búsqueda local por filtros.
-- Enfoque: Extracción de datos (ETL), servicios de filtrado dinámicos.
+- Versión: 0.3.0 - Battle Inteligence.
+- Estado: Funcional con motor de análisis de efectividad elemental y lógica de daño.
+- Enfoque: Extracción de matrices de daño, cálculo de efectividad en tipos duales.
 
 
 ## Estructura del proyecto
@@ -25,7 +25,8 @@ Pokedex/
 │       ├── services/
 │       │       ├──PokemonService
 │       │       ├──EvolutionService 
-│       │       └──FilterService # Nueva capa lógica para v0.2.0
+│       │       ├──FilterService 
+│       │       └──BattleService # Nueva capa lógica para v0.3.0
 │       ├── data/
 │       │       ├──scripts/ dataset_generator # Script ETL
 │       │       └──pokemon_dataset # Dataset local  
@@ -34,7 +35,7 @@ Pokedex/
 │       ├── cache/
 │       │       └──CacheManager
 │       ├── models/
-│       │       └──PokemonModels
+│       │       └──PokemonModels # Estructuras Pydantic de datos y efectividad
 │       ├── parsers/
 │       │       └──Pokemon/Evolution/TypeParser
 │       ├── core/
@@ -61,7 +62,10 @@ Pokedex/
 
 Request del cliente --> FastAPI router --> Capa de Servicios --> Capa de cache --> PokeAPI Client (si no hay cache) --> Parser pasa a Modelos internos --> Respuesta
 
-## Funciones implementadas (v0.2.0)
+### Flujo de bósqueda local (v0.2.0)
+Request Filtros --> FastAPI router --> Capa de servicios --> Dataset Local --> Respuesta normalizada
+
+## Funciones implementadas (v0.3.0)
 
 ### Arquitectura
 - Modular por capas.
@@ -69,17 +73,17 @@ Request del cliente --> FastAPI router --> Capa de Servicios --> Capa de cache -
 - Sistema preparado para escalar.
 
 ### Backend
-- Servicio de filtros funcional.
-- Endpoint /filter.
-- Estructura de routers actualizada.
+- Motor analítico de efectividad.
+- Nuevo endpoint.
+- Algoritmo de resolución matemática para efectividad.
 
 ### Integración externa
-- Manejo de errores en busqueda de filtros.
-- Normalización de datos extraídos.
+- Amplicación de servicios.
+- Manejo de errores controlado.
 
 ### Cache
-- No se usa cache para el filtro.
-- Para el sistema tipo cache se configura el dataset local.
+- Persistencia con SQLite para datos crudos de PokeAPI.
+- Para el sistema de filtros, el cache se configura el dataset local.
 
 ### Calidad
 - Tests unitarios con pytest.

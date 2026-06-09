@@ -179,3 +179,20 @@ Todas las modificaciones relevantes del proyecto serán registradas aquí.
 - Pipeline optimizado para ejecutar borrado y purga de los caches previo a tests.
 - Bloqueo automatizado del pipeline de GitHub Actions si la cobertura desciende de 90%
 - Verificación y linteado con Ruff.
+
+## [0.3.0] - Battle System
+### Funcionalidades añadidas
+- Motor analítico de efectividad de tipos para el cálculo estrategico de combate.
+- Endpoint especializado de efectividad elemental.
+- Cobertura de pruebas unitarias, funcionales e integración.
+
+## [0.3.0-alpha] - Type Relations Service
+### Funcionalidades añadidas
+- Aplicación del type service incorporando el metodo get_damage_relations.
+- Consumo e interpretación de los nodos de daño de la PokeAPI.
+- Sistema de mapeo y tipado para las matrices de daño por tipo individual.
+### CI
+- Pruebas unitarias para la extracción de relaciones por tipo.
+- Casos de prueba específicos.
+- Verificación y linteado con Ruff.
+
