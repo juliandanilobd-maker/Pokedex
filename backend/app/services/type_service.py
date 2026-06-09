@@ -1,6 +1,7 @@
-'''
+"""
 En este módulo capturamos la lógica de interacciones de daño y efectividad por tipos
-'''
+"""
+
 from __future__ import annotations
 
 from backend.app.models.pokemon_models import TypeInfo
@@ -9,7 +10,6 @@ from backend.app.parsers.type_parser import parse_type_info
 
 # Maneja la lógica de los tipos de Pokemon.
 class TypeService:
-
     def __init__(self, client) -> None:
         self.client = client
 
