@@ -1,5 +1,7 @@
 """
-En este módulo capturamos la lógica de interacciones de daño y efectividad por tipos
+En este módulo capturamos la lógica de interacciones de daño y efectividad por tipos,
+es un módulo es interno, y no se expone directamente al usuario, sino que es consumido
+por el servicio BattleService
 """
 
 from __future__ import annotations
