@@ -34,6 +34,7 @@ class PokemonDetail:
     sprite_url: str
     sprite_shiny: str | None = None
 
+
 @dataclass
 class EvolutionNode:
     """Nodo estructurado para representar los árboles de evoluciones.
@@ -56,6 +57,7 @@ class TypeInfo:
     double_damage_from: list[str]
     half_damage_from: list[str]
     no_damage_from: list[str]
+
 
 @dataclass
 class PokemonEffectiveness:

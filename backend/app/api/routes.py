@@ -82,17 +82,18 @@ async def get_filtered_pokemons(
             detail=f"Error interno al procesar el filtrado analítico: {e!s}",
         ) from e
 
+
 @router.get(
     "/pokemon/{identifier}/effectiveness",
     response_model=PokemonEffectiveness,
     status_code=status.HTTP_200_OK,
     tags=["Battle"],
-    summary="Obtener la efectividad elemental estrategica de un Pokemon"
+    summary="Obtener la efectividad elemental estrategica de un Pokemon",
 )
 async def get_pokemon_effectiveness(
     identifier: str,
     pokemon_service: PokemonService = Depends(get_pokemon_service),
-    battle_service: BattleService = Depends(get_battle_service)
+    battle_service: BattleService = Depends(get_battle_service),
 ) -> PokemonEffectiveness:
 
     try:
@@ -101,8 +102,7 @@ async def get_pokemon_effectiveness(
 
     except Exception as e:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Pokemon no encontrado"
+            status_code=status.HTTP_404_NOT_FOUND, detail="Pokemon no encontrado"
         ) from e
 
     effectiveness = battle_service.calculate_effectiveness(pokemon_types)

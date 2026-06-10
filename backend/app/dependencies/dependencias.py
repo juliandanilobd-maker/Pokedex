@@ -14,11 +14,15 @@ _cache_instance = CacheManager()
 _client_instance = PokeAPIClient(cache=_cache_instance)
 _type_instance = TypeService(client=_client_instance)
 
+
 def get_client() -> PokeAPIClient:
     return _client_instance
 
+
 def get_type_service() -> TypeService:
     return _type_instance
+
+
 # Inyectamos el cliente en los servicios, los servicios se instancian en cada petición.
 def get_pokemon_service(client: PokeAPIClient = Depends(get_client)) -> PokemonService:
     return PokemonService(client=client)
@@ -29,7 +33,8 @@ def get_evolution_service(
 ) -> EvolutionService:
     return EvolutionService(client=client)
 
+
 def get_battle_service(
-        type_service: TypeService = Depends(get_type_service)
-    ) -> BattleService:
+    type_service: TypeService = Depends(get_type_service),
+) -> BattleService:
     return BattleService(type_service=type_service)
