@@ -206,3 +206,14 @@ Todas las modificaciones relevantes del proyecto serán registradas aquí.
 - Pruebas unitarias para los cálculos aritmeticos y el motor de inteligencia.
 - Verificación y linteado con Ruff.
 
+## [0.3.0-gamma] - Battle Endpoint
+### Funcionalidades añadidas
+- Crear endpoint GET "/pokemon/{identifier}/effectiveness"
+- Inyección de dependencias en BattleService.
+- Manejo de errores 404 Not Found.
+
+### Arreglado
+- Pokemon models modificado.
+- Dependencias y rutas modificados para inyección de dependencias y manejo del endpoint BattleService.
+### CI
+- Verificación y linteado con Ruff.

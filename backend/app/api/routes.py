@@ -1,12 +1,15 @@
 from dataclasses import asdict
 
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 
 from backend.app.core.config import settings
 from backend.app.dependencies.dependencias import (
+    get_battle_service,
     get_evolution_service,
     get_pokemon_service,
 )
+from backend.app.models.pokemon_models import PokemonEffectiveness
+from backend.app.services.battle_service import BattleService
 from backend.app.services.evolution_service import EvolutionService
 from backend.app.services.filter_service import FilterService
 from backend.app.services.pokemon_service import PokemonService
@@ -78,3 +81,30 @@ async def get_filtered_pokemons(
             status_code=500,
             detail=f"Error interno al procesar el filtrado analítico: {e!s}",
         ) from e
+
+
+@router.get(
+    "/pokemon/{identifier}/effectiveness",
+    response_model=PokemonEffectiveness,
+    status_code=status.HTTP_200_OK,
+    tags=["Battle"],
+    summary="Obtener la efectividad elemental estrategica de un Pokemon",
+)
+async def get_pokemon_effectiveness(
+    identifier: str,
+    pokemon_service: PokemonService = Depends(get_pokemon_service),
+    battle_service: BattleService = Depends(get_battle_service),
+) -> PokemonEffectiveness:
+
+    try:
+        pokemon_data = pokemon_service.get_pokemon_detail(identifier)
+        pokemon_types = pokemon_data.types
+
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Pokemon no encontrado"
+        ) from e
+
+    effectiveness = battle_service.calculate_effectiveness(pokemon_types)
+
+    return PokemonEffectiveness(**effectiveness)

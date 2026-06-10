@@ -338,14 +338,14 @@ Como usuario, necesito que la Pokedex calcule y combina matematicamente las efic
 
 ### Historia 7.3 - Exponer Endpoints del sistema de combate
 ### Prioridad: ALTA.
-### Estado: PENDIENTE.
+### Estado: COMPLETADO.
 #### Descripción
 Como desarrollador, para exponer al frontend los servicios, necesito un endpoint especializadoy aislado para consumir.
 
 ### Criterios de aceptación
-- [] Crear el endpoint GET "pokemon/{identifier}/effectiveness"
-- [] Implementar inyección de dependencias.
-- [] Validar los parametros de consultas.
+- [x] Crear el endpoint GET "pokemon/{identifier}/effectiveness"
+- [x] Implementar inyección de dependencias.
+- [x] Validar los parametros de consultas.
 
 ---
 ## Epica 8 - Calidad del Software
@@ -366,7 +366,7 @@ Como desarrollador, necesito tests unitarios para asegurar el correcto funcionam
 ### Criterios de aceptación
 
 - [x] Tests unitarios para extracción de matrices.
-- [] Tests unitarios para el motor analítico.
+- [x] Tests unitarios para el motor analítico.
 - [] Tests de integración funcionales E2E para el endpoint.
 - [] 100% de cobertura.
 - [x] Uso de pytest.
