@@ -62,5 +62,5 @@ class TypeInfo:
 @dataclass
 class PokemonEffectiveness:
     weaknesses: list[str]
-    resistance: list[str]
-    inmunities: list[str]
+    resistances: list[str]
+    immunities: list[str]

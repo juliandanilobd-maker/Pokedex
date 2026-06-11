@@ -44,9 +44,9 @@ class BattleService:
                 if resist_type in multipliers:
                     multipliers[resist_type] *= 0.5
 
-            for inmune_type in relations.get("no_damage_from", []):
-                if inmune_type in multipliers:
-                    multipliers[inmune_type] *= 0.0
+            for immune_type in relations.get("no_damage_from", []):
+                if immune_type in multipliers:
+                    multipliers[immune_type] *= 0.0
 
         return multipliers
 
@@ -57,7 +57,7 @@ class BattleService:
 
         weaknesses = []
         resistances = []
-        inmunities = []
+        immunities = []
 
         for attacker_type, value in multipliers.items():
             if value > 1.0:
@@ -65,10 +65,10 @@ class BattleService:
             elif 0.0 < value < 1.0:
                 resistances.append(attacker_type)
             elif value == 0.0:
-                inmunities.append(attacker_type)
+                immunities.append(attacker_type)
 
         return {
             "weaknesses": sorted(weaknesses),
             "resistances": sorted(resistances),
-            "inmunities": sorted(inmunities),
+            "immunities": sorted(immunities),
         }

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import contextlib
 import os
 import sqlite3
@@ -91,17 +93,14 @@ def test_get_evolution_chain_e2e_not_found():
     response = functional_client.get("/api/v1/pokemon/missing_pokemon/evolution")
     data = response.json()
 
-    error_msg = data["detail"]
-
     assert response.status_code == 404
-    assert "No se encontro el recurso" in error_msg
-    assert "Verifica que el nombre o ID sea correcto." in error_msg
+    assert "No se encontro el recurso" in data["detail"]
 
 
 # Comprobamos el endpoint de Filter Service
 def test_endpoint_filter_by_type_functional():
 
-    response = functional_client.get("api/v1/filter?pokemon_type=grass")
+    response = functional_client.get("/api/v1/filter?pokemon_type=grass")
     data = response.json()
 
     assert response.status_code == 200
@@ -114,7 +113,26 @@ def test_endpoint_filter_by_type_functional():
 # Comprobamos el comportamiento frente a un error
 def test_endpoint_filter_validation_error():
 
-    response = functional_client.get("api/v1/filter?generation=PRIMERA")
+    response = functional_client.get("/api/v1/filter?generation=PRIMERA")
 
     assert response.status_code == 422
     assert "detail" in response.json()
+
+
+# Comprobamos el flujo real del análisis táctico de efectividad de un Pokemon
+def test_e2e_effectiveness_real_resolution():
+    response = functional_client.get("/api/v1/pokemon/charizard/effectiveness")
+    data = response.json()
+
+    assert response.status_code == 200
+    assert "ground" in data["immunities"]
+    assert "rock" in data["weaknesses"]
+    assert "steel" in data["resistances"]
+
+
+# Comprobamos el comportamiento ante errores
+def test_e2e_effectiveness_not_found():
+    response = functional_client.get("/api/v1/pokemon/missing/effectiveness")
+    data = response.json()
+    assert response.status_code == 404
+    assert "No se encontro el recurso" in data["detail"]

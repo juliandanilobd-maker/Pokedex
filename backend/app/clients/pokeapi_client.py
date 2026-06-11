@@ -120,3 +120,7 @@ class PokeAPIClient:
     def get_species(self, identifier: str | int) -> dict:
         clean_id = self._normalize_identifier(str(identifier))
         return self.get(f"pokemon-species/{clean_id}")
+
+    def get_type(self, type_name: str) -> dict:
+        clean_type_name = self._normalize_identifier(type_name)
+        return self.get(f"type/{clean_type_name}")
