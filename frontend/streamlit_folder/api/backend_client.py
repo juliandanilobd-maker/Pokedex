@@ -71,6 +71,22 @@ class BackendClient:
         except Exception as e:
             raise BackendClientError(f"Error inesperado en el cliente: {e}") from e
 
+    # Implementamos la verificación del estado del backend
+    def check_health(self) -> bool:
+        """Esta función retorna un valor booleano:
+        True si el backend nos devuelve un 200 Ok, y
+        False en caso contrario.
+        """
+        url = self.BASE_URL.replace("/api/v1", "/health")
+        try:
+            response = requests.get(url, timeout=3)
+
+        except Exception:
+            return False
+
+        else:
+            return response.status_code == 200
+
     def get_pokemon(self, identifier: str) -> dict[str, Any]:
         result = self._get(f"/pokemon/{identifier}")
 
