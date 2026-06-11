@@ -54,7 +54,7 @@ class TypeParser {
 class PokemonService {
     +get_pokemon()
     +get_random_pokemon()
-    +get_pokemon_details()
+    +get_pokemon_detail()
 }
 
 class EvolutionService {

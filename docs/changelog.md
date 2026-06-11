@@ -104,20 +104,20 @@ Todas las modificaciones relevantes del proyecto serán registradas aquí.
 - Descripción del codigo con almohadillas.
 
 ### Arreglado
-#### Inyección de dependencias: 
+#### Inyección de dependencias:
 - Refactorizamos el archivo dependencias y rutas para implementar Dependency Injection.
-#### Seguridad CORS: 
+#### Seguridad CORS:
 - Implementamos configuración CORS para restringir los metodos HTTP, y permitir solo los necesarios.
-#### Ampliación de cobertura de tests: 
+#### Ampliación de cobertura de tests:
 - Modificamos el test health, a un test server, para validar el enrutamiento, CORS y el levantamiento correcto del servidor.
 - Aislamiento de Test Cache, modificamos el test cache para reemplazar el uso del archivo SQLite por una base de datos temporal en memoria local.
 - Mejoramos los tests de Pokemon Service usando un Mock Client para simular diferentes respuestas en segundos, y para comprobar su comportamiento frente a errores o datos corruptos.
-- Mejoramos el Evolution Service, para comprobar manejo de errores o respuestas corruptas, y permitir escalar los tests. 
-- Se amplió la cobertura del test evolution para determinar el comportamiento ante distintas ramas. 
+- Mejoramos el Evolution Service, para comprobar manejo de errores o respuestas corruptas, y permitir escalar los tests.
+- Se amplió la cobertura del test evolution para determinar el comportamiento ante distintas ramas.
 - Se amplian los tests de Pokemon Parser para testear los diferentes lenguajes permitidos.
-#### Modificación de archivos base: 
+#### Modificación de archivos base:
 - Modificamos el Evolution Node en models para incluir visibilidad para mejorar la interacción en la interfaz.
-- Se mejoro tanto el models como el Evolution Service, para convertir los details en listas, con la finalidad de obtener los diferentes requisitos de evolución, y aumentando la obtención de location y min_affection. 
+- Se mejoro tanto el models como el Evolution Service, para convertir los details en listas, con la finalidad de obtener los diferentes requisitos de evolución, y aumentando la obtención de location y min_affection.
 - Se ajustó el Pokemon Parser para prevenir fallos cuando llegan datos vacíos.
 #### Cambios extra
 - Completar explicación de codigo mediante almohadillas.
@@ -206,3 +206,32 @@ Todas las modificaciones relevantes del proyecto serán registradas aquí.
 - Pruebas unitarias para los cálculos aritmeticos y el motor de inteligencia.
 - Verificación y linteado con Ruff.
 
+## [0.3.0-gamma] - Battle Endpoint
+### Funcionalidades añadidas
+- Crear endpoint GET "/pokemon/{identifier}/effectiveness"
+- Inyección de dependencias en BattleService.
+- Manejo de errores 404 Not Found.
+
+### Arreglado
+- Pokemon models modificado.
+- Dependencias y rutas modificados para inyección de dependencias y manejo del endpoint BattleService.
+### CI
+- Verificación y linteado con Ruff.
+
+## [0.3.0-delta] - Testing & refactor Battle Intelligence/routes/client/dependencies
+### Funcionalidades añadidas
+- Tests de integración.
+- Tests funcionales e2e.
+- Get type agregado a client.
+
+### Arreglado
+- Corrección para uso de Pydantic para atributos de PokemonEffectiveness
+- Routes corregido para un mejor manejo de errores.
+- Script ETL mejorado para mejorar extracción de información.
+- Dataset tests modificados para utilizar un mock dataset.
+- Models actualizado para modelar información de efectividad.
+- Rutas refactorizado para manejo de errores y uso de models.
+
+### CI
+- Tests funcionales e2e y de integración para el endpoint Battle Service.
+- Verificación y linteado con Ruff.

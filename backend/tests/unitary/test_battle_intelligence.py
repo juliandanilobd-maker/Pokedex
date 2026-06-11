@@ -40,7 +40,7 @@ def test_battle_intelligence_dual_type(battle_service, mock_type_service):
 
     result = battle_service.calculate_effectiveness(["fire", "flying"])
 
-    assert "ground" in result["inmunities"]
+    assert "ground" in result["immunities"]
     assert "rock" in result["weaknesses"]
     assert "water" in result["weaknesses"]
     assert "ice" not in result["weaknesses"]

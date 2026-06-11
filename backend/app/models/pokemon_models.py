@@ -36,16 +36,6 @@ class PokemonDetail:
 
 
 @dataclass
-class TypeInfo:
-    """Mapeo de las relaciones de efectividad y debilidades de acuerdo a los tipos"""
-
-    name: str
-    double_damage_from: list[str]
-    half_damage_from: list[str]
-    no_damage_from: list[str]
-
-
-@dataclass
 class EvolutionNode:
     """Nodo estructurado para representar los árboles de evoluciones.
 
@@ -57,3 +47,20 @@ class EvolutionNode:
     children: list[EvolutionNode] = field(default_factory=list)
     evolution_details: list[dict[str, Any]] | None = None
     visibility: bool = True
+
+
+@dataclass
+class TypeInfo:
+    """Mapeo de las relaciones de efectividad y debilidades de acuerdo a los tipos"""
+
+    name: str
+    double_damage_from: list[str]
+    half_damage_from: list[str]
+    no_damage_from: list[str]
+
+
+@dataclass
+class PokemonEffectiveness:
+    weaknesses: list[str]
+    resistances: list[str]
+    immunities: list[str]

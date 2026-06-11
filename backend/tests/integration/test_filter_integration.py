@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from unittest.mock import patch
 
+from fastapi import status
 from fastapi.testclient import TestClient
 
 import backend.app.api.routes as pokemon_routes
@@ -71,19 +72,40 @@ def test_integration_filter_endpoint_empty_results():
     assert data == []
 
 
-# Comprobamos el comportamiento frente a HTTPException
-def test_integration_filter_internal_server_error():
+# Comprobamos que se captura un ValueError del servicio por el catch de la ruta
+# y lanza un 404
+def test_integration_filter_not_found():
+
+    with patch.object(pokemon_routes, "FilterService") as mock_filter:
+        mock_instance = mock_filter.return_value
+
+        mock_instance.filter_pokemons.side_effect = ValueError(
+            "El tipo especificado no existe en el dataset"
+        )
+
+        response = client.get("/api/v1/filter?pokemon_type=missing")
+        data = response.json()
+
+    assert response.status_code == status.HTTP_404_NOT_FOUND
+    assert "detail" in data
+    assert "El tipo especificado no existe en el dataset" in data["detail"]
+
+
+# Comprobamos la captura de un fallo interno del servidor
+def test_integration_filter_generic_exception():
 
     with patch.object(pokemon_routes, "FilterService") as mock_filter:
         mock_instance = mock_filter.return_value
 
         mock_instance.filter_pokemons.side_effect = Exception(
-            "Error interno al procesar el filtrado analítico"
+            "Fallo crítico del servidor"
         )
 
-        response = client.get("/api/v1/filter?pokemon_type=grass")
-    data = response.json()
+        response = client.get("/api/v1/filter?pokemon_type=missing")
+        data = response.json()
 
-    assert response.status_code == 500
-    assert "detail" in data
-    assert "Error interno al procesar el filtrado analítico" in data["detail"]
+    assert response.status_code == status.HTTP_500_INTERNAL_SERVER_ERROR
+    assert (
+        "Error interno al procesar el motor analítico: Fallo crítico del servidor"
+        in data["detail"]
+    )

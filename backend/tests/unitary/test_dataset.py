@@ -1,43 +1,16 @@
 from __future__ import annotations
 
 import json
-import sys
 from unittest.mock import MagicMock, mock_open, patch
 
 import pytest
-import requests
 
 from backend.app.data.scripts.dataset_generator import (
-    OUTPUT_FILE,
+    create_session,
     dataset_pokemon,
-    fetch_with_retry,
     get_generation_by_id,
     load_dataset,
 )
-
-
-# Comrobamos que load dataset parsee un JSON simulando leer en memoria local
-def test_load_dataset_success_mock():
-
-    mock_data = [{"id": 25, "name": "pikachu", "generation": 1}]
-    mock_json_string = json.dumps(mock_data)
-
-    # Interceptamos la función 'open' nativa de Python
-    # para que devuelva el string que le entregamos para el test
-    with patch("builtins.open", mock_open(read_data=mock_json_string)):
-        result = load_dataset()
-
-    assert len(result) == 1
-    assert result[0]["name"] == "pikachu"
-
-
-# Comprobamos si el archivo no existe, se devuelve una lista vacía y no se rompe
-def test_load_dataset_file_not_found_mock():
-
-    with patch("builtins.open", side_effect=FileNotFoundError):
-        result = load_dataset()
-
-    assert result == []
 
 
 # Comprobamos la lógica de generaciones
@@ -59,94 +32,45 @@ def test_load_dataset_file_not_found_mock():
     ],
 )
 
-# Comprobamos que el mapeo por rangos ID asigne a la generación correcta
+# Verificamos el cálculo matemático por generaciones
 def test_get_generation_by_id(pokemon_id: int, expected_gen: int):
     assert get_generation_by_id(pokemon_id) == expected_gen
 
 
-# Comprobamos el mecanismo de reintentos
-def test_fetch_with_retry_success():
+# Comprobamos que la sesión se configure con adaptadores HTTP y reintentos
+def test_create_session():
+    session = create_session()
 
-    mock_session = MagicMock()
-    mock_response = MagicMock()
-    mock_response.json.return_value = {"id": 1, "name": "bulbasaur"}
-    mock_session.get.return_value = mock_response
-
-    result = fetch_with_retry(
-        mock_session, "http://pokeapi.co/.../1", "bulbasaur", max_retries=3
-    )
-
-    assert result == {"id": 1, "name": "bulbasaur"}
-    assert mock_session.get.call_count == 1
+    assert session.adapters is not None
+    assert "https://" in session.adapters
 
 
-# Comprobamos que si la API da un error, el metodo agote los reintentos y devuelve None
-def test_fetch_with_retry_exhausted():
+# Comprobamos que el load_dataset devuelva la lista si el archivo JSON existe
+def test_load_dataset_success():
+    mock_data = [{"id": 1, "name": "bulbasaur"}]
 
-    mock_session = MagicMock()
-    mock_session.get.side_effect = requests.exceptions.RequestException(
-        "Timeout de red"
-    )
+    json_content = json.dumps(mock_data)
 
-    result = fetch_with_retry(
-        mock_session, "http://pokeapi.co/.../1", "bulbasaur", max_retries=3
-    )
-
-    assert result is None
-    assert mock_session.get.call_count == 3
+    with patch("builtins.open", mock_open(read_data=json_content)):
+        result = load_dataset()
+        assert result == mock_data
 
 
-# Comprobamos una caída al pedir la URL base
-def test_dataset_pokemon_api_base_error():
-
-    if "backend.app.data.scripts.dataset_generator" in sys.modules:
-        del sys.modules["backend.app.data.scripts.dataset_generator"]
-
-    mock_session_instance = MagicMock()
-    mock_session_instance.get.side_effect = Exception("Error de conexión simulado")
-
-    mock_session_class = MagicMock()
-    mock_session_class.return_value = mock_session_instance
-
-    with (
-        patch(
-            "backend.app.data.scripts.dataset_generator.requests.Session",
-            mock_session_class,
-        ),
-        patch("builtins.print") as mock_print,
-        patch("builtins.open", mock_open()),
-    ):
-        from backend.app.data.scripts.dataset_generator import dataset_pokemon
-
-        result = dataset_pokemon()
-
-        mock_print.assert_any_call(
-            "Ha ocurrido un Error al conectar con la API: Error de conexión simulado"
-        )
-
-    assert result is None
+# Comprobamos que si el dataset no existe, se capture el error
+def test_load_dataset_file_not_found():
+    with patch("builtins.open", side_effect=FileNotFoundError):
+        result = load_dataset()
+        assert result == []
 
 
-# Comprobamos el flujo completo de transformación de datos
-@patch("backend.app.data.scripts.dataset_generator.requests.Session")
-@patch("backend.app.data.scripts.dataset_generator.Path.mkdir")
-@patch("builtins.open", new_callable=mock_open)
-@patch("backend.app.data.scripts.dataset_generator.json.dump")
-@patch("backend.app.data.scripts.dataset_generator.time.sleep")
-def test_dataset_pokemon_full_pipeline(
-    mock_sleep: MagicMock,
-    mock_json_dump: MagicMock,
-    mock_file_open: MagicMock,
-    mock_mkdir: MagicMock,
-    mock_session_class: MagicMock,
-):
+# Comprobamos el ciclo de vida completo del script ETL
+def test_dataset_pokemon_execution_with_mocks():
 
-    mock_session = mock_session_class.return_value
-
-    mock_base_response = MagicMock()
-    mock_base_response.json.return_value = {
+    mock_index_response = MagicMock()
+    mock_index_response.json.return_value = {
         "results": [
-            {"name": "bulbasaur", "url": "https://pokeapi.co/api/v2/pokemon/1/"}
+            {"name": "bulbasaur", "url": "https://pokeapi.co/api/v2/pokemon/1/"},
+            {"name": "charmander", "url": "https://pokeapi.co/api/v2/pokemon/4/"},
         ]
     }
 
@@ -154,144 +78,109 @@ def test_dataset_pokemon_full_pipeline(
     mock_pokemon_response.json.return_value = {
         "id": 1,
         "name": "bulbasaur",
-        "base_experience": 64,
         "stats": [
             {"stat": {"name": "hp"}, "base_stat": 45},
             {"stat": {"name": "attack"}, "base_stat": 49},
             {"stat": {"name": "defense"}, "base_stat": 49},
             {"stat": {"name": "speed"}, "base_stat": 45},
         ],
-        "types": [{"type": {"name": "grass"}}, {"type": {"name": "poison"}}],
         "sprites": {
             "other": {
-                "official-artwork": {
-                    "front_default": "https://raw.githubusercontent.com/.../1.png"
-                }
+                "official-artwork": {"front_default": "http://image.url/bulbasaur.png"}
             }
         },
+        "types": [{"type": {"name": "grass"}}],
+        "base_experience": 64,
     }
 
-    mock_session.get.side_effect = [mock_base_response, mock_pokemon_response]
+    target_session = "backend.app.data.scripts.dataset_generator.create_session"
 
-    dataset_pokemon()
+    with patch(target_session) as mock_session:
+        session_instance = mock_session.return_value
 
-    assert mock_session.get.call_count == 2
-    mock_mkdir.assert_called_once_with(parents=True, exist_ok=True)
-    mock_file_open.assert_called_once_with(OUTPUT_FILE, "w", encoding="utf-8")
-    mock_json_dump.assert_called_once()
-
-
-# Comprobamos el comportamiento en Exceptions
-@patch("backend.app.data.scripts.dataset_generator.requests.Session")
-@patch("backend.app.data.scripts.dataset_generator.Path.mkdir")
-def test_dataset_pokemon_write_exception(
-    mock_mkdir: MagicMock, mock_session_class: MagicMock
-):
-
-    mock_session = mock_session_class.return_value
-    mock_base_response = MagicMock()
-    mock_base_response.json.return_value = {"results": []}
-    mock_session.get.return_value = mock_base_response
-
-    with (
-        patch("builtins.open", side_effect=OSError("Permiso denegado en disco")),
-        patch("builtins.print") as mock_print,
-    ):
-        dataset_pokemon()
-
-        mock_print.assert_any_call(
-            "Error al escribir el archivo: Permiso denegado en disco"
-        )
-
-
-# Comprobamos que la funcion fetch_with_retry hace continue cuando devuelve None
-@patch("backend.app.data.scripts.dataset_generator.requests.Session")
-@patch("backend.app.data.scripts.dataset_generator.Path.mkdir")
-@patch("builtins.open", new_callable=mock_open)
-@patch("backend.app.data.scripts.dataset_generator.json.dump")
-@patch("backend.app.data.scripts.dataset_generator.time.sleep")
-def test_dataset_pokemon_continue_on_empty_data(
-    mock_sleep: MagicMock,
-    mock_json_dump: MagicMock,
-    mock_file_open: MagicMock,
-    mock_mkdir: MagicMock,
-    mock_session_class: MagicMock,
-):
-
-    mock_session = mock_session_class.return_value
-
-    mock_base_response = MagicMock()
-    mock_base_response.json.return_value = {
-        "results": [
-            {"name": "failed_pokemon", "url": "https://pokeapi.co/api/v2/pokemon/9999/"}
+        session_instance.get.side_effect = [
+            mock_index_response,
+            mock_pokemon_response,
+            mock_pokemon_response,
         ]
-    }
 
-    mock_session.get.side_effect = [mock_base_response, None]
+        with patch("builtins.open", mock_open()), patch("pathlib.Path.mkdir"):
+            dataset_pokemon()
 
-    dataset_pokemon()
-
-    mock_json_dump.assert_called_once_with(
-        [], mock_file_open(), indent=4, ensure_ascii=False
-    )
+        assert session_instance.get.call_count == 3
 
 
-# Comprobamos el print modular cada 50 iteraciones
-@patch("backend.app.data.scripts.dataset_generator.requests.Session")
-@patch("backend.app.data.scripts.dataset_generator.Path.mkdir")
-@patch("builtins.open", new_callable=mock_open)
-@patch("backend.app.data.scripts.dataset_generator.json.dump")
-@patch("backend.app.data.scripts.dataset_generator.time.sleep")
-def test_dataset_pokemon_print_progress(
-    mock_sleep: MagicMock,
-    mock_json_dump: MagicMock,
-    mock_file_open: MagicMock,
-    mock_mkdir: MagicMock,
-    mock_session_class: MagicMock,
-):
+# Comprobamos el comportamiento frente a errores de API
+def test_dataset_pokemon_api_critical_error():
+    target_session = "backend.app.data.scripts.dataset_generator.create_session"
 
-    mock_session = mock_session_class.return_value
-
-    mock_results = [
-        {"name": f"pk-{i}", "url": f"http://api/{i}"} for i in range(1, 151)
-    ]
-
-    mock_base_response = MagicMock()
-    mock_base_response.json.return_value = {"results": mock_results}
-
-    mock_pokemon_response = MagicMock()
-    mock_pokemon_response.json.return_value = {
-        "id": 1,
-        "name": "bulbasaur",
-        "stats": [],
-        "types": [],
-    }
-
-    mock_session.get.side_effect = [mock_base_response] + [mock_pokemon_response] * 50
-
-    with patch("builtins.print") as mock_print:
+    with patch(target_session) as mock_session:
+        session_instance = mock_session.return_value
+        session_instance.get.side_effect = Exception("Conexión rechazada por el host")
         dataset_pokemon()
 
-        mock_print.assert_any_call("Cargados 50 Pokemon...")
+        assert session_instance.get.call_count == 1
 
 
-# Comprobamos el bloque principal de forma aislada
-def test_script_execution_main_block():
+# Comprovamos el except cuando falla una request procesando single_pokemon
+def test_process_single_pokemon_exception():
 
-    with patch(
-        "backend.app.data.scripts.dataset_generator.dataset_pokemon"
-    ) as mock_dataset:
-        from backend.app.data.scripts import dataset_generator
+    from backend.app.data.scripts.dataset_generator import process_single_pokemon
 
-        original_name = dataset_generator.__name__
+    mock_session = MagicMock()
+    mock_session.get.side_effect = Exception("Error de red simulado")
 
-        try:
-            dataset_generator.__name__ = "__main__"
+    entry = {"name": "skeledirge", "url": "https://pokeapi.co/api/v2/pokemon/911/"}
 
-            if dataset_generator.__name__ == "__main__":
-                dataset_generator.dataset_pokemon()
+    resultado = process_single_pokemon(entry, mock_session)
 
-            mock_dataset.assert_called_once()
+    assert resultado is None
 
-        finally:
-            dataset_generator.__name__ = original_name
+
+# Comprobamos el comportamiento cuando el procesamiento llega a los 100 Pokemons
+def test_Dataset_pokemon_progress_print():
+    mock_results = [{"name": f"poke_{i}", "url": f"http://api/{i}"} for i in range(101)]
+
+    mock_index_response = MagicMock()
+    mock_index_response.json.return_value = {"results": mock_results}
+
+    target_session = "backend.app.data.scripts.dataset_generator.create_session"
+
+    with patch(target_session) as mock_session:
+        session_instance = mock_session.return_value
+
+        mock_poke = MagicMock()
+        mock_poke.json.return_value = {
+            "id": 1,
+            "name": "test",
+            "stats": [],
+            "types": [],
+            "base_experience": 10,
+        }
+
+        session_instance.get.side_effect = [mock_index_response] + [mock_poke] * 101
+
+        with patch("builtins.open", mock_open()), patch("pathlib.Path.mkdir"):
+            dataset_pokemon()
+
+        assert session_instance.get.call_count == 102
+
+
+# Comprobamos el exception si el escritor del archivo falla
+def test_dataset_pokemon_write_exception():
+
+    mock_index_response = MagicMock()
+    mock_index_response.json.return_value = {"results": []}
+
+    target_session = "backend.app.data.scripts.dataset_generator.create_session"
+
+    with patch(target_session) as mock_session:
+        session_instance = mock_session.return_value
+        session_instance.get.return_value = mock_index_response
+
+        with patch(
+            "pathlib.Path.mkdir", side_effect=Exception("Permiso de escritura denegado")
+        ):
+            dataset_pokemon()
+
+        assert session_instance.get.call_count == 1

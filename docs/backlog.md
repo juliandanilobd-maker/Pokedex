@@ -1,7 +1,7 @@
 # Backlog
 
-## Prioridades usadas para el backlog: 
-    
+## Prioridades usadas para el backlog:
+
 - Alta: Fundamental para el funcionamiento de la app.
 - Media: Mejora importante de la app.
 - Futuro: Funcionalidades para futuras fases.
@@ -201,7 +201,7 @@ Como desarrollador, necesito tests unitarios para asegurar el correcto funcionam
 ### Criterios de aceptación
 
 - [x] Tests unitarios para servicios.
-- [x] Tests unitarios para cliente. 
+- [x] Tests unitarios para cliente.
 - [x] Tests unitarios para cache.
 - [x] Tests unitarios para parsers.
 - [x] Tests de integración y funcionales E2E.
@@ -252,7 +252,7 @@ Como sistema, necesito una capa de servicio lógica que procese el dataset JSON 
 
 ### Criterios de aceptación
 - [x] Crear el Filter Service.
-- [x] Implementar filtrado por tipo, generación, base_exp, hp, attack, defense, speed. 
+- [x] Implementar filtrado por tipo, generación, base_exp, hp, attack, defense, speed.
 - [x] Combinar varios filtros en una misma busqueda.
 
 ### Historia 5.3 - Exponer Endpoint de filtrado
@@ -285,7 +285,7 @@ Como desarrollador, necesito tests unitarios para asegurar el correcto funcionam
 ### Criterios de aceptación
 
 - [x] Tests unitarios para el script ETL y el dataset local.
-- [x] Tests unitarios para los diferentes filtros. 
+- [x] Tests unitarios para los diferentes filtros.
 - [x] Tests unitarios para asegurar el endpoint filter.
 - [x] Tests de integración y funcionales E2E, que verifiquen llamadas reales.
 - [x] 100% de cobertura.
@@ -326,7 +326,7 @@ Como sistema, necesito extraer y procesar las relaciones de daño directo de cad
 
 ### Historia 7.2 - Desarrollar el algoritmo de efectividad combinada
 ### Prioridad: ALTA.
-### Estado: PENDIENTE.
+### Estado: COMPLETADO.
 #### Descripción
 Como usuario, necesito que la Pokedex calcule y combina matematicamente las eficacias de daño para los diferentes tipos de Pokemon.
 ### Criterios de aceptación
@@ -338,14 +338,14 @@ Como usuario, necesito que la Pokedex calcule y combina matematicamente las efic
 
 ### Historia 7.3 - Exponer Endpoints del sistema de combate
 ### Prioridad: ALTA.
-### Estado: PENDIENTE.
+### Estado: COMPLETADO.
 #### Descripción
 Como desarrollador, para exponer al frontend los servicios, necesito un endpoint especializadoy aislado para consumir.
 
 ### Criterios de aceptación
-- [] Crear el endpoint GET "pokemon/{identifier}/effectiveness"
-- [] Implementar inyección de dependencias.
-- [] Validar los parametros de consultas.
+- [x] Crear el endpoint GET "pokemon/{identifier}/effectiveness"
+- [x] Implementar inyección de dependencias.
+- [x] Validar los parametros de consultas.
 
 ---
 ## Epica 8 - Calidad del Software
@@ -357,7 +357,7 @@ Garantizar la estabilidad del servicio de filtros mediante tests y CI.
 ### Historia 8.1 - Crear tests
 
 ### Prioridad: ALTA.
-### Estado: EN CURSO.
+### Estado: COMPLETADO.
 
 #### Descripción
 
@@ -366,24 +366,23 @@ Como desarrollador, necesito tests unitarios para asegurar el correcto funcionam
 ### Criterios de aceptación
 
 - [x] Tests unitarios para extracción de matrices.
-- [] Tests unitarios para el motor analítico.
-- [] Tests de integración funcionales E2E para el endpoint.
-- [] 100% de cobertura.
+- [x] Tests unitarios para el motor analítico.
+- [x] Tests de integración funcionales E2E para el endpoint.
+- [x] 100% de cobertura.
 - [x] Uso de pytest.
-- [] Tests independientes del entorno real.
+- [x] Tests independientes del entorno real.
 
 ### Historia 8.2 - Configurar CI con Github Actions
 
 ### Prioridad: ALTA.
-### Estado: EN CURSO.
+### Estado: COMPLETADO.
 
 #### Descripción
 
 Como desarrollador, necesito automatizar la ejecución de tests en cada push
 
 ### Criterios de aceptación
-- [] Worflow en Github actions.
+- [x] Worflow en Github actions.
 - [x] Ejecución automática de tests.
 - [x] Fail si tests no pasan.
 - [x] Integración con rama develop y main.
-
