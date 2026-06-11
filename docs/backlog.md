@@ -446,15 +446,15 @@ Desarrollar componentes de interfaz de usuario desacoplados y reutilizables para
 
 ## Historia 11.1 - Componentes de cartas básicas y  emblemas elementales
 ### Prioridad: MEDIA.
-### Estado: PENDIENTE.
+### Estado: COMPLETADO.
 
 #### Descripción
 Como usuario, me gustaría visualizar resumenes, imagenes y diseños de los Pokemon, para identificar e interactuar con la información
 
 ### Criterios de aceptación
-- [] Crear el fichero que aloje el renderizado de un Pokemon.
-- [] Crear el fichero que inyecte estilos CSS condicionales en base a la paleta de colores de cada tipo elemental.
-- [] Los componentes reciben los datos en forma de texto plano, manteniendose desacoplados de la lógica del backend.
+- [x] Crear el fichero que aloje el renderizado de un Pokemon.
+- [x] Crear el fichero que inyecte estilos CSS condicionales en base a la paleta de colores de cada tipo elemental.
+- [x] Los componentes reciben los datos en forma de texto plano, manteniendose desacoplados de la lógica del backend.
 
 ## Historia 11.2 - Paneles detallados de estadísticas y motor de combate
 ### Prioridad: MEDIA.

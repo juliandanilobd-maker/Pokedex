@@ -257,9 +257,18 @@ Todas las modificaciones relevantes del proyecto serán registradas aquí.
 - Configuración de .yml para linteo y formateo del frontend.
 
 ## [0.4.0-beta] - Cliente HTTP e Inyección de dependencias
-### Funcionalidade añadidas
+### Funcionalidades añadidas
 - Cliente que consume los endpoints del backend.
 - Clases incializadas para manejar de forma estandarizada y evitar que se rompa el frontend en casos de errores del backend.
 
 ### CI
 - Verificación y linteado con Ruff.
+
+## [0.4.0-gamma] - Pokemon Card y Badges elementales
+### Funcionalidades añadidas
+- Estilos CSS de carta coleccionable Pokemon inyectable.
+- Renderizado de carta Pokemon.
+- Armado por partes de una estructura de carta Pokemon y ensamblado.
+
+### CI
+- Verificación y linteado y Ruff.
