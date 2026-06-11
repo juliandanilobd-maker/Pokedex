@@ -8,7 +8,11 @@ from backend.app.dependencies.dependencias import (
     get_evolution_service,
     get_pokemon_service,
 )
-from backend.app.models.pokemon_models import PokemonEffectiveness
+from backend.app.models.pokemon_models import (
+    EvolutionNode,
+    PokemonDetail,
+    PokemonEffectiveness,
+)
 from backend.app.services.battle_service import BattleService
 from backend.app.services.evolution_service import EvolutionService
 from backend.app.services.filter_service import FilterService
@@ -19,7 +23,13 @@ router = APIRouter(prefix=settings.API_PREFIX)
 # ENDPOINTS CON DEPENDENCY INJECTION
 
 
-@router.get("/pokemon/{identifier}", tags=["Pokemon"])
+@router.get(
+    "/pokemon/{identifier}",
+    tags=["Pokemon"],
+    response_model=PokemonDetail,
+    status_code=status.HTTP_200_OK,
+    summary="Obtener los detalles de un Pokemon",
+)
 async def get_pokemon(
     identifier: str, pokemon_service: PokemonService = Depends(get_pokemon_service)
 ):
@@ -29,10 +39,22 @@ async def get_pokemon(
 
     except ValueError as e:
         # Se captura el error con un Value Error si la API devuelve un 404
-        raise HTTPException(status_code=404, detail=str(e)) from e
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e)) from e
+
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Error interno al procesar el motor analítico: {e!s}",
+        ) from e
 
 
-@router.get("/pokemon/{identifier}/evolution", tags=["Evolution"])
+@router.get(
+    "/pokemon/{identifier}/evolution",
+    tags=["Evolution"],
+    response_model=EvolutionNode,
+    status_code=status.HTTP_200_OK,
+    summary="Obtener las evoluciones de un Pokemon y sus requisitos",
+)
 async def get_evolution_chain(
     identifier: str,
     evolution_service: EvolutionService = Depends(get_evolution_service),
@@ -45,10 +67,21 @@ async def get_evolution_chain(
         return asdict(node) if node is not None else None
 
     except ValueError as e:
-        raise HTTPException(status_code=404, detail=str(e)) from e
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e)) from e
+
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Error interno al procesar el motor analítico: {e!s}",
+        ) from e
 
 
-@router.get("/filter", tags=["Filter"])
+@router.get(
+    "/filter",
+    tags=["Filter"],
+    status_code=status.HTTP_200_OK,
+    summary="Obtener filtros de estadistica, generación o tipo de un Pokemon",
+)
 async def get_filtered_pokemons(
     pokemon_type: str | None = Query(None, description="Tipo elemental del Pokemon"),
     generation: int | None = Query(None, description="Generación (1, 2, etc.)"),
@@ -76,18 +109,21 @@ async def get_filtered_pokemons(
             min_speed=min_speed,
         )
 
+    except ValueError as e:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e)) from e
+
     except Exception as e:
         raise HTTPException(
-            status_code=500,
-            detail=f"Error interno al procesar el filtrado analítico: {e!s}",
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Error interno al procesar el motor analítico: {e!s}",
         ) from e
 
 
 @router.get(
     "/pokemon/{identifier}/effectiveness",
+    tags=["Battle"],
     response_model=PokemonEffectiveness,
     status_code=status.HTTP_200_OK,
-    tags=["Battle"],
     summary="Obtener la efectividad elemental estrategica de un Pokemon",
 )
 async def get_pokemon_effectiveness(
@@ -100,11 +136,19 @@ async def get_pokemon_effectiveness(
         pokemon_data = pokemon_service.get_pokemon_detail(identifier)
         pokemon_types = pokemon_data.types
 
+        effectiveness = battle_service.calculate_effectiveness(pokemon_types)
+
+        return PokemonEffectiveness(
+            weaknesses=effectiveness.get("weaknesses", []),
+            resistances=effectiveness.get("resistances", []),
+            immunities=effectiveness.get("immunities", []),
+        )
+
+    except ValueError as e:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e)) from e
+
     except Exception as e:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Pokemon no encontrado"
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Error interno al procesar el motor analítico: {e!s}",
         ) from e
-
-    effectiveness = battle_service.calculate_effectiveness(pokemon_types)
-
-    return PokemonEffectiveness(**effectiveness)
