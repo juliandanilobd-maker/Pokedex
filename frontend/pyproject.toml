@@ -1,0 +1,65 @@
+[tool.ruff]
+line-length = 88
+exclude = [
+    ".venv",
+    "venv",
+    "env",
+    ".git",
+    "__pycache__",
+    ".pytest_cache",
+    ".mypy_cache",
+    ".vscode",
+]
+
+[tool.ruff.lint]
+select = [
+    # Pycodestyle
+    "E",
+    "W",
+    # Pyflakes
+    "F",
+    # isort
+    "I",
+    # flake8-bugbear
+    "B",
+    # pyupgrade
+    "UP",
+    # comprehensions
+    "C4",
+    # simplificaciones
+    "SIM",
+    # buenas prácticas en excepciones
+    "TRY",
+    # buenas prácticas generales
+    "RET",
+    # argumentos booleanos mal usados
+    "FBT",
+    # imports innecesarios
+    "TID",
+    # reglas de Ruff
+    "RUF",
+]
+
+ignore = [
+    # mensajes largos en excepciones
+    "TRY003",
+    # streamlit usa parámetros booleanos en firmas constantemente
+    "FBT001",
+    # streamlit usa booleanos por defecto en los componentes
+    "FBT002",
+    "B008"
+]
+
+fixable = ["ALL"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "auto"
+docstring-code-format = true
+docstring-code-line-length = 88
+
+[tool.ruff.lint.isort]
+combine-as-imports = true
+force-single-line = false
+split-on-trailing-comma = true

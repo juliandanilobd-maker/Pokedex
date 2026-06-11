@@ -235,3 +235,19 @@ Todas las modificaciones relevantes del proyecto serán registradas aquí.
 ### CI
 - Tests funcionales e2e y de integración para el endpoint Battle Service.
 - Verificación y linteado con Ruff.
+
+## [0.4.0] - Frontend MVP
+### Funcionalidades añadidas
+- Inicialización del módulo de frontend utilizando Streamlit.
+- Estructura de navegación modular para separar las diferentes paginas en la UI.
+- Diseño y configuración de la página para mostrar, filtros de busqueda, busquedas individuales, detalles de evoluciones, sistemas de eficiencia en batalla.
+- Integración de herramientas de calidad para el código del frontend.
+
+## [0.4.0-alpha] Frontend base e Infraestructura Multipágina
+### Funcionalidades añadidas
+- Configuración del punto de entrada centralizado, ruteo automático.
+- Inicialización estricta y segura del estado de sesión.
+
+### CI
+- Configuración del pyproject.toml del frontend.
+- Configuración de .yml para linteo y formateo del frontend.
