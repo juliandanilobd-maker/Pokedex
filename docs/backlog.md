@@ -429,15 +429,15 @@ Centralizar e implementar el consumo de los endpoints del backend.
 
 ## Historia 10.1 - Desarrollar el API Client del Frontend
 ### Prioridad: ALTA.
-### Estado: PENDIENTE.
+### Estado: COMPLETADO.
 
 #### Descripción
 Como sistema frontend, necesito un cliente HTTP unificado para encapsular la comunicación con el backend y gestionar los errores o fallos.
 
 ### Criterios de aceptación
-- [] Crear el cliente base utilizando requests.
-- [] Implementar la función de control de salud, consumiendo el endpoint '/health' del backend.
-- [] Añadir comportamiento defensivo para manejo de errores.
+- [x] Crear el cliente base utilizando requests.
+- [x] Implementar la función de control de salud, consumiendo el endpoint '/health' del backend.
+- [x] Añadir comportamiento defensivo para manejo de errores.
 
 ---
 # Epica 11 - Componentes Visuales

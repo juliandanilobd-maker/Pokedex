@@ -248,6 +248,18 @@ Todas las modificaciones relevantes del proyecto serán registradas aquí.
 - Configuración del punto de entrada centralizado, ruteo automático.
 - Inicialización estricta y segura del estado de sesión.
 
+### Arreglado
+- .yml mejorado para trabajar en frontend y backend.
+- test_Dataset.py de integration tests borrado debido a su ineficiencia, para aplicarlo se deberia correr el script etl en cada test.
+
 ### CI
 - Configuración del pyproject.toml del frontend.
 - Configuración de .yml para linteo y formateo del frontend.
+
+## [0.4.0-beta] - Cliente HTTP e Inyección de dependencias
+### Funcionalidade añadidas
+- Cliente que consume los endpoints del backend.
+- Clases incializadas para manejar de forma estandarizada y evitar que se rompa el frontend en casos de errores del backend.
+
+### CI
+- Verificación y linteado con Ruff.
