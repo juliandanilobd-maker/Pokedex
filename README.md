@@ -4,66 +4,44 @@
 
 Pokedex App es un sistema modular backend construido con FastAPI, diseñado para consumir la PokeAPI, procesar datos de Pokemon y exponerlos mediante una API REST escalable.
 
-Esta versión v0.3.0 se centra exclusivamente en implementar un sistema inteligente de calculo de daños de acuerdo a los tipos Pokemon.
+Esta versión v0.4.0 se centra exclusivamente en implementar un frontend que permita al usuario interactuar con la Pokedex, de forma simple y entretenida.
 
 ## Estado del proyecto
 
-- Versión: 0.3.0 - Battle Inteligence.
-- Estado: Funcional con motor de análisis de efectividad elemental y lógica de daño.
-- Enfoque: Extracción de matrices de daño, cálculo de efectividad en tipos duales.
+- Versión: 0.4.0 - Frontend MVP.
+- Estado: Funcional con frontend interactuable.
+- Enfoque: Creación de una interfaz gráfico de usuario, desacoplada, sencilla y entretenida para el usuario.
 
 
 ## Estructura del proyecto
 
 El proyecto está organizado una arquitectura modular por capas, diseñado para ser escalable y que permita separación de responsabilidades.
 
+```text
 Pokedex/
 │
 ├── backend/
-│   └── app/
-│       ├── api/
-│       ├── services/
-│       │       ├──PokemonService
-│       │       ├──EvolutionService 
-│       │       ├──FilterService 
-│       │       └──BattleService # Nueva capa lógica para v0.3.0
-│       ├── data/
-│       │       ├──scripts/ dataset_generator # Script ETL
-│       │       └──pokemon_dataset # Dataset local  
-│       ├── clients/
-│       │       └──PokeAPIClient
-│       ├── cache/
-│       │       └──CacheManager
-│       ├── models/
-│       │       └──PokemonModels # Estructuras Pydantic de datos y efectividad
-│       ├── parsers/
-│       │       └──Pokemon/Evolution/TypeParser
-│       ├── core/
-│       │       └──config
-│       ├── dependencies/
-│       │       └──dependencias
-│       └── utils/
-│
+├── frontend/
+│       └── streamlit_folder/
+│                       ├── api/: Cliente HTTP que consume los endpoints del backend.
+│                       ├── components/: Componentes visuales (Cards, badges)
+│                       ├── pages/: Diseño de paginas secundarias de navegación.
+│                       ├── utils/: Constantes de diseño, paletas de colores y estilos CSS.
+│                       ├── views/: Orquestación y maquetación de las páginas principales.
+│                       └── Pokedex.py: Punto de entrada principal a la aplicación.
 ├── tests/
 └── docs/
-
+```
 ## Responsabilidad de capas
-- api/: Endpoints REST.
-- services/: Lógica de negocio.
-- clients/: Comunicación con PokeAPI.
-- cache/: Sistema de almacenamiento local (SQLite).
-- models/: Modelos internos del sistema.
-- parsers/: Transformación de datos externos.
-- core/: Configuración base del sistema.
-- dependencies/: Inyección de dependencias.
-- utils/: Utilidades generales.
+- backend/: Servidor FastAPI. Contiene las reglas de negocio, el motor analítico de efectividad, parsers de modelos Pydantic y el cliente de persistencia en caché.
+- frontend/: Servidor en Streamlit. Se encarga de capturar las interacciones del usuario, renderizar componentes visuales y consumir los datos procesados por el backend.
 
 ## Flujo del sistema
 
-Request del cliente --> FastAPI router --> Capa de Servicios --> Capa de cache --> PokeAPI Client (si no hay cache) --> Parser pasa a Modelos internos --> Respuesta
+Request del cliente --> Streamlit (Frontend) --> FastAPI router (Backend) --> Capa de Servicios --> Caché SQLite --> PokeAPI Client (si no hay cache) --> Parser --> Modelos Pydantic --> Respuesta
 
-### Flujo de bósqueda local (v0.2.0)
-Request Filtros --> FastAPI router --> Capa de servicios --> Dataset Local --> Respuesta normalizada
+### Flujo de búsqueda local con filtros
+Request Filtros --> Streamlit (Frontend) --> FastAPI router (Backend) --> Capa de Servicios --> Dataset Local --> Respuesta normalizada
 
 ## Funciones implementadas (v0.3.0)
 
@@ -73,40 +51,33 @@ Request Filtros --> FastAPI router --> Capa de servicios --> Dataset Local --> R
 - Sistema preparado para escalar.
 
 ### Backend
-- Motor analítico de efectividad.
-- Nuevo endpoint.
-- Algoritmo de resolución matemática para efectividad.
+- Lógica de negocio interna.
+- Persistencia de datos.
+- Resiliencia de red.
 
-### Integración externa
-- Amplicación de servicios.
-- Manejo de errores controlado.
-
-### Cache
-- Persistencia con SQLite para datos crudos de PokeAPI.
-- Para el sistema de filtros, el cache se configura el dataset local.
+### Frontend
+- Diseño y estructura de interfaz de usuario.
+- Renderizado de componentes visuales.
+- Consumo del backend.
 
 ### Calidad
 - Tests unitarios con pytest.
 - CI básico con GitHub Actions.
 - Validación automática en push.
+- Cobertura del mayor del 90%.
 
 ## Tecnologías
-- Python 3.11
-- FastAPI
-- Uvicorn
-- SQLite
-- Pytest
-- Requests
-- PokeAPI
-- Ruff
+- Lenguaje de programación: Python 3.11
+- Framework backend: FastAPI & Uvicorn
+- Framework Frontend: Streamlit
+- Persistencia de datos: SQLite & JSON estructurado
+- Herramientas de calidad: Ruff (Linteado & Formateado) y Pytest (Suite de pruebas y cobertura)
+- Clientes de Red: Requests & HTTPAdapter/urlib3
 
 ## Limitaciones de esta versón
-Esta versión no incluye el frontend, ya que el enfoque es exclusivamente backend core.
+El frontend en esta fase se encuentra en MVP (Mínimo Producto Viable), la interfaz inicial cubre los flujos iniciales de búsqueda (Detalles de un Pokemon, filtros de búsqueda, evoluciones Pokemon, effectividad en combate), renderizado de tarjetas básicas y paneles de información.
 
-El frontend Streamlit, será incorporado en futuras versiones (≥ v0.4.0)
+Esta versión no incluye pruebas automatizadas para el frontend (UI Testing o E2E con Playwright/Selenium); las pruebas en el pipeline de CI se limitan a la validación de calidad de código con Ruff para el frontend y cobertura mayor al 90% del backend.
 
-## Contibuciones
-Me encantaría tu ayuda para mejorar el código, cualquier pull es bienvenido, para cambios importantes abre un issue por favor.
-
-
-
+## Contribuciones
+¡Me encantaría tu ayuda para mejorar la Pokedex! Cualquier Pull Request es bienvenida. Para cambios importantes abre un Issue primero, para discutir lo que deseas modificar.
