@@ -282,3 +282,18 @@ Todas las modificaciones relevantes del proyecto serán registradas aquí.
 
 ### CI
 - Verificación y linteado con Ruff.
+
+## [0.4.0-epsilon] - Pantallas de Home, Busqueda Individual y por Filtros
+### Funcionalidades añadidas
+- Home: Pantalla de aterrizaje inicial.
+- Busqueda Individual: Implementado el motor de busqueda por filtros, añadido el motor automatizado de Pokemon del día.
+- Integrado el estado de sesión para manejar redirecciones externas y mediante botón físico.
+- Busqueda por Filtros: Diseño de los paneles de filtros, mapeo en español de los tipos, añadida galería de columnas con diseño para redigirse a vista al detalle.
+
+### Arreglado
+- Sincronización de variables, para busquedas individuales se permite uso de nombre o ID, sin embargo para busqueda por filtros al redirigirse a vista al detalle es más eficiente identificar el 'pokemon_seleccionado' mediante ID.
+- Arreglo de returns muertos redundantes.
+- Saneamiento del HTML y CSS.
+
+### CI
+- Verificación y linteado con Ruff.
