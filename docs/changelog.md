@@ -264,11 +264,21 @@ Todas las modificaciones relevantes del proyecto serán registradas aquí.
 ### CI
 - Verificación y linteado con Ruff.
 
-## [0.4.0-gamma] - Pokemon Card y Badges elementales
+## [0.4.0-gamma] - Carta Pokemon
 ### Funcionalidades añadidas
 - Estilos CSS de carta coleccionable Pokemon inyectable.
 - Renderizado de carta Pokemon.
 - Armado por partes de una estructura de carta Pokemon y ensamblado.
 
 ### CI
-- Verificación y linteado y Ruff.
+- Verificación y linteado con Ruff.
+
+## [0.4.0-delta] - Gráficos de radar, árbol evolutivo, vista al detalle Pokemon y badges de tipos
+### Funcionalidades añadidas
+- Lógica de renderizado de los gráficos de radar.
+- Representación de estadísticas de un Pokemon en un gráfico.
+- Lógica de renderizado y representación al detalle del Pokemon, caracteristicas, sprites, flavor text.
+- Badges de tipos de acuerdo a la efectibidad en combate.
+
+### CI
+- Verificación y linteado con Ruff.
