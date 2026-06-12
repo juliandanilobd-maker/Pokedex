@@ -475,16 +475,16 @@ Orquestar los componentes visuales y las interacciones del usuario para buscar m
 
 ## Historia 12.1 - Pantallas de busqueda
 ### Prioridad: ALTA.
-### Estado: EN CURSO.
+### Estado: COMPLETADO.
 
 #### Descripción
 Como usuario, quiero buscar cualquier Pokemon por su nombre o ID para buscar directamente su información.
 
 ### Criterios de aceptación
-- [] Diseño e implementación de páginas Home, busqueda individual y busqueda por filtros.
-- [] Implementar un control de entrada de texto.
-- [] Validar la cadena ingresada por el usuario, saneando faltas de ortografía, minúsculas, mayúsculas, etc.
-- [] Redirigir el flujo de control hacia la vista de detalles al confirmar una búsqueda válida.
+- [x] Diseño e implementación de páginas Home, busqueda individual y busqueda por filtros.
+- [x] Implementar un control de entrada de texto.
+- [x] Validar la cadena ingresada por el usuario, saneando faltas de ortografía, minúsculas, mayúsculas, etc.
+- [x] Redirigir el flujo de control hacia la vista de detalles al confirmar una búsqueda válida.
 
 
 ---
