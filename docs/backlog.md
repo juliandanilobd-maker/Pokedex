@@ -456,33 +456,36 @@ Como usuario, me gustaría visualizar resumenes, imagenes y diseños de los Poke
 - [x] Crear el fichero que inyecte estilos CSS condicionales en base a la paleta de colores de cada tipo elemental.
 - [x] Los componentes reciben los datos en forma de texto plano, manteniendose desacoplados de la lógica del backend.
 
-## Historia 11.2 - Paneles detallados de estadísticas y motor de combate
+## Historia 11.2 - Paneles detallados de estadísticas/características y motor de combate
 ### Prioridad: MEDIA.
-### Estado: PENDIENTE.
+### Estado: COMPLETADO.
 
 #### Descripción
-Como usuario, me gustaría observar un desglose analítico de estadisticas y efectividades de combate.
+Como usuario, me gustaría observar un desglose analítico de estadisticas, caracteristicas y efectividades en combate de un Pokemon.
 
 ### Criterios de aceptación
-- [] Crear el fichero que aloje gráficos para mostrar HP, Ataque, Defensa y Velocidad.
-- [] Construir un componente de visualización de vista al detalle de un Pokemon.
-
+- [x] Crear el fichero que aloje gráficos para mostrar HP, Ataque, Defensa y Velocidad.
+- [x] Construir un componente de visualización de vista al detalle de un Pokemon.
+- [x] Construir un componente de visualización de efectividad en combate.
+- [x] Construir un componente de visualización del árbol evolutivo.
 ---
 # Epica 12 - Motor de búsqueda y filtros en UI
 ## Objetivo
 Orquestar los componentes visuales y las interacciones del usuario para buscar mediante filtros, busqueda individual.
 
-## Historia 12.1 - Implementar gráficos de estadísticas
+## Historia 12.1 - Pantallas de busqueda
 ### Prioridad: ALTA.
-### Estado: PENDIENTE.
+### Estado: EN CURSO.
 
 #### Descripción
 Como usuario, quiero buscar cualquier Pokemon por su nombre o ID para buscar directamente su información.
 
 ### Criterios de aceptación
+- [] Diseño e implementación de páginas Home, busqueda individual y busqueda por filtros.
 - [] Implementar un control de entrada de texto.
 - [] Validar la cadena ingresada por el usuario, saneando faltas de ortografía, minúsculas, mayúsculas, etc.
 - [] Redirigir el flujo de control hacia la vista de detalles al confirmar una búsqueda válida.
+
 
 ---
 # Epica 13 - Vista al detalle y cobertura de calidad
