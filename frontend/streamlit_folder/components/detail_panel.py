@@ -265,10 +265,10 @@ def render_pokemon_detail_panel(
                 for w_x4 in weaknesses_x4
             )
             st.markdown(
-                '<small style="' \
-                    'opacity: 0.7;' \
-                    'display: block;' \
-                    'margin-top: 10px"> ⚔️ DAÑO CRITICO (RECIBE DAÑO x4.0)</small>',
+                '<small style="'
+                "opacity: 0.7;"
+                "display: block;"
+                'margin-top: 10px"> ⚔️ DAÑO CRITICO (RECIBE DAÑO x4.0)</small>',
                 unsafe_allow_html=True,
             )
             st.markdown(
@@ -280,10 +280,10 @@ def render_pokemon_detail_panel(
                 type_badge(str(w), get_type_translated(str(w))) for w in weaknesses
             )
             st.markdown(
-                '<small style="' \
-                    'opacity: 0.7;' \
-                    'display: block;' \
-                    'margin-top: 10px"> 🔥 DAÑO AUMENTADO (RECIBE DAÑO x2.0)</small>',
+                '<small style="'
+                "opacity: 0.7;"
+                "display: block;"
+                'margin-top: 10px"> 🔥 DAÑO AUMENTADO (RECIBE DAÑO x2.0)</small>',
                 unsafe_allow_html=True,
             )
             st.markdown(
@@ -295,10 +295,10 @@ def render_pokemon_detail_panel(
                 type_badge(str(r), get_type_translated(str(r))) for r in resistances
             )
             st.markdown(
-                '<small style="' \
-                    'opacity: 0.7;' \
-                    'display: block;' \
-                    'margin-top: 10px;"> 🛡️ RESISTENTE (DAÑO x0.5)</small>',
+                '<small style="'
+                "opacity: 0.7;"
+                "display: block;"
+                'margin-top: 10px;"> 🛡️ RESISTENTE (DAÑO x0.5)</small>',
                 unsafe_allow_html=True,
             )
             st.markdown(
@@ -311,10 +311,10 @@ def render_pokemon_detail_panel(
                 for r_x025 in resistances_x025
             )
             st.markdown(
-                '<small style="' \
-                    'opacity: 0.7;' \
-                    'display: block;' \
-                    'margin-top: 10px"> ⛓️ DAÑO REDUCIDO (DAÑO x0.25)</small>',
+                '<small style="'
+                "opacity: 0.7;"
+                "display: block;"
+                'margin-top: 10px"> ⛓️ DAÑO REDUCIDO (DAÑO x0.25)</small>',
                 unsafe_allow_html=True,
             )
             st.markdown(
@@ -327,10 +327,10 @@ def render_pokemon_detail_panel(
                 type_badge(str(i), get_type_translated(i)) for i in immunities
             )
             st.markdown(
-                '<small style="' \
-                    'opacity: 0.7;' \
-                    'display: block;' \
-                    'margin-top: 10px;"> 🌟 INMUNIDADES (DAÑO x0.0)</small>',
+                '<small style="'
+                "opacity: 0.7;"
+                "display: block;"
+                'margin-top: 10px;"> 🌟 INMUNIDADES (DAÑO x0.0)</small>',
                 unsafe_allow_html=True,
             )
             st.markdown(

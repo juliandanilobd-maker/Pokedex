@@ -137,22 +137,30 @@ def load_dataset() -> list[dict]:
         tipo=None, gen=None, hp=0, attack=0, defense=0, speed=0, base_exp=0
     )
 
-def api_get_simulation(n: int, pokemon_type: str, generation: int, seed: int | None = None) -> dict:
 
-    params = {"n":n, "pokemon_type": pokemon_type, "generation": generation}
+def api_get_simulation(
+    n: int, pokemon_type: str, generation: int, seed: int | None = None
+) -> dict:
+
+    params = {"n": n, "pokemon_type": pokemon_type, "generation": generation}
 
     if seed is not None:
         params["seed"] = seed
 
-    response = requests.post (f"{BASE_URL}/analytics/simulate", params=params, timeout=5)
+    response = requests.post(f"{BASE_URL}/analytics/simulate", params=params, timeout=5)
     response.raise_for_status()
 
     return response.json()
 
-def api_get_prediction(primary_type: str, secondary_type: str | None = None) -> list[dict]:
+
+def api_get_prediction(
+    primary_type: str, secondary_type: str | None = None
+) -> list[dict]:
 
     params = {"primary_type": primary_type, "secondary_type": secondary_type}
-    response = requests.get(f"{BASE_URL}/analytics/prediction", params=params, timeout=5)
+    response = requests.get(
+        f"{BASE_URL}/analytics/prediction", params=params, timeout=5
+    )
     response.raise_for_status()
 
     return response.json()

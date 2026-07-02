@@ -82,18 +82,19 @@ def manejar_diagnostico(funcion_api, *args, **kwargs):
     except Exception as e:
         print(f"\n⚠️ Anomalía inesperada en el laboratorio: {e}")
 
+
 def _submenu_resultados(data: list) -> None:
 
     total = len(data)
 
     while True:
         print(f"\n📦 Total de resultados disponibles: {total}")
-        print("-"*60)
+        print("-" * 60)
         print("[1] Ver más resultados (indicar cantidad):")
         print("[2] Ver TODOS los resultados:")
         print("[3] Buscar un resultado por nombre específico:")
         print("[0] Volver")
-        print("-"*60)
+        print("-" * 60)
 
         opcion = input("🔎 Qué quieres hacer con los resultados").strip()
 
@@ -118,7 +119,8 @@ def _submenu_resultados(data: list) -> None:
                 continue
 
             coincidencias = [
-                item for item in data
+                item
+                for item in data
                 if termino in str(item.get(next(iter(item)), "")).lower()
             ]
             if not coincidencias:
@@ -208,8 +210,13 @@ def cmd_simulate(args: argparse.Namespace) -> None:
 def cmd_export_filter(args: argparse.Namespace) -> None:
     try:
         resultados = api_get_filtered(
-            tipo=args.type, gen=args.gen,
-            hp=0, attack=0, defense=0, speed=0, base_exp=0,
+            tipo=args.type,
+            gen=args.gen,
+            hp=0,
+            attack=0,
+            defense=0,
+            speed=0,
+            base_exp=0,
         )
         ruta = export_filtered_pokemons_csv(resultados)
         print(f"\n✅ CSV generado en: {ruta}")
@@ -240,6 +247,7 @@ def cmd_chart_type(args: argparse.Namespace) -> None:
         print_type_average_chart(type_stats, metric=args.metric)
     except Exception as e:
         print(f"\n❌ Error al graficar: {e}")
+
 
 def menu_filtro_analitico() -> None:
 
@@ -510,6 +518,7 @@ def menu_grafico_promedio_tipo() -> None:
     except Exception as e:
         print(f"\n ❌ Error al graficar: {e}")
 
+
 def menu_predicciones() -> None:
 
     limpiar_pantalla()
@@ -517,10 +526,11 @@ def menu_predicciones() -> None:
     print("🔮 MODULO DE PRUEBA: PREDICCIONES - STATS POR TIPO Y GENERACION")
     print("=============================================================")
     primary_type = input("🔹 Tipo elemental primario (ej. water, grass, fire):").strip()
-    secondary_type_raw = input("🔹 Tipo elemental secundario OPCIONAL (ej. water, grass, fire):").strip()
+    secondary_type_raw = input(
+        "🔹 Tipo elemental secundario OPCIONAL (ej. water, grass, fire):"
+    ).strip()
 
     secondary_type = secondary_type_raw if secondary_type_raw else None
-
 
     try:
         manejar_diagnostico(api_get_prediction, primary_type, secondary_type)
@@ -531,6 +541,7 @@ def menu_predicciones() -> None:
     except Exception as e:
         print(f"\n ❌ Error al predecir: {e}")
 
+
 def menu_simulaciones() -> None:
 
     limpiar_pantalla()
@@ -538,7 +549,9 @@ def menu_simulaciones() -> None:
     print("🎰 MODULO DE PRUEBA: SIMULACIONES - GENERA POKEMON ALEATORIO")
     print("=============================================================")
     n = int(input("🔹 Cantidad de Pokemon a generar (máximo 1000):").strip())
-    pokemon_type = input(("🔹 Tipo elemental primario (ej. water, grass, fire):")).strip()
+    pokemon_type = input(
+        ("🔹 Tipo elemental primario (ej. water, grass, fire):")
+    ).strip()
     generation = int(input("🔹 Generación a la que pertenecerán (1-9):").strip())
     seed_raw = input("🔹 Semilla aleatoría OPCIONAL (Enter para omitir):").strip()
 
@@ -552,6 +565,7 @@ def menu_simulaciones() -> None:
 
     except Exception as e:
         print(f"\n ❌ Error al simular: {e}")
+
 
 def laboratorio_principal() -> None:
 
@@ -572,7 +586,7 @@ def laboratorio_principal() -> None:
         "14": menu_grafico_pokemon_individual,
         "15": menu_grafico_promedio_tipo,
         "16": menu_predicciones,
-        "17": menu_simulaciones
+        "17": menu_simulaciones,
     }
     while True:
         limpiar_pantalla()
@@ -623,6 +637,7 @@ def laboratorio_principal() -> None:
             print("\n⚠️ Selección inválida.")
             time.sleep(1)
 
+
 def contruir_parser() -> argparse.ArgumentParser:
 
     parser = argparse.ArgumentParser(
@@ -647,8 +662,7 @@ def contruir_parser() -> argparse.ArgumentParser:
             python cli.py export filter --type grass
             python cli.py export top --metric hp --n 10
             python cli.py chart pokemon pikachu
-            python cli.py chart type --metric avg_speed"""
-
+            python cli.py chart type --metric avg_speed""",
     )
 
     sub = parser.add_subparsers(dest="comando", metavar="comando")
@@ -665,14 +679,32 @@ def contruir_parser() -> argparse.ArgumentParser:
     p_eff.add_argument("identifier", help="Nombre o ID")
     p_eff.set_defaults(func=cmd_effectiveness)
 
-    p_filter = sub.add_parser("filter", help="Filtrar Pokemon por tipo, generación y stats")
-    p_filter.add_argument("--type",     dest="type",     default=None, help="Tipo elemental (ej. fire)")
-    p_filter.add_argument("--gen",      dest="gen",      type=int, default=None, help="Generación (1-9)")
-    p_filter.add_argument("--hp",       dest="hp",       type=int, default=0,    help="HP mínimo")
-    p_filter.add_argument("--attack",   dest="attack",   type=int, default=0,    help="Ataque mínimo")
-    p_filter.add_argument("--defense",  dest="defense",  type=int, default=0,    help="Defensa mínima")
-    p_filter.add_argument("--speed",    dest="speed",    type=int, default=0,    help="Velocidad mínima")
-    p_filter.add_argument("--base-exp", dest="base_exp", type=int, default=0,    help="Experiencia base mínima")
+    p_filter = sub.add_parser(
+        "filter", help="Filtrar Pokemon por tipo, generación y stats"
+    )
+    p_filter.add_argument(
+        "--type", dest="type", default=None, help="Tipo elemental (ej. fire)"
+    )
+    p_filter.add_argument(
+        "--gen", dest="gen", type=int, default=None, help="Generación (1-9)"
+    )
+    p_filter.add_argument("--hp", dest="hp", type=int, default=0, help="HP mínimo")
+    p_filter.add_argument(
+        "--attack", dest="attack", type=int, default=0, help="Ataque mínimo"
+    )
+    p_filter.add_argument(
+        "--defense", dest="defense", type=int, default=0, help="Defensa mínima"
+    )
+    p_filter.add_argument(
+        "--speed", dest="speed", type=int, default=0, help="Velocidad mínima"
+    )
+    p_filter.add_argument(
+        "--base-exp",
+        dest="base_exp",
+        type=int,
+        default=0,
+        help="Experiencia base mínima",
+    )
     p_filter.set_defaults(func=cmd_filter)
 
     p_team = sub.add_parser("team", help="Gestión de equipos Pokemon")
@@ -680,7 +712,9 @@ def contruir_parser() -> argparse.ArgumentParser:
 
     t_create = team_sub.add_parser("create", help="Crear un equipo")
     t_create.add_argument("name", help="Nombre del equipo")
-    t_create.add_argument("ids", type=int, nargs="+", metavar="ID", help="IDs de Pokemon (máx 6)")
+    t_create.add_argument(
+        "ids", type=int, nargs="+", metavar="ID", help="IDs de Pokemon (máx 6)"
+    )
     t_create.set_defaults(func=cmd_team_create)
 
     t_list = team_sub.add_parser("list", help="Listar todos los equipos")
@@ -697,43 +731,69 @@ def contruir_parser() -> argparse.ArgumentParser:
     p_analytics = sub.add_parser("analytics", help="Análisis estadístico del dataset")
     analytics_sub = p_analytics.add_subparsers(dest="analytics_cmd", metavar="análisis")
 
-    analytics_sub.add_parser("average", help="Promedios de stats por tipo elemental") \
-        .set_defaults(func=cmd_average)
+    analytics_sub.add_parser(
+        "average", help="Promedios de stats por tipo elemental"
+    ).set_defaults(func=cmd_average)
 
     a_top = analytics_sub.add_parser("top", help="Top-N Pokemon por métrica")
-    a_top.add_argument("--metric", default="attack",
-                       choices=["hp", "attack", "defense", "speed", "base_exp"],
-                       help="Estadística a ordenar (default: attack)")
-    a_top.add_argument("--n", type=int, default=10, help="Cantidad de resultados (default: 10)")
+    a_top.add_argument(
+        "--metric",
+        default="attack",
+        choices=["hp", "attack", "defense", "speed", "base_exp"],
+        help="Estadística a ordenar (default: attack)",
+    )
+    a_top.add_argument(
+        "--n", type=int, default=10, help="Cantidad de resultados (default: 10)"
+    )
     a_top.set_defaults(func=cmd_top)
 
-    analytics_sub.add_parser("anomalies", help="Detectar Pokemon con stats anómalas") \
-        .set_defaults(func=cmd_anomalies)
+    analytics_sub.add_parser(
+        "anomalies", help="Detectar Pokemon con stats anómalas"
+    ).set_defaults(func=cmd_anomalies)
 
     a_pred = analytics_sub.add_parser("prediction", help="Predecir stats para un tipo")
     a_pred.add_argument("primary_type", help="Tipo elemental primario (ej. fire)")
-    a_pred.add_argument("--secondary", dest="secondary_type", default=None,
-                        help="Tipo secundario opcional (ej. flying)")
+    a_pred.add_argument(
+        "--secondary",
+        dest="secondary_type",
+        default=None,
+        help="Tipo secundario opcional (ej. flying)",
+    )
     a_pred.set_defaults(func=cmd_prediction)
 
     a_sim = analytics_sub.add_parser("simulate", help="Generar Pokemon sintéticos")
-    a_sim.add_argument("--n",    type=int, default=10,      help="Cantidad a generar (default: 10)")
-    a_sim.add_argument("--type", dest="type", default="normal", help="Tipo elemental (default: normal)")
-    a_sim.add_argument("--gen",  dest="gen",  type=int, default=1, help="Generación (default: 1)")
-    a_sim.add_argument("--seed", dest="seed", type=int, default=None, help="Semilla aleatoria opcional")
+    a_sim.add_argument(
+        "--n", type=int, default=10, help="Cantidad a generar (default: 10)"
+    )
+    a_sim.add_argument(
+        "--type", dest="type", default="normal", help="Tipo elemental (default: normal)"
+    )
+    a_sim.add_argument(
+        "--gen", dest="gen", type=int, default=1, help="Generación (default: 1)"
+    )
+    a_sim.add_argument(
+        "--seed", dest="seed", type=int, default=None, help="Semilla aleatoria opcional"
+    )
     a_sim.set_defaults(func=cmd_simulate)
 
     p_export = sub.add_parser("export", help="Exportar resultados a CSV")
     export_sub = p_export.add_subparsers(dest="export_cmd", metavar="destino")
 
-    e_filter = export_sub.add_parser("filter", help="Exportar resultado de filtro a CSV")
+    e_filter = export_sub.add_parser(
+        "filter", help="Exportar resultado de filtro a CSV"
+    )
     e_filter.add_argument("--type", dest="type", default=None, help="Tipo elemental")
-    e_filter.add_argument("--gen",  dest="gen",  type=int, default=None, help="Generación")
+    e_filter.add_argument(
+        "--gen", dest="gen", type=int, default=None, help="Generación"
+    )
     e_filter.set_defaults(func=cmd_export_filter)
 
     e_top = export_sub.add_parser("top", help="Exportar Top-N a CSV")
-    e_top.add_argument("--metric", default="attack",
-                       choices=["hp", "attack", "defense", "speed", "base_exp"])
+    e_top.add_argument(
+        "--metric",
+        default="attack",
+        choices=["hp", "attack", "defense", "speed", "base_exp"],
+    )
     e_top.add_argument("--n", type=int, default=10)
     e_top.set_defaults(func=cmd_export_top)
 
@@ -745,9 +805,12 @@ def contruir_parser() -> argparse.ArgumentParser:
     c_poke.set_defaults(func=cmd_chart_pokemon)
 
     c_type = chart_sub.add_parser("type", help="Promedio por tipo en barras ASCII")
-    c_type.add_argument("--metric", default="avg_attack",
-                        choices=["avg_hp", "avg_attack", "avg_defense", "avg_speed"],
-                        help="Métrica a graficar (default: avg_attack)")
+    c_type.add_argument(
+        "--metric",
+        default="avg_attack",
+        choices=["avg_hp", "avg_attack", "avg_defense", "avg_speed"],
+        help="Métrica a graficar (default: avg_attack)",
+    )
     c_type.set_defaults(func=cmd_chart_type)
 
     return parser
