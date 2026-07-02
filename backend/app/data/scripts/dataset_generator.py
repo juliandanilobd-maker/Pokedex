@@ -97,7 +97,7 @@ def process_single_pokemon(entry: dict, session: requests.Session) -> dict | Non
         "defense": stats_map.get("defense", 0),
         "speed": stats_map.get("speed", 0),
         "base_exp": data.get("base_experience", 0),
-        "sprite": sprite_url,
+        "sprite_url": sprite_url,
     }
 
 

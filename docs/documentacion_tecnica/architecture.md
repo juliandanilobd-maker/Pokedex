@@ -133,7 +133,7 @@ Estructura principal
             ├──cache/
             │
             │       **RESPONSABILIDAD:** adapta nuestra infraestructura de datos.
-            │           - Inicializa infraestructura del cache, es decir, si no hay datos, crea la base de datos y define el esquema cache.
+            │           - Inicializa infraestructura de la cache, es decir, si no hay datos, crea la base de datos y define el esquema cache.
             │           - Guarda datos en la cache.
             │           - Obtiene datos desde la cache.
             │           - Manejo del Time to Live (ttl).
@@ -258,6 +258,8 @@ Estructura principal
 
 - docs/: Contiene los archivos api_design.md, architecture.md, backlog.md, changelog.md, psuedocode.md, roadmap.md.
 - tests/: en esta carpeta yacen los tests, unitarios, de integracion y funcionales para la aplicacion y la aseguracion de la calidad del codigo.
+- client_cli.py: Es el módulo que contiene el client que utilizará el cli, para una consolo interactiva
+- cli.py: Contiene el modulo cli, con un menu interactivo
 ```
 
 # Tecnologias que usa la app
@@ -275,11 +277,11 @@ Estructura principal
 2. Streamlit llama al backend, a nuestra FastAPI.
 3. FastAPI recibe la peticion mediante routes.py.
 4. Routes.py llama al Services correspondiente.
-5. Services consulta inicialmente el cache.
-6. Si no existe la informacion en el cache ---> se hace el llamado a la API externa.
+5. Services consulta inicialmente la cache.
+6. Si no existe la informacion en la cache ---> se hace el llamado a la API externa.
 7. Se recibe la respuesta y se parsean los datos.
 8. Los datos parseados se transforman en un Models interno.
-9. Se almacenan los datos en el cache.
+9. Se almacenan los datos en la cache.
 10. Se envia la respuesta a frontend.
 11. Frontend muestra los datos de acuerdo al diseño escrito.
 12. Usuario ve la respuesta de su busqueda en UI.

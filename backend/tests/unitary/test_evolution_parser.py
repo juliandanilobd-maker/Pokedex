@@ -1,8 +1,9 @@
 from backend.app.parsers.evolution_parser import parse_evolution_tree
 
 
-def test_parse_simple_evolution_chain():
-
+def test_parse_simple_evolution_tree():
+    """Este test comprueba el parseo correcto de un árbol evolutivo con línea directa,
+    sin ramificaciones"""
     raw_data = {
         "species": {"name": "bulbasaur"},
         "evolution_details": [],
@@ -29,7 +30,7 @@ def test_parse_simple_evolution_chain():
     venusaur_node = ivysaur_node.children[0]
 
     # Probamos la extracción correcta de datos,
-    # pero tambien que maneja la ausencia de datalles de evolución
+    # pero tambien que maneja la ausencia de detalles de evolución
     assert evolution.name == "bulbasaur"
     assert evolution.evolution_details is None
     assert len(evolution.children) == 1
@@ -48,7 +49,8 @@ def test_parse_simple_evolution_chain():
 
 # Probamos la cobertura del parser evolution en un árbol con distintas ramificaciones
 def test_parse_branched_evolution():
-
+    """Este test comprueba el parseo correcto de un árbol evolutivo con varias
+    ramificaciones"""
     raw_data = {
         "species": {"name": "eevee"},
         "evolves_to": [
@@ -77,9 +79,9 @@ def test_parse_branched_evolution():
     assert evolution.children[7].name == "sylveon"
 
 
-# Comprobamos que se obtienen todos los disparadores de una evolución
 def test_parse_evolution_all_details():
-
+    """Este test comprueba que se parsean correctamente los detalles de una evolución
+    (los requisitos)"""
     raw_data = {
         "species": {"name": "eevee"},
         "evolves_to": [
@@ -201,13 +203,14 @@ def test_parse_evolution_all_details():
     assert sylveon_details[0]["min_affection"] == 2
 
 
-# Comprobamos el comportamiento frente a diccionarios vacíos o corruptos
 def test_parse_evolution_empty_node():
-
+    """Este test comprueba el comportamiento del parser frente a diccionarios vacíos o
+    corruptos, se captura correctamente el
+    error y no colapsa la app"""
     raw_data = {}
 
     evolution = parse_evolution_tree(raw_data)
 
-    assert evolution.name == ""
+    assert evolution.name == "desconocido"
     assert evolution.children == []
     assert evolution.evolution_details is None
