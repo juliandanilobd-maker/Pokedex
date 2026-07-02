@@ -2,6 +2,10 @@ from __future__ import annotations
 
 import datetime
 
+from __future__ import annotations
+
+import datetime
+
 import streamlit as st
 from components.detail_panel import render_pokemon_detail_panel
 from utils.colors import get_type_color
@@ -71,7 +75,25 @@ if st.session_state.pokemon_seleccionado:
         st.error(
             f"⚠️ Error al conectar con el Servidor: "
             f"'{st.session_state.pokemon_seleccionado}'"
+    st.write("")
+
+    try:
+        poke_data, effectiveness_data, evo_data = _fetch_pokemon_data(
+            st.session_state.pokemon_seleccionado
         )
+
+        render_pokemon_detail_panel(
+            pokemon_data=poke_data,
+            effectiveness_data=effectiveness_data,
+            evolution_data=evo_data,
+        )
+
+    except Exception as e:
+        st.error(
+            f"⚠️ Error al conectar con el Servidor: "
+            f"'{st.session_state.pokemon_seleccionado}'"
+        )
+        st.error(f"Detalle técnico: {e}")
         st.error(f"Detalle técnico: {e}")
 
 else:
