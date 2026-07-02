@@ -67,7 +67,7 @@ jobs:
           CACHE_DB_PATH: "pokemon_cache.db"
           APP_NAME: "Pokedex"
           APP_VERSION: "0.1.0"
-          API_PREFIX: "/api/v1"
+          API_PREFIX: "/api/v2"
           REQUEST_TIMEOUT: "10"
           MIN_REQUEST_DELAY: "0.1"
           CACHE_TTL: "3600"

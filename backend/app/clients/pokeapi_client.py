@@ -2,11 +2,14 @@
 Este modulo proporciona una clase que encapsula las peticiones HTTP a la API,
 maneja errores, implementa rate limiting basico y utiliza cache para evitar
 peticiones repetidas.
+Se implementa un Pool de conexiones, para evitar demora en la respuesta y
+mantener conexiones iniciadas
 """
 
+import asyncio
 import time
 
-import requests
+import httpx
 
 from backend.app.core.config import settings
 
@@ -16,6 +19,7 @@ class PokeAPIClient:
     Cliente para interactuar con la PokeAPI.
 
     Caracteristicas:
+    - Pool de conexiones, para mantener los sockets abiertos.
     - Cache automático de respuestas (SQLite).
     - Rate Limiting.
     - HTTP Client.
@@ -29,8 +33,15 @@ class PokeAPIClient:
         self.cache = cache
         self._last_request_time = 0.0
 
+        self.client = httpx.AsyncClient(timeout=settings.REQUEST_TIMEOUT)
+
+    # Generamos una función que re inicialice y mantenga con vida el client mientras
+    # el FastAPI siga activa
+    async def aclose(self):
+        await self.client.aclose()
+
     # A continuacion viene la base de las peticiones http
-    def get(self, endpoint: str) -> dict:
+    async def get(self, endpoint: str) -> dict:
         """
         Hace una peticion GET a la API.
 
@@ -54,14 +65,14 @@ class PokeAPIClient:
         if cached is not None:
             return cached
 
-        self._rate_limit()
+        await self._rate_limit()
 
         try:
-            response = requests.get(url, timeout=settings.REQUEST_TIMEOUT)
+            response = await self.client.get(url)
             response.raise_for_status()
             data = response.json()
 
-        except requests.exceptions.HTTPError as e:
+        except httpx.HTTPStatusError as e:
             if e.response is not None and e.response.status_code == 404:
                 raise ValueError(
                     f"No se encontro el recurso: {endpoint}."
@@ -69,10 +80,10 @@ class PokeAPIClient:
                 ) from e
             raise
 
-        except requests.exceptions.ConnectionError as e:
+        except httpx.ConnectError as e:
             raise ConnectionError("No se pudo conectar a la PokeAPI.") from e
 
-        except requests.exceptions.Timeout as e:
+        except httpx.TimeoutException as e:
             raise TimeoutError(
                 "La peticion a la PokeAPI tardo demasiado. "
                 "Intenta de nuevo en unos momentos."
@@ -98,7 +109,7 @@ class PokeAPIClient:
 
         return f"{self.base_url.rstrip('/')}/{endpoint.strip('/')}"
 
-    def _rate_limit(self):
+    async def _rate_limit(self):
 
         elapsed = time.time() - self._last_request_time
 
@@ -106,21 +117,21 @@ class PokeAPIClient:
         # al umbral de peticiones configurado en settings, esto protege nuestra IP
         # de bloqueos por ráfagas
         if elapsed < settings.MIN_REQUEST_DELAY:
-            time.sleep(settings.MIN_REQUEST_DELAY - elapsed)
+            await asyncio.sleep(settings.MIN_REQUEST_DELAY - elapsed)
 
     # Usamos identifier en lugar de name or id, con la finalidad de permitir
     # cualquiera de estos para la busqueda
-    def _normalize_identifier(self, value: str) -> str:
+    def _normalize_identifier(self, value: str | int) -> str:
         return str(value).lower().strip()
 
-    def get_pokemon(self, identifier: str) -> dict:
+    async def get_pokemon(self, identifier: str) -> dict:
         clean_id = self._normalize_identifier(identifier)
-        return self.get(f"pokemon/{clean_id}")
+        return await self.get(f"pokemon/{clean_id}")
 
-    def get_species(self, identifier: str | int) -> dict:
+    async def get_species(self, identifier: str | int) -> dict:
         clean_id = self._normalize_identifier(str(identifier))
-        return self.get(f"pokemon-species/{clean_id}")
+        return await self.get(f"pokemon-species/{clean_id}")
 
-    def get_type(self, type_name: str) -> dict:
+    async def get_type(self, type_name: str) -> dict:
         clean_type_name = self._normalize_identifier(type_name)
-        return self.get(f"type/{clean_type_name}")
+        return await self.get(f"type/{clean_type_name}")

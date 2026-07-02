@@ -6,16 +6,14 @@ from backend.main import app
 client = TestClient(app)
 
 
-# Comprobamos la inicialización y lifespan del servidor
 def test_server_initialization_and_lifespan():
-
+    """Este test comprueba la inicialización correcta del servidor"""
     response = client.get("/health")
     assert response.status_code == 200
 
 
-# Comprobamos el endpoint health
 def test_health_endpoint_response():
-
+    """Este test comprueba la respuesta del endpoint health"""
     response = client.get("/health")
     data = response.json()
 
@@ -24,18 +22,16 @@ def test_health_endpoint_response():
     assert data["app"] == settings.APP_NAME
 
 
-# Testeamos la integración del router a la API
 def test_api_router_is_included_correctly():
-
+    """Este test comprueba si se incluye correctamente el router a la API"""
     endpoint_url = f"{settings.API_PREFIX}/pokemon/pikachu"
     response = client.get(endpoint_url)
 
     assert response.status_code != 404, "El router de la API no está bien configurado"
 
 
-# Comprobamos la infraestructura CORS
 def test_cors_middleware_allows_valid_origins():
-
+    """Este test comprueba la infraestructura CORS"""
     headers = {
         "Origin": "http://localhost:8501",
         "Access-Control-Request-Method": "GET",

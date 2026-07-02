@@ -297,3 +297,11 @@ Todas las modificaciones relevantes del proyecto serán registradas aquí.
 
 ### CI
 - Verificación y linteado con Ruff.
+
+## [1.0.0] - MVP Funcional y refactorizado
+### Funcionalidades añadidas
+- Alertas automáticas, de equipos con baja cobertura, Pokemons que se salen de las métricas de estadísticas, y Pokemon del día.
+- Reportes CSV automáticos, por tipo o generacion de Pokemon, por top en estadísticas.
+
+### Arreglado
+- Velocidad de llamadas a la API, se generó un nuevo endpoint que unifica las 3 llamadas requeridas para renderizar un Pokemon Individual, reduciendo los tiempos de llamada de más de 10 segundos a menos de 3

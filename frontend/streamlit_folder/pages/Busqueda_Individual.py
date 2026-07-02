@@ -3,10 +3,8 @@ from __future__ import annotations
 import datetime
 
 import streamlit as st
-
-from frontend.streamlit_folder.components.detail_panel import (
-    render_pokemon_detail_panel,
-)
+from components.detail_panel import render_pokemon_detail_panel
+from utils.colors import get_type_color
 
 st.set_page_config(
     page_title="Pokedex - Búsqueda Individual",
@@ -18,24 +16,28 @@ if "pokemon_seleccionado" not in st.session_state:
     st.session_state.pokemon_seleccionado = None
 
 
-def _get_pokemon_of_the_day_id(total_pokemon: int = 151) -> int:
-    today = datetime.date.today()
-    date_score = today.year + (today.month * 31) + today.day
-
+@st.cache_data
+def _get_pokemon_of_the_day_id(
+    today_date: datetime.date, total_pokemon: int = 1025
+) -> int:
+    date_score = today_date.year + (today_date.month * 31) + today_date.day
     return (date_score % total_pokemon) + 1
 
 
+@st.cache_data(show_spinner="Accediendo a la base de datos")
 def _fetch_pokemon_data(identifier: str) -> tuple[dict, dict, dict | None]:
-    from frontend.streamlit_folder.api.backend_client import BackendClient
+    from api.backend_client import BackendClient
 
     backend_client = BackendClient()
 
-    poke_data = backend_client.get_pokemon(identifier)
+    full_response = backend_client.get_pokemon_full_detail(identifier)
 
-    effectiveness_data = backend_client.get_effectiveness(identifier)
+    poke_data = full_response.get("pokemon") or {}
+
+    effectiveness_data = full_response.get("effectiveness") or {}
 
     try:
-        evo_data = backend_client.get_evolution(identifier)
+        evo_data = full_response.get("evolution")
 
     except Exception:
         evo_data = None
@@ -44,7 +46,7 @@ def _fetch_pokemon_data(identifier: str) -> tuple[dict, dict, dict | None]:
 
 
 if st.session_state.pokemon_seleccionado:
-    col_back, _ = st.columns([1, 4])
+    col_back, _ = st.columns([1.5, 4])
     with col_back:
         if st.button(
             "⬅ Volver al Buscador", type="secondary", use_container_width=True
@@ -65,11 +67,30 @@ if st.session_state.pokemon_seleccionado:
             evolution_data=evo_data,
         )
 
+    except Exception:
+        st.error(
+            f"⚠️ Error al conectar con el Servidor: "
+            f"'{st.session_state.pokemon_seleccionado}'"
+        )
+    st.write("")
+
+    try:
+        poke_data, effectiveness_data, evo_data = _fetch_pokemon_data(
+            st.session_state.pokemon_seleccionado
+        )
+
+        render_pokemon_detail_panel(
+            pokemon_data=poke_data,
+            effectiveness_data=effectiveness_data,
+            evolution_data=evo_data,
+        )
+
     except Exception as e:
         st.error(
             f"⚠️ Error al conectar con el Servidor: "
             f"'{st.session_state.pokemon_seleccionado}'"
         )
+        st.error(f"Detalle técnico: {e}")
         st.error(f"Detalle técnico: {e}")
 
 else:
@@ -79,67 +100,106 @@ else:
             margin-bottom: 0px;
         ">🔍 Inspección Individual de Pokemon
         </h2>
-        """,
-        unsafe_allow_html=True,
-    )
-
-    st.markdown(
-        """
         <p style="
             opacity: 0.7;
+            margin-bottom: 25px;
         ">
-        Ingresa las credenciales del espécimen en la barra de búsqueda o analiza nuestra
-        sugerencia diara.
+            Ingresa las credenciales del espécimen en la barra de busqueda,
+            o analiza nuestra sugerencia diaria de entrenamiento.
         </p>
         """,
         unsafe_allow_html=True,
     )
 
-    pokemon_name = (
-        st.text_input(
-            "Identificador del Pokemon",
-            placeholder="Ejemplo: pikachu, charizard, 149...",
-        )
-        .strip()
-        .lower()
-    )
+    col_input, col_btn = st.columns([4, 1], gap="small", vertical_alignment="bottom")
 
-    if st.button("Buscar", type="primary") and pokemon_name:
+    with col_input:
+        st.markdown(
+            """
+            <label style="
+                font-size: 14px;
+                font-weight: bold;
+                opacity: 0.9;
+            ">Identificador Pokemon</label>
+            """,
+            unsafe_allow_html=True,
+        )
+        pokemon_name = (
+            st.text_input(
+                "Identificador del Pokemon",
+                placeholder="Ejemplo: pikachu, charizard, 149",
+                label_visibility="collapsed",
+            )
+            .strip()
+            .lower()
+        )
+
+    with col_btn:
+        searched_clicked = st.button("Buscar", type="primary", use_container_width=True)
+
+    if searched_clicked and pokemon_name:
         st.session_state.pokemon_seleccionado = pokemon_name
         st.rerun()
 
     st.markdown("---")
-    pokemon_dia_id = str(_get_pokemon_of_the_day_id())
+
+    today = datetime.date.today()
+    pokemon_dia_id = str(_get_pokemon_of_the_day_id(today))
 
     try:
-        poke_data, effectiveness_data, evo_data = _fetch_pokemon_data(pokemon_dia_id)
+        poke_dia, eff_dia, evo_dia = _fetch_pokemon_data(pokemon_dia_id)
+
+        dia_name = poke_dia.get("name", "Desconocido").capitalize()
+        dia_types = poke_dia.get("types", ["normal"])
+        dia_color = get_type_color(dia_types[0])
+        dia_flavor = poke_dia.get("flavor_text", "Sin descripción registrada")
 
         st.markdown(
             f"""
             <div style="
-                background-color: rgba(255, 165, 0, 0.08);
-                padding: 12px;
-                border-radius: 8px;
-                border-left: 4px solid orange;
+                background-color: linear-gradient(
+                                      135deg, rgba(
+                                        255, 165, 0, 0.08
+                                      ) 0%, rgba(0,0,0,0) 100%);
+                padding: 20px;
+                border-radius: 12px;
+                border-left: 5px solid orange;
                 margin-bottom: 25px;
-                font-size: 14px;
             ">
-                🎯 <strong>Recomendación Estratégica del Día:</strong>
-                No has ingresado ninguna consulta aún.
-                Mientras decides a quién buscar, analiza la ficha técnica de
                 <span style="
+                    background-color: orange;
+                    color: black;
+                    padding: 3px 8px;
+                    border-radius: 5px;
+                    font-size: 11px;
+                    font-weight: bold;
+                    letter-spacing: 1px;
+                ">🎯 Recomendación Estratégica del Día:</span>
+                <h4 style="
+                    margin-top: 10px;
+                    margin-bottom: 5px;
+                ">¿No sabes que Pokemon buscar?</4>
+                <p style="
+                    opacity: 0.8;
+                    font-size: 14px;
+                    margin-bottom: 0px;
+                ">
+                Mientras decides a quién buscar, analiza la ficha técnica de
+                <strong style="
+                    color: {dia_color};
                     text-transform: capitalize;
                     font-weight: bold;
-                ">{poke_data["name"]}</span> (# {poke_data["id"]}).
+                ">{dia_name}</strong> (# {poke_dia.get("id", 0):03d}).
+                </p>
             </div>
             """,
             unsafe_allow_html=True,
         )
 
         render_pokemon_detail_panel(
-            pokemon_data=poke_data,
-            effectiveness_data=effectiveness_data,
-            evolution_data=evo_data,
+            pokemon_data=poke_dia,
+            effectiveness_data=eff_dia,
+            evolution_data=evo_dia,
         )
 
     except Exception as e:

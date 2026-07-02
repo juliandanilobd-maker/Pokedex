@@ -31,22 +31,23 @@ from backend.app.data.scripts.dataset_generator import (
         (1025, 9),
     ],
 )
-
-# Verificamos el cálculo matemático por generaciones
 def test_get_generation_by_id(pokemon_id: int, expected_gen: int):
+    """Este test comprueba que se obtiene la generación correcta en correspondencia con
+    su número"""
     assert get_generation_by_id(pokemon_id) == expected_gen
 
 
-# Comprobamos que la sesión se configure con adaptadores HTTP y reintentos
 def test_create_session():
+    """Este test comprueba que la sesión para crear el dataset se configura con
+    adaptadores HTTP y reintentos"""
     session = create_session()
 
     assert session.adapters is not None
     assert "https://" in session.adapters
 
 
-# Comprobamos que el load_dataset devuelva la lista si el archivo JSON existe
 def test_load_dataset_success():
+    """Este test comprueba que se devuelva la lista del dataset si el JSON existe"""
     mock_data = [{"id": 1, "name": "bulbasaur"}]
 
     json_content = json.dumps(mock_data)
@@ -56,8 +57,9 @@ def test_load_dataset_success():
         assert result == mock_data
 
 
-# Comprobamos que si el dataset no existe, se capture el error
 def test_load_dataset_file_not_found():
+    """Este test comprueba que si el dataset no existe, o no se encuentra el archivo se
+    captura el error"""
     with patch("builtins.open", side_effect=FileNotFoundError):
         result = load_dataset()
         assert result == []
@@ -65,6 +67,8 @@ def test_load_dataset_file_not_found():
 
 # Comprobamos el ciclo de vida completo del script ETL
 def test_dataset_pokemon_execution_with_mocks():
+    """Este test comprueba el comportamiento final del script ETL, es decir, que se
+    extraen los datos y se organizan de forma correcta utilizando una mock response"""
 
     mock_index_response = MagicMock()
     mock_index_response.json.return_value = {
@@ -110,8 +114,9 @@ def test_dataset_pokemon_execution_with_mocks():
         assert session_instance.get.call_count == 3
 
 
-# Comprobamos el comportamiento frente a errores de API
 def test_dataset_pokemon_api_critical_error():
+    """Este test comprueba que se captura el error si es que se corta la comunicación
+    con la API o bloquean las peticiones"""
     target_session = "backend.app.data.scripts.dataset_generator.create_session"
 
     with patch(target_session) as mock_session:
@@ -122,9 +127,9 @@ def test_dataset_pokemon_api_critical_error():
         assert session_instance.get.call_count == 1
 
 
-# Comprovamos el except cuando falla una request procesando single_pokemon
 def test_process_single_pokemon_exception():
-
+    """Este test comprueba que se captura el error si no se logra procesar
+    adecuadamente un Pokemon"""
     from backend.app.data.scripts.dataset_generator import process_single_pokemon
 
     mock_session = MagicMock()
@@ -137,8 +142,8 @@ def test_process_single_pokemon_exception():
     assert resultado is None
 
 
-# Comprobamos el comportamiento cuando el procesamiento llega a los 100 Pokemons
 def test_Dataset_pokemon_progress_print():
+    """Este test comprueba que se lanza un mensaje por cada 100 Pokemons procesados"""
     mock_results = [{"name": f"poke_{i}", "url": f"http://api/{i}"} for i in range(101)]
 
     mock_index_response = MagicMock()
@@ -166,8 +171,8 @@ def test_Dataset_pokemon_progress_print():
         assert session_instance.get.call_count == 102
 
 
-# Comprobamos el exception si el escritor del archivo falla
 def test_dataset_pokemon_write_exception():
+    """Este test comprueba que se captura el error si no se logra escribir el archivo"""
 
     mock_index_response = MagicMock()
     mock_index_response.json.return_value = {"results": []}

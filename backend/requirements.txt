@@ -4,3 +4,5 @@ uvicorn
 requests
 Pydantic
 Pydantic-settings
+httpx
+pandas>=2.0.0

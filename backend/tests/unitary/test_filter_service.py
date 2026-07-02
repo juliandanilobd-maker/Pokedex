@@ -50,9 +50,8 @@ def mock_dataset() -> list[dict[str, Any]]:
     ]
 
 
-# Comprobamos el filtrado por tipo
 def test_filter_by_type(mock_dataset: list[dict[str, Any]]):
-
+    """Este test comprueba el filtrado de datos por tipo de Pokemon"""
     service = FilterService()
 
     service._pokemon_data = mock_dataset
@@ -63,9 +62,8 @@ def test_filter_by_type(mock_dataset: list[dict[str, Any]]):
     assert result[0]["name"] == "charmander"
 
 
-# Comprobamos el filtrado por generación
 def test_filter_by_generation(mock_dataset: list[dict[str, Any]]):
-
+    """Este test comprueba el filtrado de datos por generación Pokemon"""
     service = FilterService()
 
     service._pokemon_data = mock_dataset
@@ -76,9 +74,9 @@ def test_filter_by_generation(mock_dataset: list[dict[str, Any]]):
     assert result[0]["name"] == "chikorita"
 
 
-# Probamos la busqueda con filtros combinados
 def test_filter_by_combined_stats(mock_dataset: list[dict[str, Any]]):
-
+    """Este test comprueba el filtrado de datos por filtros combinados,
+    tomando los Pokemons que cumplen con estos"""
     service = FilterService()
 
     service._pokemon_data = mock_dataset
@@ -95,7 +93,7 @@ def test_filter_by_combined_stats(mock_dataset: list[dict[str, Any]]):
 
 
 def test_filter_by_hp(mock_dataset: list[dict[str, Any]]):
-
+    """Este test comprueba el filtrado de datos por estadísticas"""
     service = FilterService()
 
     service._pokemon_data = mock_dataset
@@ -110,10 +108,9 @@ def test_filter_by_hp(mock_dataset: list[dict[str, Any]]):
     assert "charmander" not in [p["name"] for p in result_base_exp]
 
 
-# Asegura el control de excepciones ante un archivo de datos corrupto
 @patch("pathlib.Path.exists")
 def test_load_data_corrupt_json(mock_exists: MagicMock):
-
+    """Este test comprueba el manejo de errores en caso de un archivo corrupto"""
     mock_exists.return_value = True
     service = FilterService()
 
@@ -124,9 +121,8 @@ def test_load_data_corrupt_json(mock_exists: MagicMock):
     assert data == []
 
 
-# Comprobamos el comportamiento cuando el archivo no existe
 def test_load_data_file_not_found():
-
+    """Este test comprueba el manejo de errores en caso de que el archivo no exista"""
     service = FilterService()
 
     with (
@@ -141,9 +137,9 @@ def test_load_data_file_not_found():
         )
 
 
-# Comprobamos el comportamiento en la excepción de lectura de disco (Permission Error)
 def test_load_data_generic_exception():
-
+    """Este test comprueba el manejo de un error de lectura de discos:
+    Permission Error"""
     service = FilterService()
 
     with (
@@ -159,9 +155,8 @@ def test_load_data_generic_exception():
         )
 
 
-# Comprobamos el comportamiento frente a JSON válido pero es un dicionario u objeto
 def test_load_data_invalid_format_json():
-
+    """Este test comprueba el manejo de un error de JSON en formato incorrecto"""
     service = FilterService()
     mock_bad_json = json.dumps({"status": "ok", "data": []})
 

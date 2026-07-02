@@ -54,7 +54,10 @@ class CacheManager:
                 return json.loads(value)
             except json.JSONDecodeError:
                 # Si el JSON está corrupto, lo eliminamos para hacer una nueva petición
-                conn.execute("DELETE FROM cache WHERE key=?", (key,))
+                conn.execute(
+                    "DELETE FROM cache WHERE key=?", (key,)
+                )  # Usamos ? en lugar de concatenar el texto con f-strings para
+                # evitar inyeccion de comandos SQL
 
                 conn.commit()
                 return None

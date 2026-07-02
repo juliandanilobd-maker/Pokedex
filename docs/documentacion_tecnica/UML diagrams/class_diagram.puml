@@ -19,11 +19,11 @@ class EvolutionNode {
 }
 
 class TypeRelations {
-    +double_damage_from : list
+    +weak : list
     +double_damage_to : list
-    +half_damage_from : list
+    +resist : list
     +half_damage_to : list
-    +no_damage_from : list
+    +immune : list
     +no_damage_to : list
 }
 
