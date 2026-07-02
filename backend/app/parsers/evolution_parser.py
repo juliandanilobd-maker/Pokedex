@@ -5,7 +5,23 @@ Tranformamos la estructura de diccionarios dinámicos en un árbol de tipado de 
 EvolutionNode, estandarizando los requisitos de evolución.
 """
 
+import re
+
 from backend.app.models.pokemon_models import EvolutionNode
+
+
+def _extract_id_from_species_url(url: str) -> int:
+
+    if not url:
+        return 0
+
+    match = re.search(r"/pokemon-species/(\d+)/", url)
+    if match:
+        return int(match.group(1))
+
+    match_fallback = re.search(r"/pokemon/(\d+)/", url)
+
+    return int(match_fallback.group(1)) if match_fallback else 0
 
 
 def parse_evolution_tree(node: dict) -> EvolutionNode:
@@ -60,10 +76,23 @@ def parse_evolution_tree(node: dict) -> EvolutionNode:
     if not evolution_details:
         evolution_details = None
 
+    species_raw = node.get("species")
+
+    species_name = (
+        species_raw.get("name", "Desconocido")
+        if isinstance(species_raw, dict)
+        else "desconocido"
+    )
+    species_url = species_raw.get("url", "") if isinstance(species_raw, dict) else ""
+
+    pokemon_id = _extract_id_from_species_url(species_url)
+
+    constructed_sprite = f"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{pokemon_id}.png"
+
     return EvolutionNode(
-        name=node.get("species", {}).get("name", "")
-        if isinstance(node.get("species"), dict)
-        else "",
+        id=pokemon_id,
+        name=species_name,
+        sprite_url=constructed_sprite,
         children=children,
         visibility=True,
         evolution_details=evolution_details,

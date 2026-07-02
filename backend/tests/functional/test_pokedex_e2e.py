@@ -1,3 +1,6 @@
+"""Este módulo contiene tests funcionales E2E que recogen el comportamiento real del
+backend"""
+
 from __future__ import annotations
 
 import contextlib
@@ -35,10 +38,12 @@ def setup_functional_enviroment(monkeypatch_module):
 
 # Establecemos el flujo real E2E, una petición real a PokeAPI y almacenamiento en cache
 def test_e2e_pokemon_flow_with_real_cache():
-
-    # Realizamos la primera petición directa a la PokeAPI
+    """Este test comprueba que se realiza de forma correcta una petición a la API,
+    con todos sus subprocesos guardado en caché, consulta inicial a caché y si no se
+    encuentra, consulta a la API, y que el rendimiento de la cache
+    sea más rápido que las llamadas a la API"""
     start_time_api = time.time()
-    response_1 = functional_client.get("/api/v1/pokemon/ditto")
+    response_1 = functional_client.get("/api/v2/pokemon/ditto")
     duration_api = time.time() - start_time_api
 
     assert response_1.status_code == 200
@@ -58,7 +63,7 @@ def test_e2e_pokemon_flow_with_real_cache():
 
     # Realizamos la segunda petición al cache, a los datos guardados de la primera
     start_time_cache = time.time()
-    response_2 = functional_client.get("/api/v1/pokemon/ditto")
+    response_2 = functional_client.get("/api/v2/pokemon/ditto")
     duration_cache = time.time() - start_time_cache
 
     assert response_2.status_code == 200
@@ -72,10 +77,10 @@ def test_e2e_pokemon_flow_with_real_cache():
     )
 
 
-# Comprobamos de manera funcional real el árbol evolutivo de Charmander
 def test_e2e_evolution_real_api():
-    response = functional_client.get("/api/v1/pokemon/charmander/evolution")
-
+    """Este test comprueba una llamada real para obtener el árbol evolutivo de un
+    Pokemon (Ej. Charmander)"""
+    response = functional_client.get("/api/v2/pokemon/charmander/evolution")
     assert response.status_code == 200
 
     data = response.json()
@@ -87,20 +92,20 @@ def test_e2e_evolution_real_api():
     assert data["children"][0]["name"] == "charmeleon"
 
 
-# Comprobamos el comportamiento con cadenas no encontradas
 def test_get_evolution_chain_e2e_not_found():
-
-    response = functional_client.get("/api/v1/pokemon/missing_pokemon/evolution")
+    """Este test comprueba la captura de errores en caso de cadenas evolutivas
+    no encontradas"""
+    response = functional_client.get("/api/v2/pokemon/missing_pokemon/evolution")
     data = response.json()
 
     assert response.status_code == 404
     assert "No se encontro el recurso" in data["detail"]
 
 
-# Comprobamos el endpoint de Filter Service
 def test_endpoint_filter_by_type_functional():
-
-    response = functional_client.get("/api/v1/filter?pokemon_type=grass")
+    """Este test comprueba la recolección correcta de los parametros de busqueda en una
+    busqueda por filtros"""
+    response = functional_client.get("/api/v2/filter?pokemon_type=grass")
     data = response.json()
 
     assert response.status_code == 200
@@ -110,29 +115,38 @@ def test_endpoint_filter_by_type_functional():
         assert "grass" in [t.lower() for t in pokemon.get("types", [])]
 
 
-# Comprobamos el comportamiento frente a un error
 def test_endpoint_filter_validation_error():
-
-    response = functional_client.get("/api/v1/filter?generation=PRIMERA")
+    """Este test comprueba la captura de un error frente a un parametro de busqueda por
+    filtros invalido"""
+    response = functional_client.get("/api/v2/filter?generation=PRIMERA")
 
     assert response.status_code == 422
     assert "detail" in response.json()
 
 
-# Comprobamos el flujo real del análisis táctico de efectividad de un Pokemon
 def test_e2e_effectiveness_real_resolution():
-    response = functional_client.get("/api/v1/pokemon/charizard/effectiveness")
+    """Este test comprueba una llamada a la API para obtener la efectividad en combate
+    de un Pokemon"""
+    response = functional_client.get("/api/v2/pokemon/charizard/effectiveness")
     data = response.json()
 
     assert response.status_code == 200
     assert "ground" in data["immunities"]
-    assert "rock" in data["weaknesses"]
+    assert "bug" in data["resistances_x025"]
+    assert "grass" in data["resistances_x025"]
+    assert "fairy" in data["resistances"]
+    assert "fighting" in data["resistances"]
+    assert "fire" in data["resistances"]
     assert "steel" in data["resistances"]
+    assert "electric" in data["weaknesses"]
+    assert "water" in data["weaknesses"]
+    assert "rock" in data["weaknesses_x4"]
 
 
-# Comprobamos el comportamiento ante errores
 def test_e2e_effectiveness_not_found():
-    response = functional_client.get("/api/v1/pokemon/missing/effectiveness")
+    """Este test comprueba la captura de un error frente a una efectividad en combate
+    no encontrada"""
+    response = functional_client.get("/api/v2/pokemon/asdfgh/effectiveness")
     data = response.json()
     assert response.status_code == 404
     assert "No se encontro el recurso" in data["detail"]

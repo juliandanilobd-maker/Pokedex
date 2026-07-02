@@ -1,3 +1,6 @@
+"""En este módulo se encuentra el cliente del frontend que se comunica con el
+cliente y consume los diferentes endpoints para traer la info al frontend"""
+
 from __future__ import annotations
 
 from typing import Any
@@ -32,7 +35,7 @@ class BackendHTTPError(BackendClientError):
 
 # Cliente encargado de la comunicación con el backend
 class BackendClient:
-    BASE_URL = "http://localhost:8000/api/v1"
+    BASE_URL = "http://localhost:8000/api/v2"
     TIMEOUT = 10
 
     def _get(self, endpoint: str, params: dict[str, Any] | None = None) -> Any:
@@ -77,7 +80,7 @@ class BackendClient:
         True si el backend nos devuelve un 200 Ok, y
         False en caso contrario.
         """
-        url = self.BASE_URL.replace("/api/v1", "/health")
+        url = self.BASE_URL.replace("/api/v2", "/health")
         try:
             response = requests.get(url, timeout=3)
 
@@ -87,37 +90,33 @@ class BackendClient:
         else:
             return response.status_code == 200
 
-    def get_pokemon(self, identifier: str) -> dict[str, Any]:
-        result = self._get(f"/pokemon/{identifier}")
+    def get_pokemon(self, identifier: str | str) -> dict[str, Any]:
+        result = self._get(f"/pokemon/{str(identifier).lower().strip()}")
 
         return result if isinstance(result, dict) else {}
 
-    def get_evolution(self, identifier: str) -> dict[str, Any]:
-        result = self._get(f"/pokemon/{identifier}/evolution")
+    def get_evolution(self, identifier: str | str) -> dict[str, Any]:
+        result = self._get(f"/pokemon/{str(identifier).lower().strip()}/evolution")
 
         return result if isinstance(result, dict) else {}
 
-    def get_type(self, type_name: str) -> dict[str, Any]:
-        result = self._get(f"/types/{type_name}")
-
-        return result if isinstance(result, dict) else {}
-
-    def filter_pokemons(self, **params: Any) -> list[dict[str, Any]]:
+    def filter_pokemons(self, cleaned_params: dict[str, Any]) -> list[dict[str, Any]]:
 
         cleaned_params = {
-            k: v for k, v in params.items() if v is not None and v != 0 and v != ""
+            k: v
+            for k, v in cleaned_params.items()
+            if v is not None and v != 0 and v != ""
         }
 
-        result = self._get("/pokemon/filter", params=cleaned_params)
+        result = self._get("/filter", params=cleaned_params)
 
         return result if isinstance(result, list) else []
 
-    def get_effectiveness(self, identifier: str) -> dict[str, Any]:
-        result = self._get(f"/pokemon/{identifier}/effectiveness")
+    def get_effectiveness(self, identifier: str | int) -> dict[str, Any]:
+        result = self._get(f"/pokemon/{str(identifier).lower().strip()}/effectiveness")
 
         return result if isinstance(result, dict) else {}
 
-    def get_flavor_text(self, identifier: str) -> dict[str, Any]:
-        result = self._get(f"/pokemon/{identifier}/flavor_text")
-
+    def get_pokemon_full_detail(self, identifier: str | int) -> dict[str, Any]:
+        result = self._get(f"/pokemon/{str(identifier).lower().strip()}/full-detail")
         return result if isinstance(result, dict) else {}

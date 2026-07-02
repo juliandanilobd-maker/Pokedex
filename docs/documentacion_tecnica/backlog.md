@@ -495,23 +495,23 @@ Garantizar una adecuada integración de la vista de los diferentes Pokemon y ase
 
 ## Historia 13.1 - Construir la Pantalla de Detalle
 ### Prioridad: ALTA.
-### Estado: PENDIENTE.
+### Estado: COMPLETADO.
 
 #### Descripción
 Como usuario, quiero ver la información del Pokemon reunida al ingresar a su detalle
 
 ### Criterios de aceptación
-- [] Desarrollar la lógica de orquestación.
-- [] Consumir adecuadamente los endpoints del backend.
-- [] Asegurar que el flujo permita retirnar a la Home de forma limpia.
+- [x] Desarrollar la lógica de orquestación.
+- [x] Consumir adecuadamente los endpoints del backend.
+- [x] Asegurar que el flujo permita retornar a la Home de forma limpia.
 
 ## Historia 13.2 - Integración y calidad del Frontend
 ### Prioridad: ALTA.
-### Estado: EN CURSO.
+### Estado: COMPLETADO.
 
 #### Descripción
 Como desarrollador, necesito que las herramientas automatizadas de nuestro CI validen la cálidad del código.
 
 ### Criterios de aceptación
 - [x] Modificar el workflow para incluir el frontend unicamente para linteo y formateo con Ruff.
-- [] Asegurar que el pipeline complete adecuadamente, pasan los tests del backend y el linteado/formateo del frontend.
+- [X] Asegurar que el pipeline complete adecuadamente, pasan los tests del backend y el linteado/formateo del frontend.

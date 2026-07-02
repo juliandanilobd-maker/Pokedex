@@ -51,7 +51,7 @@ Al ser una app que usa APIs esta arquitectura definira como el exterior se comun
 - Frontend/api
 
 En las dos nos encontramos la carpeta api/, que ademas de ser parte de los modulos, aqui se encuentran las bases para que nuestra app se comunique con la API externa y a su ves, el puente que conecta el Frontend con el Backend.
-    
+
 ### Separacion de responsabilidades
 En correspondencia con nuestra arquitectura por modulos, se generan varias carpetas y archivos, cada uno con unas cuantas lineas de codigo, debido a que tienen una responsabilidad unica clara, esta separacion permite llevar un flujo ordenado de trabajo, asi como hacer una adecuada factorizacion del codigo y disminuir los errores, y mejorar el troubleshooting.
 
@@ -67,7 +67,7 @@ Se muda a una nueva y mejorada arquitectura con la finalidad de escalar en un fu
  - Reactapp.
  - Tets.
 
- 
+
 ## Endpoints principales
 
 | Metodo | Endpoint | Description | Estado |
@@ -77,13 +77,13 @@ Se muda a una nueva y mejorada arquitectura con la finalidad de escalar en un fu
 | GET | /health | Estado de la API | Disponible v0.1.0 |
 | GET | /pokemon/filter?<tipo de filtro deseado>: <ul><li>generation=1</ li><li>type=fire</li><li>min_hp = 50</li><li>min_attack=40</li><li>min_defense=30</li><li>min_base_exp=50</li></ul> | Filtra la busqueda de acuerdo al parametro deseado | Disponible v0.2.0 |
 | GET | /pokemon/evolution/{name or id} | Obtiene la cadena evolutiva | Disponible v0.3.0
-| GET | /pokemon/compare | Compara un Pokemon con otro | Planificado v1.1.0
-| GET | /pokemon/team-builder | Constructor de equipos Pokemon | Planificado v1.2.0
+| GET | /pokemon/compare | Compara un Pokemon con otro | Planificado v2.1.0
+| GET | /pokemon/team-builder | Constructor de equipos Pokemon | Planificado v2.2.0
 
 ## Manejo de datos
 
 ### Endpoint: GET Pokemon
-Request: 
+Request:
     GET /pokemon/pikachu
 Response:
     {
@@ -103,7 +103,7 @@ Response:
     }
 
 ### Endpoint: GET Filtro de busqueda
-Request: 
+Request:
     GET /pokemon/type/fire
 Response:
     {
@@ -119,7 +119,7 @@ Response:
 ### Endpoint: GET Evolucion
 Request:
     GET pokemon/evolution/charmander
-Response: 
+Response:
     {
         "base": "charmander",
         "evolutions": [
@@ -129,7 +129,7 @@ Response:
     }
 
 ### Endpoint: GET Comparador
-Request: 
+Request:
     GET /pokemon/compare?first=pikachu&second=raichu
 Response:
     {
@@ -165,11 +165,3 @@ Response:
 | 404 | Pokemon no encontrado |
 | 422 | Error de validacion |
 | 500 | Error interno |
-
-
-
-
-
-
-
-

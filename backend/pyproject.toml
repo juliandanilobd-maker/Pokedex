@@ -46,7 +46,7 @@ ignore = [
     # fastapi usa bools en firmas
     "FBT001",
     "FBT002",
-    "B008"
+    "B008",
 ]
 
 fixable = ["ALL"]
@@ -66,6 +66,7 @@ force-single-line = false
 split-on-trailing-comma = true
 
 [tool.pytest.ini_options]
+asyncio_mode = "auto"
 addopts = "--cov=app --cov-report=term-missing --cov-fail-under=90"
 
 testpaths = ["tests"]

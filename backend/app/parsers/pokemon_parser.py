@@ -5,7 +5,7 @@ Tranformamos la estructura de diccionarios dinámicos en un parser que extrae da
 de forma segura y escalable.
 """
 
-from backend.app.models.pokemon_models import PokemonBasic, PokemonDetail
+from backend.app.models.pokemon_models import FlavorText, PokemonBasic, PokemonDetail
 
 
 def extract_types(data):
@@ -18,7 +18,9 @@ def extract_types(data):
 
 
 # Cambiamos la configuración para evitar busgs con nombres o diccionarios vacíos
-def parse_pokemon(data: dict) -> PokemonDetail:
+def parse_pokemon(
+    data: dict, flavor_text_entry: FlavorText | None = None
+) -> PokemonDetail:
     """
     Transformamos la respuesta de la API en un modelo de dominio PokemonDetail
 
@@ -64,6 +66,7 @@ def parse_pokemon(data: dict) -> PokemonDetail:
         base_experience=data.get("base_experience", 0),
         sprite_url=sprite_url,
         sprite_shiny=sprite_shiny,
+        flavor_text_entry=flavor_text_entry,
     )
 
 
@@ -82,22 +85,47 @@ def parse_pokemon_basic(data: dict) -> PokemonBasic:
     )
 
 
-def parse_pokemon_description(species: dict) -> str:
-    """Extrae y parsea la descripción del Pokemon en el idioma especificado"""
+def parse_pokemon_description(species: dict) -> FlavorText:
+    """
+    Extrae y parsea la descripción del Pokemon en el idioma especificado
+    """
     entries = species.get("flavor_text_entries", [])
 
     for entry in entries:
         language = entry.get("language", {}).get("name", "")
         # Prioriza español con fallback automático a ingles
-        if language in ("es", "en"):
+        if language == "es":
             # Parseo y limpieza: las descripciones de la PokeAPI conservan
             # ROMs originales de GameBoy/DS y mantienen saltos de línea (\n),
             # saltos de página (\f), los cuales normalizamos.
-            return (
+            cleaned_text = (
                 entry.get("flavor_text", "")
                 .replace("\n", " ")
                 .replace("\f", " ")
                 .replace("\r", " ")
                 .strip()
             )
-    return ""
+            version_name = entry.get("version", {}).get("name", "Desconocida")
+
+            return FlavorText(text=cleaned_text, language="es", version=version_name)
+
+    for entry in entries:
+        language = entry.get("language", {}).get("name", "")
+
+        if language == "en":
+            cleaned_text = (
+                entry.get("flavor_text", "")
+                .replace("\n", " ")
+                .replace("\f", " ")
+                .replace("\r", " ")
+                .strip()
+            )
+            version_name = entry.get("version", {}).get("name", "Desconocido")
+
+            return FlavorText(text=cleaned_text, language="en", version=version_name)
+
+    return FlavorText(
+        text="Sin descripción registrada en los archivos de la Pokedex.",
+        language="es",
+        version="Desconocida",
+    )

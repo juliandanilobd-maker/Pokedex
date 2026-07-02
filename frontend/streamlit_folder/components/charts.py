@@ -5,68 +5,74 @@ Es módulo contiene los componentes de gráficos y visualizaciones de estadísti
 from __future__ import annotations
 
 import plotly.graph_objects as go
+from utils.colors import hexadecimal_to_rgba
 
 
 def render_stats_radar_chart(
     stats: dict[str, int], pokemon_name: str, color_hex: str
 ) -> go.Figure:
 
-    categories = [
-        "HP",
-        "Ataque",
-        "Defensa",
-        "Velocidad",
-        "Ataque Especial",
-        "Defensa Esepcial",
-    ]
+    labels = {
+        "hp": "HP",
+        "attack": "Ataque",
+        "defense": "Defensa",
+        "speed": "Velocidad",
+        "special-attack": "At. Especial",
+        "special-defense": "Def. Espcial",
+    }
 
-    values = [
-        stats.get("hp", 0),
-        stats.get("Ataque", 0),
-        stats.get("Defensa", 0),
-        stats.get("Velocidad", 0),
-        stats.get("Ataque Especial", 0),
-        stats.get("Defensa Esepcial", 0),
-    ]
+    stats_keys = list(stats.keys())
 
     # En un gráfico de radar el circuito tiene que cerrarse reconectando
     # el primer valor con el último
-    categories.append(categories[0])
-    values.append(values[0])
+    categories = [labels.get(k, k.capitalize()) for k in stats_keys]
+    values = [int(stats[k]) for k in stats_keys]
+
+    categories_closed = [*categories, [categories[0]]]
+    values_closed = [*values, [values[0]]]
 
     fig = go.Figure()
 
+    color_fill_rgba = hexadecimal_to_rgba(color_hex, alpha=0.3)
+
     fig.add_trace(
         go.Scatterpolar(
-            r=values,
-            theta=categories,
+            r=values_closed,
+            theta=categories_closed,
             fill="toself",
             name=pokemon_name.capitalize(),
-            fillcolor=f"{color_hex}33",
+            fillcolor=color_fill_rgba,
             line={"color": color_hex, "width": 2.5},
             marker={"size": 6, "color": color_hex},
             hoverinfo="r+theta",
         )
     )
 
+    max_stat = max(values)
+    upper_limit = max(100, max_stat + 5)
+
     fig.update_layout(
         polar={
             "bgcolor": "rgba(0,0,0,0)",
             "radialaxis": {
-                "visible": "True",
-                "range": [0, 255],
+                "visible": True,
+                "range": [0, upper_limit],
                 "showticklabels": False,
-                "gridcolor": "rgba(255, 255, 255, 0.1)",
+                "gridcolor": "rgba(0, 0, 0, 0.08)",
                 "angle": 90,
             },
             "angularaxis": {
-                "gridcolor": "rgba(255, 255, 255, 0.1)",
-                "linecolor": "rgba(255, 255, 255, 0.2)",
-                "tickfont": {"size": 12, "color": "var(--text-color)"},
+                "gridcolor": "rgba(0, 0, 0, 0.08)",
+                "linecolor": "rgba(0, 0, 0, 0.1)",
+                "tickfont": {
+                    "size": 12,
+                    "color": "var(--text-color)",
+                    "family": "sans-serif",
+                },
             },
         },
         showlegend=False,
-        margin={"l": 40, "r": 40, "t": 20, "b": 20},
+        margin={"l": 45, "r": 45, "t": 15, "b": 15},
         height=320,
         paper_bgcolor="rgba(0,0,0,0)",
         plot_bgcolor="rgba(0,0,0,0)",
