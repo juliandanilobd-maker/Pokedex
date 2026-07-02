@@ -34,6 +34,22 @@ async def get_client() -> PokeAPIClient:
         _client_instance = PokeAPIClient(cache=_cache_instance)
         _client_loop = current_loop
 
+_client_instance: PokeAPIClient | None = None
+_client_loop: asyncio.AbstractEventLoop | None = None
+
+
+async def get_client() -> PokeAPIClient:
+    global _client_instance, _client_loop
+
+    try:
+        current_loop = asyncio.get_running_loop()
+    except RuntimeError:
+        current_loop = None
+
+    if _client_instance is None or _client_loop is not current_loop:
+        _client_instance = PokeAPIClient(cache=_cache_instance)
+        _client_loop = current_loop
+
     return _client_instance
 
 

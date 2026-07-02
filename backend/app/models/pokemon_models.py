@@ -9,7 +9,10 @@ from typing import Any
 
 from pydantic import BaseModel, Field
 
+from pydantic import BaseModel, Field
 
+
+class PokemonBasic(BaseModel):
 class PokemonBasic(BaseModel):
     """Representación simplificada de un Pokemon para vistas en listados o carta"""
 
@@ -19,6 +22,13 @@ class PokemonBasic(BaseModel):
     sprite_url: str
 
 
+class FlavorText(BaseModel):
+    text: str
+    language: str = "es"
+    version: str = "Desconocida"
+
+
+class PokemonDetail(BaseModel):
 class FlavorText(BaseModel):
     text: str
     language: str = "es"
@@ -39,8 +49,10 @@ class PokemonDetail(BaseModel):
     sprite_url: str
     sprite_shiny: str | None = None
     flavor_text_entry: FlavorText | None = None
+    flavor_text_entry: FlavorText | None = None
 
 
+class EvolutionNode(BaseModel):
 class EvolutionNode(BaseModel):
     """Nodo estructurado para representar los árboles de evoluciones.
 
@@ -49,7 +61,10 @@ class EvolutionNode(BaseModel):
     """
 
     id: int
+    id: int
     name: str
+    sprite_url: str
+    children: list[EvolutionNode] = Field(default_factory=list)
     sprite_url: str
     children: list[EvolutionNode] = Field(default_factory=list)
     evolution_details: list[dict[str, Any]] | None = None
@@ -57,11 +72,14 @@ class EvolutionNode(BaseModel):
 
 
 class PokemonEffectiveness(BaseModel):
+class PokemonEffectiveness(BaseModel):
     """Mapeo de las relaciones de efectividad y debilidades de acuerdo a los tipos"""
 
     weaknesses_x4: list[str]
+    weaknesses_x4: list[str]
     weaknesses: list[str]
     resistances: list[str]
+    resistances_x025: list[str]
     resistances_x025: list[str]
     immunities: list[str]
 

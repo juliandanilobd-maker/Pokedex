@@ -12,25 +12,55 @@ Ej ->
 """
 
 import asyncio
+"""
+Este es nuestro módulo de rutas, se establece un orquestador de nuestro backend.
 
+El manejo de de rutas se realiza de la siguiente manera:
+return
+Ej ->
+1. Ingreso de petición: /pokemon/{identifier}/effectiveness.
+2. Usa DI, FastAPI intercepta la llamada e inyecta los diferentes servicios.
+3. Se orquestan los diferentes servicios y sus llamados.
+4. Moldeo de la respuesta, recibe los datos y los empaqueta dentro del modelo en models.
+5. Devuelve el modelo, FastAPI valida con las reglas de acuerdo al modelo establecido.
+"""
+
+import asyncio
+
+from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi import APIRouter, Depends, HTTPException, status
 
 from backend.app.core.config import settings
 from backend.app.dependencies.dependencias import (
     get_analyzer_service,
+    get_analyzer_service,
     get_battle_service,
     get_evolution_service,
     get_filter_service,
+    get_filter_service,
     get_pokemon_service,
+    get_predictor_service,
+    get_simulator_service,
+    get_team_service,
     get_predictor_service,
     get_simulator_service,
     get_team_service,
 )
 from backend.app.models.pokemon_models import (
     AnomalyEntry,
+    AnomalyEntry,
     EvolutionNode,
     PokemonDetail,
     PokemonEffectiveness,
+    PokemonFilter,
+    PredictionResult,
+    SimulatorResult,
+    Team,
+    TeamCreate,
+    TopPokemonEntry,
+    TypeAverageStats,
+)
+from backend.app.services.analyzer_service import AnalyzerService
     PokemonFilter,
     PredictionResult,
     SimulatorResult,
@@ -47,7 +77,11 @@ from backend.app.services.pokemon_service import PokemonService
 from backend.app.services.predictor_service import PredictorService
 from backend.app.services.simulator_service import SimulatorService
 from backend.app.services.team_service import TeamService
+from backend.app.services.predictor_service import PredictorService
+from backend.app.services.simulator_service import SimulatorService
+from backend.app.services.team_service import TeamService
 
+# Iniciamos un subenrutador utilizando el prefijo de la API
 # Iniciamos un subenrutador utilizando el prefijo de la API
 router = APIRouter(prefix=settings.API_PREFIX)
 
@@ -55,7 +89,15 @@ router = APIRouter(prefix=settings.API_PREFIX)
 
 
 # Utilizamos el decorador router, para establecer el comportamiento de FastAPI
+# Utilizamos el decorador router, para establecer el comportamiento de FastAPI
 @router.get(
+    "/filter",
+    tags=["Filter"],  # Permite agrupar la documentacion en futuro de Swagger UI
+    response_model=list[
+        dict
+    ],  # la respuesta no debe ser todos los parametros del filtro, sino una lista
+    status_code=status.HTTP_200_OK,  # Si la respuesta cumple los parametros = 200 Ok
+    summary="Obtener filtros de estadistica, generación o tipo de un Pokemon",
     "/filter",
     tags=["Filter"],  # Permite agrupar la documentacion en futuro de Swagger UI
     response_model=list[
@@ -73,7 +115,16 @@ async def get_filtered_pokemons(
 ) -> list[dict]:
     """Este endpoint se encarga de ejecutar las llamadas internas a FilterService"""
 
+# Usamos funciones asincronas para usar bucles de eventos. La función no espera
+# la respuesta de la API para atender otras peticiones
+async def get_filtered_pokemons(
+    filters: PokemonFilter = Depends(),
+    filter_service: FilterService = Depends(get_filter_service),
+) -> list[dict]:
+    """Este endpoint se encarga de ejecutar las llamadas internas a FilterService"""
+
     try:
+        return filter_service.filter_pokemons(**filters.model_dump())
         return filter_service.filter_pokemons(**filters.model_dump())
 
     except ValueError as e:
@@ -90,6 +141,7 @@ async def get_filtered_pokemons(
     "/pokemon/{identifier}/evolution",
     tags=["Evolution"],
     response_model=EvolutionNode,  # Establece el parametro de una respuesta 200 OK
+    response_model=EvolutionNode,  # Establece el parametro de una respuesta 200 OK
     status_code=status.HTTP_200_OK,
     summary="Obtener las evoluciones de un Pokemon y sus requisitos",
 )
@@ -98,12 +150,17 @@ async def get_evolution_chain(
     # Usamos inyeccion de dependencias, permitiendo que FastAPI instancie el servicio
     # Es decir, no se necesitan conectar a bases de datos o realizar llamadas, FastAPI
     # Entrega el servicio directo a routes
+    # Usamos inyeccion de dependencias, permitiendo que FastAPI instancie el servicio
+    # Es decir, no se necesitan conectar a bases de datos o realizar llamadas, FastAPI
+    # Entrega el servicio directo a routes
     evolution_service: EvolutionService = Depends(get_evolution_service),
 ):
+    """Este endpoint se encarga de ejecutar las llamadas internas a EvolutionService"""
     """Este endpoint se encarga de ejecutar las llamadas internas a EvolutionService"""
     try:
         # Presentamos un nodo tipado con un Dataclass, y lo serializamos a diccionario
         # para poder procesar la respuesta JSON.
+        return await evolution_service.get_evolution_tree(identifier)
         return await evolution_service.get_evolution_tree(identifier)
 
     except ValueError as e:
@@ -129,7 +186,9 @@ async def get_pokemon_effectiveness(
     battle_service: BattleService = Depends(get_battle_service),
 ) -> PokemonEffectiveness:
     """Este endpoint se encarga de ejecutar las llamadas internas a BattleService"""
+    """Este endpoint se encarga de ejecutar las llamadas internas a BattleService"""
     try:
+        pokemon_data = await pokemon_service.get_pokemon_detail(identifier)
         pokemon_data = await pokemon_service.get_pokemon_detail(identifier)
         pokemon_types = pokemon_data.types
 
@@ -137,8 +196,10 @@ async def get_pokemon_effectiveness(
 
         return PokemonEffectiveness(
             weaknesses_x4=effectiveness.get("weaknesses_x4", []),
+            weaknesses_x4=effectiveness.get("weaknesses_x4", []),
             weaknesses=effectiveness.get("weaknesses", []),
             resistances=effectiveness.get("resistances", []),
+            resistances_x025=effectiveness.get("resistances_x025", []),
             resistances_x025=effectiveness.get("resistances_x025", []),
             immunities=effectiveness.get("immunities", []),
         )
