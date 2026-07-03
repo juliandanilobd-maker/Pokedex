@@ -7,11 +7,14 @@ mantener conexiones iniciadas
 """
 
 import asyncio
+import logging
 import time
 
 import httpx
 
 from backend.app.core.config import settings
+
+logger = logging.getLogger(__name__)
 
 
 class PokeAPIClient:

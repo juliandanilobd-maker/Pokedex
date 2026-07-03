@@ -302,6 +302,22 @@ Todas las modificaciones relevantes del proyecto serán registradas aquí.
 ### Funcionalidades añadidas
 - Alertas automáticas, de equipos con baja cobertura, Pokemons que se salen de las métricas de estadísticas, y Pokemon del día.
 - Reportes CSV automáticos, por tipo o generacion de Pokemon, por top en estadísticas.
-
+- Simulación de datos Pokemon, generados a partir de un tipo y generación brindados por el usuario y calculando sus estadísticas en base a sus pares.
+- Predicción de datos que tendrá un Pokemón ficticio en base a su tipo sacando un media movil de otros de su mismo tipo y una ventana de generaciones.
+- Carta Pokemon Coleccionable
+- CLI para realizar auditoria en consola de los resultados del backend. CLI con menú interactivo y también programado con argparse para uso en línea de comandos.
+- Renderizado de cadena evolutiva permite renderizar Pokemons con varias ramificaciones, extrae todos los requisitos y los renderiza y se adapta a casos especiales.'
+- Nuevos servicios implementados para su uso en CLI, pendiente implementación en frontend.
 ### Arreglado
-- Velocidad de llamadas a la API, se generó un nuevo endpoint que unifica las 3 llamadas requeridas para renderizar un Pokemon Individual, reduciendo los tiempos de llamada de más de 10 segundos a menos de 3
+- Velocidad de llamadas a la API, se generó un nuevo endpoint que unifica las 3 llamadas requeridas para renderizar un Pokemon Individual, reduciendo los tiempos de llamada de más de 10 segundos a menos de 3.
+- Actualizamos el uso de la PokeAPI de V1 a V2, ya que v1 ya no tiene soporte
+- Routes actualizado, se utiliza un endpoint que reune los 3 servicios necesarios para un busqueda individual, y agregando endpoints para los nuevos servicios
+- Docstrings y almohadillas colocadas.
+- Actualización de requests a httpx.
+- Actualización de manejo de errores en el client a httpx.
+- Tests cambiados para adaptarse a funciones async.
+- Models actualizado para utilizar Pydantic.
+- Flavor text adapatado para renderizar unicamente descripciones en español
+### CI
+- Tests para nuevos servicios.
+- Verificación y Linteado con Ruff
