@@ -265,6 +265,30 @@ async def get_pokemon_full_detail(
             resistances_x025=effectiveness_data.get("resistances_x025", []),
             immunities=effectiveness_data.get("immunities", []),
         )
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Error interno al obtener el equipo: {e!s}",
+        ) from e
+
+
+# ------------ ENDPOINT UPDATE TEAMS ---------------------------------------------------
+@router.put(
+    "/teams/{team_id}",
+    tags=["Teams"],
+    response_model=Team,
+    status_code=status.HTTP_200_OK,
+    summary="Actualizar el nombre o los integrantes de un equipo",
+)
+async def update_team(
+    team_id: str,
+    payload: TeamCreate,
+    team_service: TeamService = Depends(get_team_service),
+) -> Team:
+
+    logger.info("PUT /teams/%s — nuevo nombre: '%s'", team_id, payload.name)
+
+    try:
+        return team_service.update_team(team_id, payload)
 
         return {
             "pokemon": pokemon_data,
