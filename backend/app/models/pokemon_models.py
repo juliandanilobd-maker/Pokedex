@@ -3,6 +3,8 @@ En este módulo establecemos el molde o prototipo
 de como se devolverán los datos de los diferentes servicios
 """
 
+# ESTE MODULO CONTIENE TODAS LAS ESTRUCTURAS DE DATOS DE LAS RESPUESTAS
+# POR LO QUE NO SE PUEDE CUMPLIR EL MAXIMO DE 50 LINEAS
 from __future__ import annotations
 
 from typing import Any

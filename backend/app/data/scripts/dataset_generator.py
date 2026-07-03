@@ -9,6 +9,9 @@ Bound, usamos HTTPAdapter que mantiene 15 sockets para conexión TCP/IP abiertas
 y utilizando una estrategia Backoff Exponencial para evitar sobrecarga de peticiones
 """
 
+# ESTE MODULO NO CUMPLE EL REQUISITO DE 50 LINEAS, DEBIDO A QUE ESTE SCRIPT
+# UTILIZA THREAD POOL, Y SE REQUIERE ESTABLECER LA LOGICA DE GENERACIONES
+# ESTE SCRIPT GENERA EL DATASET SOBRE EL QUE FUNCIONAN VARIOS DE NUESTROS SERVICIOS
 import json
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path

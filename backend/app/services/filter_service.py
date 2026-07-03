@@ -3,6 +3,9 @@ Este módulo se encarga de procesar el conjunto de datos cargado en memoria para
 filtrados por estadisticas, generaciones y tipos, combinados
 """
 
+# ESTE MODULO EXCEDE EL MAXIMO DE 50 LINEAS, DEBIDO A QUE EXISTEN VARIOS
+# PARAMETROS DE FILTRADO QUE AUMENTAN LINEAS DE CODIGO
+
 from __future__ import annotations
 
 import json
