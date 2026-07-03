@@ -1,83 +1,205 @@
-# Pokedex App
+# Pokédex App
 
-## Descripcion
+Sistema modular backend construido con **FastAPI**, diseñado para consumir la PokeAPI,
+procesar datos de Pokémon y exponerlos mediante una API REST escalable, accesible
+desde una interfaz web en Streamlit o desde un CLI interactivo con soporte argparse.
 
-Pokedex App es un sistema modular backend construido con FastAPI, diseñado para consumir la PokeAPI, procesar datos de Pokemon y exponerlos mediante una API REST escalable.
+---
 
-Esta versión v0.4.0 se centra exclusivamente en implementar un frontend que permita al usuario interactuar con la Pokedex, de forma simple y entretenida.
+## Vistas
 
-## Estado del proyecto
+![VISTA PRINCIPAL](/docs/images/image.png)
+![BUSQUEDA POR FILTROS](/docs/images/image-1.png)
+![BUSQUEDA INDIVIDUAL — RECOMENDACIÓN DEL DÍA](/docs/images/image-2.png)
+![BUSQUEDA INDIVIDUAL](/docs/images/image-3.png)
+![CADENA EVOLUTIVA](/docs/images/image-4.png)
+![CARTA COLECCIONABLE](/docs/images/image-5.png)
 
-- Versión: 0.4.0 - Frontend MVP.
-- Estado: Funcional con frontend interactuable.
-- Enfoque: Creación de una interfaz gráfico de usuario, desacoplada, sencilla y entretenida para el usuario.
+---
 
+## Descripción
+
+**Pokédex App v1.0.0** es un MVP funcional que entrega:
+
+- Búsqueda individual de Pokémon con detalle completo, cadena evolutiva y carta coleccionable
+- Búsqueda por filtros acumulativos (tipo, generación, stats mínimas)
+- Motor de efectividad de combate basado en multiplicadores de tipo
+- Constructor de equipos Pokémon con estadísticas agregadas y cobertura de tipos
+- Motor analítico: promedios por tipo, rankings Top-N y detección de anomalías estadísticas
+- Predicción de stats por tipo elemental mediante media móvil simple (SMA)
+- Generación de Pokémon sintéticos basada en distribuciones estadísticas del dataset real
+- Exportación de resultados a CSV
+- Gráficos ASCII de stats en consola
+- Alertas automáticas al iniciar el CLI
+---
+
+## Inicio rápido
+
+```bash
+# 1. Clonar y entrar al proyecto
+git clone https://github.com/juliandanilobd-maker/Pokedex.git
+cd Pokedex
+
+# 2. Crear y activar entorno virtual
+python -m venv .venv
+.venv\Scripts\activate          # Windows
+source .venv/bin/activate       # Linux/macOS
+
+# 3. Instalar dependencias
+pip install -r backend/requirements.txt
+pip install -r frontend/requirements.txt
+
+# 4. Generar dataset local (solo la primera vez)
+python -m backend.app.data.scripts.dataset_generator
+
+# 5. Levantar el backend
+uvicorn backend.main:app --reload --port 8000
+
+# 6a. Interfaz web (segunda terminal)
+streamlit run frontend/streamlit_folder/Pokedex.py
+
+# 6b. CLI interactivo (segunda o tercera terminal)
+python cli.py
+```
+
+Para instrucciones detalladas consulta el [Manual de Instalación](/docs/documentacion_usuario/manual_instalacion.md).
+
+---
 
 ## Estructura del proyecto
-
-El proyecto está organizado una arquitectura modular por capas, diseñado para ser escalable y que permita separación de responsabilidades.
 
 ```text
 Pokedex/
 │
 ├── backend/
+│   ├── app/
+│   │   ├── api/            # Rutas FastAPI (routes.py)
+│   │   ├── cache/          # Caché SQLite (cache_manager.py)
+│   │   ├── clients/        # Cliente HTTP httpx (pokeapi_client.py)
+│   │   ├── core/           # Configuración y constantes
+│   │   ├── data/           # Dataset local JSON y script ETL
+│   │   ├── dependencies/   # Inyección de dependencias FastAPI
+│   │   ├── models/         # Modelos Pydantic
+│   │   ├── parsers/        # Transformación de datos de la PokeAPI
+│   │   └── services/       # Lógica de negocio por dominio
+│   ├── tests/
+│   │   ├── unitary/        # Tests unitarios por módulo
+│   │   ├── integration/    # Tests de integración de endpoints
+│   │   └── functional/     # Tests E2E contra la PokeAPI real
+│   ├── main.py
+│   ├── requirements.txt
+│   └── requirements-dev.txt
+│
 ├── frontend/
-│       └── streamlit_folder/
-│                       ├── api/: Cliente HTTP que consume los endpoints del backend.
-│                       ├── components/: Componentes visuales (Cards, badges)
-│                       ├── pages/: Diseño de paginas secundarias de navegación.
-│                       ├── utils/: Constantes de diseño, paletas de colores y estilos CSS.
-│                       ├── views/: Orquestación y maquetación de las páginas principales.
-│                       └── Pokedex.py: Punto de entrada principal a la aplicación.
-├── tests/
-└── docs/
+│   └── streamlit_folder/
+│       └── Pokedex.py      # Aplicación Streamlit
+│
+├── data/
+│   ├── reports/            # CSVs exportados
+│   └── pokemon_sinteticos.csv
+│
+├── docs/
+│   └── images/             # Capturas para documentación
+│
+├── cli.py                  # CLI interactivo + comandos argparse
+├── client_cli.py           # Cliente HTTP para el CLI
+└── INSTALL.md
 ```
-## Responsabilidad de capas
-- backend/: Servidor FastAPI. Contiene las reglas de negocio, el motor analítico de efectividad, parsers de modelos Pydantic y el cliente de persistencia en caché.
-- frontend/: Servidor en Streamlit. Se encarga de capturar las interacciones del usuario, renderizar componentes visuales y consumir los datos procesados por el backend.
+
+---
 
 ## Flujo del sistema
 
-Request del cliente --> Streamlit (Frontend) --> FastAPI router (Backend) --> Capa de Servicios --> Caché SQLite --> PokeAPI Client (si no hay cache) --> Parser --> Modelos Pydantic --> Respuesta
+### Búsqueda desde la API (Streamlit o CLI)
 
-### Flujo de búsqueda local con filtros
-Request Filtros --> Streamlit (Frontend) --> FastAPI router (Backend) --> Capa de Servicios --> Dataset Local --> Respuesta normalizada
+```
+Usuario
+  └─→ Streamlit / CLI
+        └─→ FastAPI Router
+              └─→ Servicio de dominio
+                    ├─→ Caché SQLite  ──→ (hit) Respuesta inmediata
+                    └─→ (miss) PokeAPIClient (httpx)
+                                └─→ PokeAPI externa
+                                      └─→ Parser → Modelo Pydantic → Respuesta
+```
 
-## Funciones implementadas (v0.3.0)
+### Búsqueda con filtros y analytics (dataset local)
 
-### Arquitectura
-- Modular por capas.
-- Separación de responsabilidades.
-- Sistema preparado para escalar.
+```
+Usuario
+  └─→ Streamlit / CLI
+        └─→ FastAPI Router
+              └─→ Servicio de dominio
+                    └─→ Dataset local JSON
+                          └─→ Filtrado / Cálculo estadístico → Respuesta
+```
+
+---
+
+## Funcionalidades implementadas (v1.0.0)
 
 ### Backend
-- Lógica de negocio interna.
-- Persistencia de datos.
-- Resiliencia de red.
-
+- API REST con FastAPI y validación automática con Pydantic
+- Cliente HTTP asíncrono con `httpx` y pool de conexiones
+- Caché automática con SQLite y TTL configurable
+- Rate limiting para proteger la IP frente a la PokeAPI
+- Motor de efectividad de combate con multiplicadores duales (×4, ×2, ×0.5, ×0.25, ×0)
+- Motor analítico: promedios por tipo, Top-N, detección de anomalías por desviación estándar y percentil
+- Predicción de stats con media móvil simple (SMA, ventana máxima 3)
+- Generador de Pokémon sintéticos con distribución normal por tipo
+- CRUD de equipos persistido en JSON
+- Arquitectura modular por capas con inyección de dependencias
 ### Frontend
-- Diseño y estructura de interfaz de usuario.
-- Renderizado de componentes visuales.
-- Consumo del backend.
-
+- Interfaz web con Streamlit
+- Galería de Pokémon con filtros en tiempo real
+- Vista de detalle con gráfico de radar, cadena evolutiva y carta coleccionable
+- Pokémon del día determinista (cambia cada 24h)
+### CLI
+- Menú interactivo con 17 módulos de auditoría
+- Modo directo con argparse (todos los endpoints accesibles por comando)
+- Submenú de navegación para listas largas (ver más, ver todos, buscar por nombre)
+- Alertas automáticas al iniciar (anomalías, equipos débiles, Pokémon del día)
+- Exportación a CSV y gráficos ASCII desde consola
 ### Calidad
-- Tests unitarios con pytest.
-- CI básico con GitHub Actions.
-- Validación automática en push.
-- Cobertura del mayor del 90%.
+- Suite de tests con pytest: unitarios, integración y E2E funcionales
+- Cobertura superior al 90% del backend
+- CI con GitHub Actions: linting con Ruff y cobertura automática en cada push
+---
 
 ## Tecnologías
-- Lenguaje de programación: Python 3.11
-- Framework backend: FastAPI & Uvicorn
-- Framework Frontend: Streamlit
-- Persistencia de datos: SQLite & JSON estructurado
-- Herramientas de calidad: Ruff (Linteado & Formateado) y Pytest (Suite de pruebas y cobertura)
-- Clientes de Red: Requests & HTTPAdapter/urlib3
 
-## Limitaciones de esta versón
-El frontend en esta fase se encuentra en MVP (Mínimo Producto Viable), la interfaz inicial cubre los flujos iniciales de búsqueda (Detalles de un Pokemon, filtros de búsqueda, evoluciones Pokemon, effectividad en combate), renderizado de tarjetas básicas y paneles de información.
+| Categoría | Tecnología |
+|---|---|
+| Lenguaje | Python 3.11 |
+| Backend | FastAPI + Uvicorn |
+| Frontend | Streamlit |
+| Cliente HTTP | httpx (AsyncClient) |
+| Persistencia | SQLite (caché) + JSON (equipos, dataset) |
+| Análisis de datos | pandas, numpy |
+| Tests | pytest, pytest-cov, pytest-asyncio |
+| Calidad de código | Ruff (linting + formatting) |
+| CI/CD | GitHub Actions |
 
-Esta versión no incluye pruebas automatizadas para el frontend (UI Testing o E2E con Playwright/Selenium); las pruebas en el pipeline de CI se limitan a la validación de calidad de código con Ruff para el frontend y cobertura mayor al 90% del backend.
+---
+
+## Limitaciones de esta versión
+
+- El frontend cubre los flujos principales de búsqueda; las páginas de analytics
+  (promedios, anomalías, predicción, simulación) están disponibles únicamente en el CLI.
+- No incluye tests automatizados de UI (Playwright/Selenium). Las pruebas de frontend
+  en el pipeline CI se limitan a validación de calidad de código con Ruff.
+- El dataset local debe generarse manualmente con el script ETL antes del primer uso.
+- La predicción requiere al menos 2 generaciones de datos para el tipo consultado.
+---
 
 ## Contribuciones
-¡Me encantaría tu ayuda para mejorar la Pokedex! Cualquier Pull Request es bienvenida. Para cambios importantes abre un Issue primero, para discutir lo que deseas modificar.
+
+¡Las contribuciones son bienvenidas! Para cambios importantes, abre un Issue primero
+para discutir lo que deseas modificar. Para correcciones menores, un Pull Request
+directo es suficiente.
+
+---
+
+## Licencia
+
+MIT

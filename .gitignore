@@ -20,6 +20,8 @@ Thumbs.db
 backend/app/pokemon_cache.db
 backend/pokemon_cache.db
 backend/app/data/data/pokemon_dataset.json
+/data/
+/logs/
 **/data/**.json
 **/data/**.csv
 *.json.bak
@@ -27,4 +29,3 @@ backend/app/data/data/pokemon_dataset.json
 *.sqlite3
 *.log
 .ipynb_checkpoints/
-

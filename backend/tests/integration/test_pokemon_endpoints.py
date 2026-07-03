@@ -298,7 +298,6 @@ def test_integration_effectiveness_not_found():
     assert "Pokemon missing no existe en la base de datos" in data["detail"]
 
 
-# Comprobamos la captura de un fallo interno del servidor
 def test_integration_effectiveness_generic_exception():
     """Este test comprueba que se captura un Exception y se lanza un 500 fallo del
     servidor en caso de otro error, en ua busqueda de efectividad en combate"""

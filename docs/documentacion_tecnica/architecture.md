@@ -52,6 +52,12 @@ Estructura principal
         │
         ├──docs/
         │
+        ├──data/
+        │
+        ├──client_cli.py
+        │
+        ├──cli.py
+        │
         ├──README.md
         │
         ├──.toml
@@ -104,6 +110,7 @@ Estructura principal
             │           - Optimiza la consulta para los filtros, evitando hacer varios llamados a la API, haciendo un dataset con datos basicos.
             │           - Obtiene datos de tipos desde client.
             │           - Muestra la dinamica de las interacciones de daño recibido entre Pokemones.
+            │           - Genera alertas, predicciones, y datos simulados.
             │
             │
             ├──parsers/
@@ -258,6 +265,7 @@ Estructura principal
 
 - docs/: Contiene los archivos api_design.md, architecture.md, backlog.md, changelog.md, psuedocode.md, roadmap.md.
 - tests/: en esta carpeta yacen los tests, unitarios, de integracion y funcionales para la aplicacion y la aseguracion de la calidad del codigo.
+- data/: Contiene los archivos csv generados como parte del servicio de reportes.
 - client_cli.py: Es el módulo que contiene el client que utilizará el cli, para una consolo interactiva
 - cli.py: Contiene el modulo cli, con un menu interactivo
 ```
@@ -268,8 +276,24 @@ Estructura principal
 - Fastapi ---> Backend de nuestra API.
 - Streamlit ---> Frontend actual.
 - PokeAPI ---> Fuente de datos externa.
-- JSON ---> Datos auxiliares.
 - Uvicorn ---> Servidor ASGI.
+
+## Librerías utilizadas
+- Pandas.
+- Numpy.
+- httpx.
+- pydantic.
+- requests.
+
+## Módulos estándar de python
+- argparse.
+- json.
+- csv.
+- asyncio.
+- time.
+- random.
+- logging.
+- argparse.
 
 # Flujo de datos
 

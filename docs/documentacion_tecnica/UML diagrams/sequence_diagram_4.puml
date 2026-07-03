@@ -1,0 +1,38 @@
+@startuml SequenceDiagram
+title Pokedex - Diagrama de Secuencia de Busqueda: Reporter
+
+actor Usuario
+
+participant "Consola de Comandos" as CLI
+
+participant "Backend Client" as BE
+
+participant "Dataset" as DS
+
+participant "Reporter Service" as Service
+
+participant "Filter Service" as FS
+
+participant "Fichero CSV" as CSV
+
+participant "Response Model" as Model
+
+participant "Response" as RES
+
+Usuario -> CLI: Reporter
+
+CLI -> BE
+
+BE -> Service
+
+Service -> DS
+
+Model <- Service
+
+DS -> PD
+
+PD -> CSV
+
+CSV -> RES
+
+@enduml

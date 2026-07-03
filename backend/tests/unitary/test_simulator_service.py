@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import time
 from unittest.mock import patch
 
 import pytest
@@ -239,8 +240,8 @@ def test_generate_n_zero_raises_error(tmp_path):
         service.generate(n=0)
 
 
-def test_generate_n_mayor_1000_lanza_error(tmp_path):
-    """Este test comprueba que si se envia para n un valor mayor a 1000 se captura un
+def test_generate_n_mayor_10000_lanza_error(tmp_path):
+    """Este test comprueba que si se envia para n un valor mayor a 10000 se captura un
     error"""
     service = make_simulator()
     with (
@@ -248,9 +249,25 @@ def test_generate_n_mayor_1000_lanza_error(tmp_path):
             "backend.app.services.simulator_service.SYNTHETIC_CSV",
             tmp_path / "test.csv",
         ),
-        pytest.raises(ValueError, match="entre 1 y 1000"),
+        pytest.raises(ValueError, match="entre 1 y 10000"),
     ):
-        service.generate(n=1001)
+        service.generate(n=10001)
+
+
+def test_generate_n_mayor_10000_less_3_sec(tmp_path):
+    """Este test comprueba que se simulan 10K registros en menos de 3 segundos"""
+    service = make_simulator()
+    with patch(
+        "backend.app.services.simulator_service.SYNTHETIC_CSV", tmp_path / "out.csv"
+    ):
+        start = time.perf_counter()
+        result = service.generate(n=10000, pokemon_type="fire", generation=1, seed=42)
+
+        end = time.perf_counter()
+
+        duration = end - start
+    assert duration < 3
+    assert result is not None
 
 
 def test_generate_invalid_type_raises_error(tmp_path):

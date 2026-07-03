@@ -12,6 +12,7 @@ Ej ->
 """
 
 import asyncio
+import logging
 
 from fastapi import APIRouter, Depends, HTTPException, status
 
@@ -48,12 +49,15 @@ from backend.app.services.predictor_service import PredictorService
 from backend.app.services.simulator_service import SimulatorService
 from backend.app.services.team_service import TeamService
 
+logger = logging.getLogger(__name__)
+
 # Iniciamos un subenrutador utilizando el prefijo de la API
 router = APIRouter(prefix=settings.API_PREFIX)
 
 # ENDPOINTS CON DEPENDENCY INJECTION
 
 
+# --------- ENDPOINT FILTER ---------------------------------------------------------
 # Utilizamos el decorador router, para establecer el comportamiento de FastAPI
 @router.get(
     "/filter",
@@ -73,19 +77,23 @@ async def get_filtered_pokemons(
 ) -> list[dict]:
     """Este endpoint se encarga de ejecutar las llamadas internas a FilterService"""
 
+    logger.info("GET/filter - parámetros: %s", filters.model_dump())
     try:
         return filter_service.filter_pokemons(**filters.model_dump())
 
     except ValueError as e:
+        logger.warning("Filtro sin resultados: %s", str(e))
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e)) from e
 
     except Exception as e:
+        logging.error("Error interno en HET /gilter: %s", str(e), exc_info=True)
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Error interno al procesar el motor analítico: {e!s}",
         ) from e
 
 
+# ------- ENDPOINT EVOLUTION -----------------------------------------------------------
 @router.get(
     "/pokemon/{identifier}/evolution",
     tags=["Evolution"],
@@ -101,21 +109,32 @@ async def get_evolution_chain(
     evolution_service: EvolutionService = Depends(get_evolution_service),
 ):
     """Este endpoint se encarga de ejecutar las llamadas internas a EvolutionService"""
+
+    logger.info("GET /pokemon/%s/evolution", identifier)
+
     try:
         # Presentamos un nodo tipado con un Dataclass, y lo serializamos a diccionario
         # para poder procesar la respuesta JSON.
         return await evolution_service.get_evolution_tree(identifier)
 
     except ValueError as e:
+        logger.warning("Evolución no encontrada: %s - %s", identifier, str(e))
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e)) from e
 
     except Exception as e:
+        logger.error(
+            "Error interno en GET /pokemon/%s/evolution: %s",
+            identifier,
+            str(e),
+            exc_info=True,
+        )
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Error interno al procesar el motor analítico: {e!s}",
         ) from e
 
 
+# ---------- ENDPOINT EFFECTIVENESS ----------------------------------------------------
 @router.get(
     "/pokemon/{identifier}/effectiveness",
     tags=["Battle"],
@@ -129,6 +148,8 @@ async def get_pokemon_effectiveness(
     battle_service: BattleService = Depends(get_battle_service),
 ) -> PokemonEffectiveness:
     """Este endpoint se encarga de ejecutar las llamadas internas a BattleService"""
+
+    logger.info("GET /pokemon/%s/effectiveness", identifier)
     try:
         pokemon_data = await pokemon_service.get_pokemon_detail(identifier)
         pokemon_types = pokemon_data.types
@@ -144,15 +165,23 @@ async def get_pokemon_effectiveness(
         )
 
     except ValueError as e:
+        logger.warning("Efectividad no encontrada %s - %s", identifier, str(e))
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e)) from e
 
     except Exception as e:
+        logger.error(
+            "Error interno en GET /pokemon/%s/effectiveness: %s",
+            identifier,
+            str(e),
+            exc_info=True,
+        )
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Error interno al procesar el motor analítico: {e!s}",
         ) from e
 
 
+# -------- ENDPOINT POKEMON ------------------------------------------------------------
 @router.get(
     "/pokemon/{identifier}",
     tags=["Pokemon"],
@@ -164,20 +193,28 @@ async def get_pokemon(
     identifier: str, pokemon_service: PokemonService = Depends(get_pokemon_service)
 ):
     """Este endpoint se encarga de ejecutar las llamadas internas a PokemonService"""
+
+    logger.info("GET /pokemon/%s", identifier)
+
     try:
         return await pokemon_service.get_pokemon_detail(identifier)
 
     except ValueError as e:
+        logger.warning("Pokemon no encontrado: %s - %s", identifier, str(e))
         # Se captura el error con un Value Error si la API devuelve un 404
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e)) from e
 
     except Exception as e:
+        logger.error(
+            "Error interno en GET /pokemon/%s: %s", identifier, str(e), exc_info=True
+        )
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Error interno al procesar el motor analítico: {e!s}",
         ) from e
 
 
+# --------- ENDPOINT BUSQUEDA INDIVIDUAL -----------------------------------------------
 @router.get(
     "/pokemon/{identifier}/full-detail",
     tags=["Pokemon"],
@@ -193,6 +230,7 @@ async def get_pokemon_full_detail(
     """Construímos un endpoint que orqueste todas las llamadas internas a los servicios
     en paralelo usando asyncio.gather, reduciendo el tiempo de respuesta"""
 
+    logger.info("GET /pokemon/%s/full-detail", identifier)
     try:
         tarea_pokemon = pokemon_service.get_pokemon_detail(identifier)
         tarea_evolution = evolution_service.get_evolution_tree(identifier)
@@ -202,9 +240,16 @@ async def get_pokemon_full_detail(
         effectiveness_data = battle_service.calculate_effectiveness(pokemon_data.types)
 
     except ValueError as e:
+        logger.warning("Full-Detail no encontrado: %s - %s", identifier, str(e))
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e)) from e
 
     except Exception as e:
+        logger.error(
+            "Error interno en GET /pokemon/%s/full-detail: %s",
+            identifier,
+            str(e),
+            exc_info=True,
+        )
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Error interno en el orquestador: {e!s}",
@@ -226,6 +271,7 @@ async def get_pokemon_full_detail(
         }
 
 
+# --------- ENDPOINT CREATE TEAMS ------------------------------------------------------
 @router.post(
     "/teams",
     tags=["Teams"],
@@ -237,21 +283,26 @@ async def create_team(
     payload: TeamCreate, team_service: TeamService = Depends(get_team_service)
 ) -> Team:
 
+    logger.info("POST /teams -nombre: '%s', IDs: %s", payload.name, payload.pokemon_ids)
+
     try:
         return team_service.create_team(payload)
 
     except ValueError as e:
+        logger.warning("Error al crear equipo '%s': %s", payload.name, str(e))
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST, detail=str(e)
         ) from e
 
     except Exception as e:
+        logger.error("Error interno en POST /teams: %s", str(e), exc_info=True)
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Error interno al crear el equipo: {e!s}",
         ) from e
 
 
+# ------------ ENDPOINT LIST TEAMS -----------------------------------------------------
 @router.get(
     "/teams",
     tags=["Teams"],
@@ -263,16 +314,20 @@ async def list_teams(
     team_service: TeamService = Depends(get_team_service),
 ) -> list[Team]:
 
+    logger.info("GET /teams")
+
     try:
         return team_service.list_teams()
 
     except Exception as e:
+        logger.error("Error interno en GET /teams: %s", str(e), exc_info=True)
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Error interno al listar los equipos: {e!s}",
         ) from e
 
 
+# -------- ENDPOINT TEAMS DETAIL -------------------------------------------------------
 @router.get(
     "/teams/{team_id}",
     tags=["Teams"],
@@ -283,19 +338,26 @@ async def get_team(
     team_id: str, team_service: TeamService = Depends(get_team_service)
 ) -> Team:
 
+    logger.info("GET /teams/%s", team_id)
+
     try:
         return team_service.get_team(team_id)
 
     except ValueError as e:
+        logger.warning("Equipo no encontrado: %s — %s", team_id, str(e))
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e)) from e
 
     except Exception as e:
+        logger.error(
+            "Error interno en GET /teams/%s: %s", team_id, str(e), exc_info=True
+        )
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Error interno al obtener el equipo: {e!s}",
         ) from e
 
 
+# ------------ ENDPOINT UPDATE TEAMS ---------------------------------------------------
 @router.put(
     "/teams/{team_id}",
     tags=["Teams"],
@@ -309,19 +371,26 @@ async def update_team(
     team_service: TeamService = Depends(get_team_service),
 ) -> Team:
 
+    logger.info("PUT /teams/%s — nuevo nombre: '%s'", team_id, payload.name)
+
     try:
         return team_service.update_team(team_id, payload)
 
     except ValueError as e:
+        logger.warning("Equipo no encontrado para actualizar: %s — %s", team_id, str(e))
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e)) from e
 
     except Exception as e:
+        logger.error(
+            "Error interno en PUT /teams/%s: %s", team_id, str(e), exc_info=True
+        )
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Error interno al actualizar el equipo: {e!s}",
         ) from e
 
 
+# --------------- ENDPOINT DELETE TEAM -------------------------------------------------
 @router.delete(
     "/teams/{team_id}",
     tags=["Teams"],
@@ -332,19 +401,26 @@ async def delete_team(
     team_id: str, team_service: TeamService = Depends(get_team_service)
 ) -> None:
 
+    logger.info("DELETE /teams/%s", team_id)
+
     try:
         team_service.delete_team(team_id)
 
     except ValueError as e:
+        logger.warning("Equipo no encontrado para eliminar: %s — %s", team_id, str(e))
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e)) from e
 
     except Exception as e:
+        logger.error(
+            "Error interno en DELETE /teams/%s: %s", team_id, str(e), exc_info=True
+        )
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Error interno al eliminar el equipo: {e!s}",
         ) from e
 
 
+# ----------- ENDPOINT AVERAGE BY TYPE -------------------------------------------------
 @router.get(
     "/analytics/average-by-type",
     tags=["Analytics"],
@@ -356,19 +432,26 @@ async def get_average_stats_by_type(
     analyzer_service: AnalyzerService = Depends(get_analyzer_service),
 ) -> list[TypeAverageStats]:
 
+    logger.info("GET /analytics/average-by-type")
+
     try:
         return analyzer_service.average_stats_by_type()
 
     except ValueError as e:
+        logger.warning("Dataset vacío en average-by-type: %s", str(e))
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e)) from e
 
     except Exception as e:
+        logger.error(
+            "Error interno en GET /analytics/average-by-type: %s", str(e), exc_info=True
+        )
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Error interno al calcular estadísticas: {e!s}",
         ) from e
 
 
+# ------------- ENDPOINT TOP-N ---------------------------------------------------------
 @router.get(
     "/analytics/top",
     tags=["Analytics"],
@@ -382,21 +465,26 @@ async def get_top_pokemon(
     analyzer_service: AnalyzerService = Depends(get_analyzer_service),
 ) -> list[TopPokemonEntry]:
 
+    logger.info("GET /analytics/top — métrica: %s, n: %d", metric, n)
+
     try:
         return analyzer_service.top_n(metric=metric, n=n)
 
     except ValueError as e:
+        logger.warning("Parámetros inválidos en top: %s", str(e))
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST, detail=str(e)
         ) from e
 
     except Exception as e:
+        logger.error("Error interno en GET /analytics/top: %s", str(e), exc_info=True)
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Error interno al calcular el ranking: {e!s}",
         ) from e
 
 
+# --------------- ENDPOINT ANOMALIES ---------------------------------------------------
 @router.get(
     "/analytics/anomalies",
     tags=["Analytics"],
@@ -410,21 +498,32 @@ async def get_anomalies(
     analyzer_service: AnalyzerService = Depends(get_analyzer_service),
 ) -> list[AnomalyEntry]:
 
+    logger.info(
+        "GET /analytics/anomalies — stddev: %.1f, percentil: %.2f",
+        stddev_threshold,
+        percentile_threshold,
+    )
+
     try:
         return analyzer_service.detect_anomalies(
             stdev_threshold=stddev_threshold, percentile_threshold=percentile_threshold
         )
 
     except ValueError as e:
+        logger.warning("Dataset vacío en anomalies: %s", str(e))
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e)) from e
 
     except Exception as e:
+        logger.error(
+            "Error interno en GET /analytics/anomalies: %s", str(e), exc_info=True
+        )
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Error interno al detectar anomalías: {e!s}",
         ) from e
 
 
+# -------------- ENDPOINT PREDICTION ---------------------------------------------------
 @router.get(
     "/analytics/prediction",
     tags=["Analytics"],
@@ -435,9 +534,14 @@ async def get_anomalies(
 async def get_prediction(
     primary_type: str,
     secondary_type: str | None = None,
-    reference_generation: int | None = None,
     predictor_service: PredictorService = Depends(get_predictor_service),
 ) -> PredictionResult:
+
+    logger.info(
+        "GET /analytics/prediction — tipo: %s/%s, gen: %s",
+        primary_type,
+        secondary_type or "—",
+    )
 
     try:
         return predictor_service.predict_stats(
@@ -446,15 +550,20 @@ async def get_prediction(
         )
 
     except ValueError as e:
+        logger.warning("Predicción sin datos suficientes: %s", str(e))
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e)) from e
 
     except Exception as e:
+        logger.error(
+            "Error interno en GET /analytics/prediction: %s", str(e), exc_info=True
+        )
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Error interno al calcular la predicción: {e!s}",
         ) from e
 
 
+# ------------- ENDPOINT SIMULATION ----------------------------------------------------
 @router.post(
     "/analytics/simulate",
     tags=["Analytics"],
@@ -470,6 +579,14 @@ async def simulate_pokemons(
     simulator_service: SimulatorService = Depends(get_simulator_service),
 ) -> SimulatorResult:
 
+    logger.info(
+        "POST /analytics/simulate — tipo: %s, gen: %d, n: %d, seed: %s",
+        pokemon_type,
+        generation,
+        n,
+        seed,
+    )
+
     try:
         return simulator_service.generate(
             n=n,
@@ -479,9 +596,13 @@ async def simulate_pokemons(
         )
 
     except ValueError as e:
+        logger.warning("Parámetros inválidos en simulate: %s", str(e))
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e)) from e
 
     except Exception as e:
+        logger.error(
+            "Error interno en POST /analytics/simulate: %s", str(e), exc_info=True
+        )
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Error interno al calcular la predicción: {e!s}",

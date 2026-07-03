@@ -3,119 +3,308 @@ title Pokedex - Diagrama de Clases
 
 skinparam ClassAttributeIconSize 0
 
-class Pokemon {
-    +id : int
-    +name : str
-    +types : list
-    +height : float
-    +weight : float
-    +stats : dict
-    +sprites : dict
+class PokemonBasic {
+    +id: int
+    +name: str
+    +types: list
+    +sprite_url: str
 }
+
+
+class FlavorText {
+    +text: str
+    +language: str
+    +version: str
+}
+
+
+class PokemonDetail {
+    +id: int
+    +name: str
+    +types: list
+    +stats: dict
+    +abilities: list
+    +height: int
+    +weight: int
+    +base_experience: int
+    +sprite_url: str
+    +sprite_shiny: str
+    +flavor_text_entry: FlavorText
+}
+
 
 class EvolutionNode {
-    +pokemon_name : str
-    +evolves_to : list
+    +id: int
+    +name: str
+    +sprite_url: str
+    +children: list
+    +evolution_details: list
+    +visibility: bool
 }
 
-class TypeRelations {
-    +weak : list
-    +double_damage_to : list
-    +resist : list
-    +half_damage_to : list
-    +immune : list
-    +no_damage_to : list
+
+class PokemonEffectiveness {
+    +weaknesses_x4: list
+    +weaknesses: list
+    +resistances: list
+    +resistances_x025: list
+    +immunities: list
 }
+
+
+class PokemonFilter {
+    +pokemon_type: str
+    +generation: int
+    +min_id: int
+    +max_id: int
+    +min_attack: int
+    +min_defense: int
+    +min_hp: int
+    +min_base_exp: int
+    +min_speed: int
+}
+
+class TeamMember {
+    +id: int
+    +name: str
+    +types: list
+    +hp: int
+    +attack: int
+    +defense: int
+    +speed: int
+    +sprite_url: str
+}
+
+
+class TeamCreate {
+    +name: str
+    +pokemon_ids: list
+}
+
+
+class TeamStats {
+    +total_hp: int
+    +total_attack: int
+    +total_defense: int
+    +total_speed: int
+    +avg_hp: float
+    +avg_attack: float
+    +avg_defense: float
+    +avg_speed: float
+    +type_coverage: list
+}
+
+
+class Team {
+    +id: str
+    +name: str
+    +members: list
+    +stats: TeamStats
+    +created_at: str
+}
+
+class TypeAverageStats {
+    +type_name: str
+    +sample_size: int
+    +avg_hp: float
+    +avg_attack: float
+    +avg_defense: float
+    +avg_speed: float
+}
+
+
+class TopPokemonEntry {
+    +id: int
+    +name: str
+    +types: list
+    +value: int
+    +metric: str
+}
+
+
+class AnomalyEntry {
+    +id: int
+    +name: str
+    +types: list
+    +stat_total: int
+    +type_average: float
+    +deviation: float
+    +method: str
+    +reason: str
+}
+
+
+class PredictionResult {
+    +primary_type: str
+    +secondary_type: str
+    +predicted_hp: float
+    +predicted_attack: float
+    +predicted_defense: float
+    +predicted_speed: float
+    +sample_size: int
+    +generations_used: list
+    +window_size: int
+    +group_avg_hp: float
+    +group_avg_attack: float
+    +group_avg_defense: float
+    +group_avg_speed: float
+    +description: str
+}
+
+class SimulatorResult {
+    +csv_path: str
+    +generated_count: int
+    +total_accumulated: int
+    +pokemon_type: str
+    +generation: int
+    +message: str
+}
+
 
 class PokeAPIClient {
+    +aclose()
+    +get()
     +get_pokemon()
     +get_species()
     +get_type()
-    +get_evolution_chain()
 }
 
 class CacheManager {
     +get()
     +set()
-    +delete()
-    +is_expired()
 }
 
-class PokemonParser {
-    +parse_pokemon()
-    +parse_evolution()
-    +parse_type()
+class Settings {
+    +model_config: dict
+    +APP_NAME: str
+    +APP_VERSION: str
+    +APP_PREFIX: str
+    +POKEAPI_BASE_URL: str
+    +REQUEST_TIMEOUT: int
+    +MIN_REQUEST_DELAY: float
+    +CACHE_TTL: int
+    +CACHE_DB_PATH: str
+    +ALLOWED_ORIGINS: str
+    +assemble_cors_origin()
 }
 
-class TypeParser {
-    +parse_type_relations()
+class AlertEngine {
+    -_pokemon_del_dia()
+    -_resumen_anomalias()
+    -_equipos_con_poca_cobertura()
+    +run_startup_alerts()
 }
 
-class PokemonService {
-    +get_pokemon()
-    +get_random_pokemon()
-    +get_pokemon_detail()
+class AnalyzerService {
+    -_load_dataframe()
+    +average_stats_by_type()
+    +top_n()
+    +detect_anomalies()
+}
+
+class BattleService {
+    -_calculate_multipliers()
+    +calculate_effectiveness()
 }
 
 class EvolutionService {
-    +get_evolution_chain()
-}
-
-class TypeService {
-    +get_type_relations()
+    +get_evolution_tree()
 }
 
 class FilterService {
+    -_load_data()
+    -pokemon_data()
+    +reload()
     +filter_pokemons()
 }
 
-class Routes {
-    +pokemon_endpoint()
-    +filter_endpoint()
-    +type_endpoint()
+class PokemonService {
+    +get_pokemon_detail()
 }
 
-class DatasetGenerator {
-    +generate_index()
+class PredictorService {
+    -_load_dataframe()
+    +predict_stats()
 }
 
-class FrontendAPI {
+class SimulatorService {
+    -_build_type_ranges()
+    -_sample_stat()
+    +generate()
+}
+
+class TeamService {
+    -_load_pokemon_index()
+    -_resolve_members()
+    -_calculate_stats()
+    -_read_all_teams()
+    -_write_all_teams()
+    -_resolve_team_id()
+    +create_team()
+    +list_teams()
+    +get_team()
+    +update_team()
+    +delete_team()
+}
+
+class BackendClientError {
+    +pass
+}
+
+class BackendConnectionError {
+    +pass
+}
+
+class BackendTimeoutError {
+    +pass
+}
+
+class BackendHTTPError {
+    +status_code: int
+}
+
+class BackendClient {
+    -_get()
+    +check_health()
     +get_pokemon()
-    +filter_pokemon()
+    +get_evolution()
+    +filter_pokemons()
+    +get_effectiveness()
+    +get_pokemon_full_detail()
 }
 
-class HomePage
-class DetailSearch
-class ComparePage
-class TeamBuilder
+BattleService --> PokemonEffectiveness
 
-Routes --> PokemonService
-Routes --> EvolutionService
-Routes --> TypeService
-Routes --> FilterService
-
-PokemonService --> PokeAPIClient
-PokemonService --> CacheManager
-PokemonService --> PokemonParser
-
-EvolutionService --> PokeAPIClient
-EvolutionService --> CacheManager
-
-TypeService --> PokeAPIClient
-TypeService --> TypeParser
-
-FilterService --> DatasetGenerator
-
-PokemonParser --> Pokemon
-TypeParser --> TypeRelations
+PokemonService --> PokemonDetail
+PokemonService --> FlavorText
 
 EvolutionService --> EvolutionNode
 
-FrontendAPI --> Routes
+FilterService --> PokemonFilter
 
-HomePage --> FrontendAPI
-DetailSearch --> FrontendAPI
-ComparePage --> FrontendAPI
-TeamBuilder --> FrontendAPI
+AnalyzerService --> TypeAverageStats
+AnalyzerService --> TopPokemonEntry
+AnalyzerService --> AnomalyEntry
+
+PredictorService --> PredictionResult
+
+SimulatorService --> SimulatorResult
+
+TeamService --> Team
+TeamService --> TeamMember
+TeamService --> TeamStats
+TeamService --> TeamCreate
+
+BackendClient --> BackendClientError
+BackendClient --> BackendConnectionError
+BackendClient --> BackendTimeoutError
+BackendClient --> BackendHTTPError
+
+PokeAPIClient --> CacheManager
+
+PokeAPIClient <-- PokemonService
+PokeAPIClient <-- EvolutionService
+PokeAPIClient <-- BattleService
+PokeAPIClient <-- FilterService
 
 @enduml

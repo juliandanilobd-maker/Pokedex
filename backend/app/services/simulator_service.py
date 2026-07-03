@@ -125,8 +125,10 @@ class SimulatorService:
         Raises:
             ValueError si los parámetros no entran en rango"""
 
-        if not 1 <= n <= 1000:
-            raise ValueError("El número de Pokemon a generar debe estar entre 1 y 1000")
+        if not 1 <= n <= 10000:
+            raise ValueError(
+                "El número de Pokemon a generar debe estar entre 1 y 10000"
+            )
 
         if pokemon_type.lower() not in VALID_TYPES:
             raise ValueError(

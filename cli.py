@@ -38,7 +38,7 @@ def limpiar_pantalla() -> None:
 
 
 def pausar() -> None:
-    input("\n↩️ Presiona ENTER para vovler al panel del control...")
+    input("\n↩️ Presiona ENTER para volver al panel del control...")
 
 
 def manejar_diagnostico(funcion_api, *args, **kwargs):
