@@ -85,7 +85,10 @@ class FilterService:
             filtered = [
                 pokemon
                 for pokemon in filtered
-                if pokemon_type in pokemon.get("types", [])
+                if any(
+                    pokemon_type == str(t).lower().strip()
+                    for t in pokemon.get("types", [])
+                )
             ]
 
         # Generación

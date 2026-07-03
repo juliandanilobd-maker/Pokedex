@@ -6,7 +6,7 @@ from backend.app.parsers.pokemon_parser import (
 
 
 def test_parse_pokemon_basic_fields():
-
+    """Este test comprueba el parseo de las caracteristicas y estadisticas base"""
     raw_data = {
         "id": 25,
         "name": "pikachu",
@@ -35,7 +35,7 @@ def test_parse_pokemon_basic_fields():
 
 
 def test_parse_pokemon_basic():
-
+    """Este test comprueba el parseo de los mínimos datos necesarios de un Pokemon"""
     raw_data = {
         "id": 1,
         "name": "bulbasaur",
@@ -52,6 +52,7 @@ def test_parse_pokemon_basic():
 
 # Comprobamos que se utiliza como prioridad el artwork oficial
 def test_parse_pokemon_official_artwork_priority():
+    """Este test comprueba el uso del sprite de official artwork"""
     raw_data = {
         "sprites": {
             "front_default": "fallback.png",
@@ -71,9 +72,8 @@ def test_parse_pokemon_official_artwork_priority():
     assert pokemon.sprite_shiny == "official_shiny.png"
 
 
-# Comprobamos el manejo de diccionarios o datos vacíos
 def test_parse_pokemon_missing_data():
-
+    """Este test comprueba el manejo de diccionarios de datos vacíos"""
     pokemon = parse_pokemon({})
 
     assert pokemon.id == 0
@@ -84,9 +84,8 @@ def test_parse_pokemon_missing_data():
     assert pokemon.sprite_shiny == ""
 
 
-# Comprobamos la cobertura en otros idiomas y el formateo de los datos
 def test_parse_pokemon_description_success():
-
+    """Este test comprueba el parseo correcto de la descripción de un Pokemon"""
     raw_data = {
         "flavor_text_entries": [
             {
@@ -98,21 +97,23 @@ def test_parse_pokemon_description_success():
                 "language": {"name": "en"},
             },
             {
-                "flavor_text": "Texto en español, que deberá ser ignorado"
-                "porque escogió el ingles primero",
+                "flavor_text": "Texto en español,\nunico idioma que\fse obtiene. \r",
                 "language": {"name": "es"},
+                "version": {"name": "x"},
             },
         ]
     }
 
     description = parse_pokemon_description(raw_data)
 
-    assert description == "This is a text with newlines and formats."
+    assert description.text == "Texto en español, unico idioma que se obtiene."
+    assert description.language == "es"
+    assert description.version == "x"
 
 
-# Comprobamos descripciones en idiomas no admitidos
 def test_parse_pokemon_description_no_valid_language():
-
+    """Este test comprueba el manejo del error en caso de un lenguaje no válido de la
+    descripción del Pokemon"""
     raw_species = {
         "flavor_text_entries": [
             {"flavor_text": "Bonjour", "language": {"name": "fr"}},
@@ -122,4 +123,6 @@ def test_parse_pokemon_description_no_valid_language():
 
     description = parse_pokemon_description(raw_species)
 
-    assert description == ""
+    assert (
+        description.text == "Sin descripción registrada en los archivos de la Pokedex."
+    )

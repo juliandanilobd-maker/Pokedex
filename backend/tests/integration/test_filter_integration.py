@@ -1,20 +1,34 @@
 from __future__ import annotations
 
-from unittest.mock import patch
+from unittest.mock import MagicMock
 
+import pytest
 from fastapi import status
 from fastapi.testclient import TestClient
 
-import backend.app.api.routes as pokemon_routes
+from backend.app.dependencies.dependencias import get_filter_service
 from backend.app.services.filter_service import FilterService
 from backend.main import app
+
+
+# Configuramos un fixture con un mock service para comprobar errores en el filtrado
+@pytest.fixture
+def mock_filter_service():
+
+    mock = MagicMock()
+
+    app.dependency_overrides[get_filter_service] = lambda: mock
+
+    yield mock
+
+    del app.dependency_overrides[get_filter_service]
+
 
 client = TestClient(app)
 
 
-# Comprobamos el lazy loading
 def test_integration_filter_service_lazy_loaging():
-
+    """Este test comprueba el lazy loading en el servicio de busqueda por filtros"""
     service = FilterService()
 
     # Iniciamos con el service vacío
@@ -31,9 +45,10 @@ def test_integration_filter_service_lazy_loaging():
         assert "name" in data[0]
 
 
-# Comprobamos que el reload fuerce una relectura limpia del dataset
 def test_integration_filter_service_reload():
-
+    """Este test comprueba que si se busca un nuevo filtro, se recargue y se fuerce una
+    relectura limpia del dataset, para asegurar la entrega de datos correctos en cada
+    busqueda"""
     service = FilterService()
 
     # Forzamos la primera carga
@@ -45,10 +60,10 @@ def test_integration_filter_service_reload():
     assert len(first_charge) == len(service.pokemon_data)
 
 
-# Comprobamos que la petición HTTP filtra correctamente el JSON real
 def test_integration_filter_endpoint_with_local_json():
-
-    response = client.get("/api/v1/filter?pokemon_type=water&min_attack=40")
+    """Este test comprueba que la petición HTTP devuelve el JSON unicamente de los
+    parametros solicitados"""
+    response = client.get("/api/v2/filter?pokemon_type=water&min_attack=40")
 
     data = response.json()
 
@@ -61,10 +76,10 @@ def test_integration_filter_endpoint_with_local_json():
     assert isinstance(data, list)
 
 
-# Comprobamos el comportamiento frente a criterios que no coincide con ningún Pokemon
 def test_integration_filter_endpoint_empty_results():
-
-    response = client.get("/api/v1/filter?min_attack=999&min_speed=999")
+    """Este test comprueba la captura de un error frente a filtros que no coinciden con
+    ningún Pokemon"""
+    response = client.get("/api/v2/filter?min_attack=999&min_speed=999")
 
     data = response.json()
 
@@ -72,37 +87,29 @@ def test_integration_filter_endpoint_empty_results():
     assert data == []
 
 
-# Comprobamos que se captura un ValueError del servicio por el catch de la ruta
-# y lanza un 404
-def test_integration_filter_not_found():
+def test_integration_filter_not_found(mock_filter_service):
+    """Este test comprueba que se captura el Value Error y se lanza un 404 not Found"""
+    mock_filter_service.filter_pokemons.side_effect = ValueError(
+        "El tipo especificado no existe en el dataset"
+    )
 
-    with patch.object(pokemon_routes, "FilterService") as mock_filter:
-        mock_instance = mock_filter.return_value
-
-        mock_instance.filter_pokemons.side_effect = ValueError(
-            "El tipo especificado no existe en el dataset"
-        )
-
-        response = client.get("/api/v1/filter?pokemon_type=missing")
-        data = response.json()
+    response = client.get("/api/v2/filter?pokemon_type=missing")
+    data = response.json()
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
     assert "detail" in data
     assert "El tipo especificado no existe en el dataset" in data["detail"]
 
 
-# Comprobamos la captura de un fallo interno del servidor
-def test_integration_filter_generic_exception():
+def test_integration_filter_generic_exception(mock_filter_service):
+    """Este test comprueba que se captura el Exception y se lanza un 500 Fallo del
+    servidor"""
+    mock_filter_service.filter_pokemons.side_effect = Exception(
+        "Fallo crítico del servidor"
+    )
 
-    with patch.object(pokemon_routes, "FilterService") as mock_filter:
-        mock_instance = mock_filter.return_value
-
-        mock_instance.filter_pokemons.side_effect = Exception(
-            "Fallo crítico del servidor"
-        )
-
-        response = client.get("/api/v1/filter?pokemon_type=missing")
-        data = response.json()
+    response = client.get("/api/v2/filter?pokemon_type=missing")
+    data = response.json()
 
     assert response.status_code == status.HTTP_500_INTERNAL_SERVER_ERROR
     assert (

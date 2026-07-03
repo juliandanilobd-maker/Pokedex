@@ -17,10 +17,9 @@ def cache_test(monkeypatch, tmp_path):
 
 
 # PRUEBAS PARA DETERMINAR EL FUNCIONAMIENTO EN LOS ACIERTOS DE CACHE
-# Creamos un test que inserta estos datos en el cache,
-# y que los obtiene de forma correcta
 def test_set_and_get(cache_test):
-
+    """Este test comprueba que se insertan y obtienen de forma correcta datos en
+    cache"""
     cache_test.set(
         "pikachu",
         {"id": 25},
@@ -48,9 +47,9 @@ def test_set_and_get(cache_test):
     assert updated_result["level"] == 100
 
 
-# Testeamos el tiempo de expiración de la info en el cache
 def test_expired_cache():
-
+    """Este test comprueba que una vez pasado el tiempo de expiracion de un dato,
+    se elimina"""
     cache = CacheManager()
 
     cache.set(
@@ -65,10 +64,10 @@ def test_expired_cache():
     assert cache.get("test") is None
 
 
-# Test usando el ttl por defecto establecido en settings
 def test_default_ttl_framework(monkeypatch, cache_test):
+    """Este test comprueba que se usa el ttl correctamente"""
     # Establecemos un ttl por defecto en las configuraciones para probar
-    # que el cache usa el ttl por defecto
+    # que la cache usa el ttl por defecto
     monkeypatch.setattr(settings, "CACHE_TTL", 1)
 
     # No le pasamos el ttl para comprobar que usa el por defecto
@@ -78,18 +77,16 @@ def test_default_ttl_framework(monkeypatch, cache_test):
     assert cache_test.get("default_key") is None
 
 
-# PRUEBAS PARA DETERMINAR FUNCIONAMIENTO EN FALLOS DEL CACHE
-# Test con clave inexistente
+# PRUEBAS PARA DETERMINAR FUNCIONAMIENTO EN FALLOS DE LA CACHE
 def test_get_non_existent_key(cache_test):
-
-    # Intentamos pedir algo que no se ha guardado en el cache
+    """Este test comprueba que no se obtienen valores frente a una clave inexistente"""
+    # Intentamos pedir algo que no se ha guardado en la cache
     result = cache_test.get("missing_pokemon")
     assert result is None
 
 
-# Test con JSON corrupto
 def test_corrupted_json_handling(cache_test):
-
+    """Este test comprueba que no se guardan datos corruptos en la cache"""
     # Se guarda un dato no JSON válido en la DB para forzar error
     with sqlite3.connect(cache_test.db_path) as conn:
         conn.execute(
