@@ -37,10 +37,6 @@ async def get_client() -> PokeAPIClient:
     return _client_instance
 
 
-def get_type_service() -> TypeService:
-    return _type_instance
-
-
 # Inyectamos el cliente en los servicios, los servicios se instancian en cada petición.
 def get_pokemon_service(client: PokeAPIClient = Depends(get_client)) -> PokemonService:
     return PokemonService(client=client)

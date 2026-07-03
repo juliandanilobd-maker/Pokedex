@@ -204,9 +204,6 @@ async def get_pokemon(
         # Se captura el error con un Value Error si la API devuelve un 404
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e)) from e
 
-    except ValueError as e:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e)) from e
-
     except Exception as e:
         logger.error(
             "Error interno en GET /pokemon/%s: %s", identifier, str(e), exc_info=True
