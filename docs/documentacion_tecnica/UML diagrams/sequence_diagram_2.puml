@@ -1,0 +1,49 @@
+@startuml SequenceDiagram
+title Pokedex - Diagrama de Secuencia de Busqueda: Uso de dataset local
+
+actor Usuario
+
+participant "Streamlit UI" as UI
+
+participant "Consola de Comandos" as CLI
+
+participant "Backend Client" as BE
+
+participant "Pandas" as PD
+participant "NumPy" as NP
+
+participant "Dataset" as DS
+
+participant "FastAPI Routes" as Routes
+participant "Services" as Service
+
+participant "Filter Service" as FS
+
+participant "Response Model" as Model
+
+participant "Response" as RES
+
+Usuario -> UI : Filtros
+
+Usuario -> CLI: Avg stat | Top-N | Anomalies | Prediction
+
+UI -> BE
+CLI -> BE
+
+BE -> Routes : GET & POST /analytics/ & /filter/
+
+Routes -> Service : FilterService | PredictorService | SimulatorService | AnalyzerService
+
+Service -> DS
+
+DS -> PD
+
+Note over OD, NP: Pandas delega los cálculos a NumPy (Simulator Service)
+PD -> NP: Calcular métricas
+NP --> PD: Retorna cálculos
+
+Model <- Service
+
+PD -> RES
+
+@enduml

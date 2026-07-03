@@ -1,0 +1,37 @@
+@startuml SequenceDiagram
+title Pokedex - Diagrama de Secuencia de Busqueda: Teams
+
+actor Usuario
+
+participant "Consola de Comandos" as CLI
+
+participant "Backend Client" as BE
+
+participant "Dataset" as DS
+
+participant "FastAPI Routes" as Routes
+participant "Team Service" as Service
+
+participant "Filter Service" as FS
+
+participant "Response Model" as Model
+
+participant "Response" as RES
+
+Usuario -> CLI: Teams
+
+CLI -> BE
+
+BE -> Routes : GET | POST | PUT | DELETE /teams/
+
+Routes -> Service
+
+Service -> DS
+
+Model <- Service
+
+DS -> PD
+
+PD -> RES
+
+@enduml

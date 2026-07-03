@@ -10,10 +10,10 @@ class EvolutionService:
     def __init__(self, client):
         self.client = client
 
-    def get_evolution_tree(self, identifier: str):
+    async def get_evolution_tree(self, identifier: str):
         # La PokeAPI no permite consultar directamente las evoluciones, por lo que
         # primero se debe consultar el endpoint de la especie para obtener la URL
-        species_data = self.client.get_species(identifier)
+        species_data = await self.client.get_species(identifier)
 
         evo_url = species_data.get("evolution_chain", {}).get("url")
 
@@ -21,7 +21,7 @@ class EvolutionService:
             return None
 
         # Con la URL se puede solicitar los datos completos
-        evolution_data = self.client.get(evo_url)
+        evolution_data = await self.client.get(evo_url)
 
         # Se delega el parseo y construcción del árbol al parser evolutivo, abstrayendo
         # el servicio, reduciendo su complejidad.

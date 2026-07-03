@@ -1,12 +1,12 @@
-from unittest.mock import MagicMock
+from unittest.mock import AsyncMock
 
 from backend.app.models.pokemon_models import PokemonDetail
 from backend.app.services.pokemon_service import PokemonService
 
 
-def test_get_pokemon_detail_success():
-
-    client_mock = MagicMock()
+async def test_get_pokemon_detail_success():
+    """Este test comprueba la obtención de datos correctos con respecto a un Pokemon"""
+    client_mock = AsyncMock()
 
     client_mock.get_pokemon.return_value = {
         "id": 25,
@@ -20,9 +20,11 @@ def test_get_pokemon_detail_success():
         "sprites": {"front_default": "pikachu.png"},
     }
 
+    client_mock.get_species.return_value = {"flavor_text_entries": []}
+
     service = PokemonService(client_mock)
 
-    pokemon = service.get_pokemon_detail("pikachu")
+    pokemon = await service.get_pokemon_detail("pikachu")
 
     client_mock.get_pokemon.assert_called_once_with("pikachu")
 
@@ -35,15 +37,15 @@ def test_get_pokemon_detail_success():
     assert pokemon.sprite_url == "pikachu.png"
 
 
-# Comprobamos el comportamiento con datos minimos o corruptos
-def test_get_pokemon_edtail_handles_empty_payload():
-
-    client_mock = MagicMock()
+async def test_get_pokemon_edtail_handles_empty_payload():
+    """Este test comprueba el manejo de errores en el Pokemon Service, usando datos
+    inválidos o inexistentes"""
+    client_mock = AsyncMock()
 
     client_mock.get_pokemon.return_value = {}
 
     service = PokemonService(client_mock)
-    pokemon = service.get_pokemon_detail("25")  # Probamos usando ID numerico
+    pokemon = await service.get_pokemon_detail("25")  # Probamos usando ID numerico
 
     assert pokemon.id == 0
     assert pokemon.name == ""

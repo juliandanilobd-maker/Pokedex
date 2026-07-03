@@ -7,6 +7,10 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from backend.app.api.routes import router
 from backend.app.core.config import settings
+from backend.app.core.logging_config import setup_logging
+
+# LLAMAMOS PRIMERO, ANTES DE IMPORTAR ROUTERS O SERVICIOS AL LOGGING
+setup_logging(level="INFO")
 
 
 # Se inicializa el servidor

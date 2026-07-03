@@ -1,16 +1,18 @@
-from unittest.mock import MagicMock
+from unittest.mock import AsyncMock
 
 import pytest
 
 from backend.app.services.evolution_service import EvolutionService
 
 
+# Generamos una mock class Client para insertar respuestas controladas y evitar llamadas
+# innecesarias a la API
 class MockClient:
-    def get_species(self, identifier):
+    async def get_species(self, identifier):
 
         return {"evolution_chain": {"url": "http://pokeapi.co/v2/evolution-chain/1/"}}
 
-    def get(self, url):
+    async def get(self, url):
 
         return {
             "chain": {
@@ -20,35 +22,34 @@ class MockClient:
         }
 
 
-# Comprobamos que se obtiene de manera correcta la evolución
-def test_get_evolution_tree():
-
+async def test_get_evolution_tree():
+    """Este test comprueba que se obtienen correctamente los datos de un árbol
+    evolutivo"""
     service = EvolutionService(MockClient())
 
-    tree = service.get_evolution_tree("1")
+    tree = await service.get_evolution_tree("1")
 
     assert tree is not None
     assert tree.name == "bulbasaur"
     assert tree.children == []
 
 
-# Comprobamos el comportamiento del servicio usando su funcionalidad "if not evo_url"
-def test_get_evolution_tree_missing_url():
-
-    client_mock = MagicMock()
+async def test_get_evolution_tree_missing_url():
+    """Este test comprueba que se devuelve un None si no existe el árbol evolutivo"""
+    client_mock = AsyncMock()
     client_mock.get_species.return_value = {"evolution_chain": {}}
 
     service = EvolutionService(client_mock)
 
-    tree = service.get_evolution_tree("pikachu")
+    tree = await service.get_evolution_tree("pikachu")
 
     assert tree is None
 
 
-# Comprobamos el comportamiento ante datos corruptos
-def test_get_evolution_tree_corrupted_chain_data():
-
-    client_mock = MagicMock()
+async def test_get_evolution_tree_corrupted_chain_data():
+    """Este test comprueba el comportamiento del servicio frente a datos corruptos
+    o inválidos"""
+    client_mock = AsyncMock()
     client_mock.get_species.return_value = {"evolution_chain": {"url": "valid_url"}}
 
     # Simulamos un error en la API
@@ -57,4 +58,4 @@ def test_get_evolution_tree_corrupted_chain_data():
     service = EvolutionService(client_mock)
 
     with pytest.raises(KeyError):
-        service.get_evolution_tree("uknown")
+        await service.get_evolution_tree("uknown")
