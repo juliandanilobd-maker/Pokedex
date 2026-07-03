@@ -6,6 +6,8 @@ Se implementa un Pool de conexiones, para evitar demora en la respuesta y
 mantener conexiones iniciadas
 """
 
+# ESTE MODULO SUPERA LAS 50 LINEAS, YA QUE AL SER EL CLIENT ENCARGADO DE
+# LA LOGICA DE PETICIONES, RATE LIMITING, Y LA CONSTRUCCION DE URLS
 import asyncio
 import logging
 import time

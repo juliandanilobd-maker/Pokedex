@@ -4,6 +4,8 @@ En este módulo se parsea recursivamente el árbol de evolución anidado de la P
 Tranformamos la estructura de diccionarios dinámicos en un árbol de tipado de objetos
 EvolutionNode, estandarizando los requisitos de evolución.
 """
+# ESTE MODULO EXCEDE LEVEMENTE LAS 50 LINEAS, DEBIDO A QUE POR NORMAS
+# DE RUFF NO SE PERMITEN LIENAS DE MAS DE 88 CARACTERES
 
 import re
 

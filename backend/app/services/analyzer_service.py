@@ -15,6 +15,10 @@ e integración:
 
 Estas funciones simplifican el código y reduce el procesamiento de datasets grandes"""
 
+# ESTE MODULO EXCEDE EL MAXIMO DE 50 LINEAS, DEBIDO A QUE CONTIENE LA LOGICA DE CALCULO
+# DE MEDIAS, Y TOPS, A PESAR DE QUE EL USO DE PANDAS REDUCE LA CANTIDAD DE CODIGO
+# MANUAL
+
 from __future__ import annotations
 
 import pandas as pd

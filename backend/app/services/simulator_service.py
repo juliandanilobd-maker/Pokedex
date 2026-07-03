@@ -6,6 +6,9 @@ sus estadísticas en el mean +- std del dataset real.
 Se acumulan en un fichero csv único, que se va llenando con cada simulación
 sin borrar las filas anteriores"""
 
+# ESTE MODULO EXCEDE EL MAXIMO DE 50 LINEAS, PORQUE USA UNA TUPLA DE TIPOS VALIDOS
+# ADEMAS CADA POKEMON SIMULADO CONTIENE VARIOS PARAMETROS
+
 from __future__ import annotations
 
 import random

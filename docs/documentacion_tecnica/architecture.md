@@ -193,7 +193,7 @@ Estructura principal
             └──
 
 
-- frontend/: aqui se presenta la arquitectura de nuestro frontend, esta sera nuestra capa de presentacion al cliente, el que orquesta la interfaz de usuario.
+- frontend/: aqui se presenta la arquitectura de nuestro frontend, esta sera nuestra capa de presentacion al cliente, el que orquesta la interfaz de usuario. La mayoría de modulos de frontend superan las 50 lineas por el uso de css y html para renderizar el mismo
         │
         └──streamlit/
                    ├──Pokedex.py:
