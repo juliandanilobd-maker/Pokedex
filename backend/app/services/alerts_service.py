@@ -6,6 +6,8 @@ datos disponibles
 No requiere flujo de datos constante, evalua la info obtenida del dataset
 cada vez que arranca el programa"""
 
+# ESTE MODULO NO CUMPLE CON 50 LINEAS MAXIMO PORQUE POR NORMAS DE LONGITUD
+# DE LINEA NO SE PUEDEN EXCEDER LOS 88 CARACTERES, ENTONCES SE AUMENTARON LINEAS
 from __future__ import annotations
 
 import random

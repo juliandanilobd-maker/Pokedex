@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 """
 Este módulo contienela lógica del cálculo de interacciones de Pokemón de acuerdo a
 sus tipos, funciona de la siguiente manera:
@@ -18,10 +16,16 @@ Surge una situación interesante cuando existen Pokemones con tipos duales
 En estas circunstancias, las debilidades o resistencias se multiplican:
 
 * Si los dos tipos son debiles al atacante, se multiplica dos veces por 2 = x4
-* Si los dos tipos son resistentes al atacante, se multiplica dos veces por 0.5 = x0.24
+* Si los dos tipos son resistentes al atacante, se multiplica dos veces por 0.5 = x0.25
 
 Y en ambas circunstancias si un tipo es inmune se multiplica por cero el daño
 """
+
+# ESTE MODULO EXCEDE EL MAXIMO DE 50 LINEAS POR EL USO DE DICCIONARIOS EXTENSOS
+# PARA SU LOGICA
+
+from __future__ import annotations
+
 # Optimizamos la extracción de efectividades de combate mediante la implementación
 # de un diccionario con las debilidades preestablecidas, evitando llamadas a la API
 INTERACTIONS_DATESET = {

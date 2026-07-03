@@ -10,6 +10,11 @@ caracteres especiales y aplanando los datos.
 Los gráficos ASCII no necesitan pandas, por lo que se trabajan unicamente con
 aritmética, ya que trabajan con listas simples de valores ya procesados"""
 
+# ESTE MODULO EXCEDE EL MAXIMO DE 50 LINEAS, PORQUE CONTIENE LA LOGICA DE EXPORTACION
+# DE ARCHIVOS CSV Y LA GENERACION DE GRAFICOS EN CONSOLA, NO CONVIENE SEPARAR LOS
+# ARCHIVOS PORQUE SERIAN GENERAR UN ENDPOINT EXTRA INNECESARIO Y SEPARAR LOGICA QUE
+# NO AMERITA SER SEPARADA
+
 from __future__ import annotations
 
 from pathlib import Path

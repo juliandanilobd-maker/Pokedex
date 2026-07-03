@@ -4,6 +4,10 @@ En este módulo se parsea de un Pokemon obtenidos de la PokeAPI.
 Tranformamos la estructura de diccionarios dinámicos en un parser que extrae datos
 de forma segura y escalable.
 """
+# ESTE MODULO CONTIENE MAS DE 50 LINEAS DE CODIGO, DEBIDO A QUE CONTIENE LA LOGICA
+# DE PARSEO DE TODOS LOS PARAMETROS EN UNA BUSQUEDA DE POKEMON INDIVIDUAL
+# NO SE SEPARAN EN ARCHIVOS DIFERENTES, DEBIDO A QUE LA INFO QUE DEVUELVE ESTE PARSER
+# VA A UN SOLO SERVICIO, POR LO QUE SEPARARLOS SERIA SOBREINGENIERIA
 
 from backend.app.models.pokemon_models import FlavorText, PokemonBasic, PokemonDetail
 

@@ -30,6 +30,7 @@ La cobertura mínima exigida por los requisitos es de un 80%, sin embargo por ri
 ![COBERTURA MINIMA](/docs/documentacion_testing/images/image.png)
 
 # TIPOS DE TESTS
+Todos los tests superan las 50 lineas de codigo, debido a la amplitud de los servicios y logica interna, los varios errores capturados y excepciones
 ## TESTS UNITARIOS
 Los tests unitarios verifican el comportamiento de cada función y método de forma aislada, sin depender de la red, la base de datos ni otros módulos. Se usan AsyncMock para reemplazar dependencias asíncronas y monkeypatch para interceptar llamadas a httpx.AsyncClient.
 

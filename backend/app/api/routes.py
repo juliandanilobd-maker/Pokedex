@@ -10,7 +10,9 @@ Ej ->
 4. Moldeo de la respuesta, recibe los datos y los empaqueta dentro del modelo en models.
 5. Devuelve el modelo, FastAPI valida con las reglas de acuerdo al modelo establecido.
 """
-
+# ESTE MODULO EXCEDE LAS 50 LINEAS, AL SER EL MODULO DE RUTAS CONTIENE TODOS LOS
+# ENDPOINTS DE LA APLICACION, E INYECCION DE DEPENDENCIAS POR LO QUE NO SE PUEDE
+# REDUCIR A 50 LINEAS
 import asyncio
 import logging
 

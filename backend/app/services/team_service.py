@@ -6,6 +6,10 @@ velocidad en respuesta
 Los datos persisten en: data/teams.json (lista de equipos)
 """
 
+# ESTE MODULO EXCEDE EL MAXIMO DE 50 LINEAS, PORQUE EN TEAMS SE REALIZAN
+# VARIAS ACCIONES, GET, PUT, DELETE, LIST TODAS LAS QUE NECESITAN CORRECTAMENTE
+# PROGRAMADAS
+
 from __future__ import annotations
 
 import json

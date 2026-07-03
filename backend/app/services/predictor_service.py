@@ -10,6 +10,10 @@ máximo 3
 
 No realiza llamadas a la PokeAPI, trabaja con el dataset local"""
 
+# ESTE MODULO EXCEDE EL MAXIMO DE 50 DEBIDO A LA LOGICA DE PREDICCION
+# DE ESTADISTICAS, REQUIERE CAPTURA DE TIPOS, Y LA RESPUESTA QUE RETORNA
+# CONTIENE VARIOS PARAMETROS
+
 from __future__ import annotations
 
 import pandas as pd
